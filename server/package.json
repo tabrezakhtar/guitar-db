@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "PORT=3333 node server.js"
+    "start": "PORT=3333 nodemon server.js"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",

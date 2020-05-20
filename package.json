@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/tabrezakhtar/guitar-db/issues"
   },
-  "homepage": "https://github.com/tabrezakhtar/guitar-db#readme"
+  "homepage": "https://github.com/tabrezakhtar/guitar-db#readme",
+  "dependencies": {
+    "nodemon": "^2.0.4"
+  }
 }
