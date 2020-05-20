@@ -1,23 +1,17 @@
 {
-  "name": "guitar-db",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "server",
+  "version": "0.0.0",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "PORT=5000 node server.js",
+    "start-dev": "PORT=5000 nodemon server.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/tabrezakhtar/guitar-db.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/tabrezakhtar/guitar-db/issues"
-  },
-  "homepage": "https://github.com/tabrezakhtar/guitar-db#readme",
   "dependencies": {
-    "nodemon": "^2.0.4"
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "express": "~4.16.1",
+    "http-errors": "~1.6.3",
+    "jade": "~1.11.0",
+    "morgan": "~1.9.1"
   }
 }
