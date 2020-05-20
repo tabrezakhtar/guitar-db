@@ -1,8 +1,21 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
 function App() {
+
+  const [guitars, setGuitars] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      debugger;
+      const response = await fetch("/api/guitars");
+      const guitars = await response.json();
+      setGuitars(guitars)
+    }
+    fetchData();
+  }, []);
+
   return (
     <div className="App">
       <header className="App-header">
@@ -19,6 +32,14 @@ function App() {
           Learn React
         </a>
       </header>
+
+      <ul>
+        {
+          guitars.map(guitar => {
+            return <li>{guitar.id + ' ' + guitar.name}</li>
+          })
+        }
+      </ul>
     </div>
   );
 }
