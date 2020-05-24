@@ -11,6 +11,10 @@ app.get('/api/guitars', (req, res) =>
   ])
 );
 
+app.get('/api/test', (req, res) =>
+  res.send(process.env.testKey)
+);
+
 const root = path.join(__dirname, './client', 'build')
 app.use(express.static(root));
 app.get("*", (req, res) => {
