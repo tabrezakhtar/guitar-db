@@ -21,7 +21,7 @@ function App() {
       <ul>
         {
           guitars.map(guitar => {
-            return <li>{guitar.id + ' ' + guitar.name}</li>
+            return <li>{guitar.brand + ' ' + guitar.name}</li>
           })
         }
       </ul>
