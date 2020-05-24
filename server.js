@@ -4,6 +4,7 @@ const path = require('path');
 const port = process.env.PORT || 5000;
 const mongoose = require('mongoose')
 
+console.log('process.env.NODE_ENV', process.env.NODE_ENV)
 let uri = '';
 if (process.env.NODE_ENV === 'production') {
   uri = process.env.DATABASE_URI;
