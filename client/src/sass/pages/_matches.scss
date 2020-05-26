@@ -1,0 +1,15 @@
+.matches {
+  padding: 2rem;
+  color: $primary-text-color-dark;
+}
+
+.scoreContainer {
+  color: $primary-color-light;
+  justify-content: left;
+  display: inline-flex;
+  flex-direction: column;
+
+  .scoreboard {
+    justify-content: left;
+  }
+}

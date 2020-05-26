@@ -1,0 +1,28 @@
+.set {
+  flex-direction: column;
+  flex: 0 1;
+  border-left: #FFFFFF 0.3rem solid;
+ 
+  & > * {
+    padding: 1rem;
+    background-color: $accent-color;
+  }
+
+  div {
+    display: flex;
+
+    span {
+      font-size: 0.5em;
+    }
+  }
+
+  &-completed {
+    & > * {
+      background-color: $primary-text-color-dark;
+    }
+  }
+}
+
+.completed-set-container {
+  display: flex;
+}

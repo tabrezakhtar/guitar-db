@@ -1,0 +1,56 @@
+.scoreboard {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  font-size: 4rem;
+  padding-top: 1rem;
+
+  @media (max-width: $small-1) {
+    font-size: 1.7rem;
+  }
+}
+
+.scoreboard-border {
+  background-color: $primary-color-dark;
+  display: inline-flex;
+  flex-direction: column;
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.big-score {
+  display: flex;
+  justify-content: center;
+  font-size: 15rem;
+  background-color: $secondary-color-light;
+  border-radius: 1rem;
+  font-family: LedDisplay, sans-serif;
+  box-shadow: 1rem 3rem 3rem rgba($secondary-color-light, 1);
+  padding-top: 1rem;
+
+  @media (max-width: $medium-1) {
+    padding-bottom: 0;
+  }
+
+  @media (max-width: $medium-1) {
+    font-size: 10rem;
+  }
+
+  @media (max-width: $medium-3) {
+    font-size: 9rem;
+  }
+
+  @media (max-width: $small-2) {
+    font-size: 8rem;
+  }
+
+  @media (max-width: $small-4) {
+    padding: 1rem;
+    font-size: 7rem;
+  }
+
+  @media (max-width: $small-5) {
+    padding: 1rem;
+    font-size: 5rem;
+  }
+}

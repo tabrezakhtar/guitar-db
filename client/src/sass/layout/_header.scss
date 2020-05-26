@@ -1,0 +1,82 @@
+.header {
+  box-sizing: initial;
+  background-color: $primary-color;
+  min-height: 3rem;
+  display: flex;
+  flex-wrap: wrap;
+  color: $primary-color-light;
+  font-size: 2rem;
+  font-weight: bold;
+
+  @media (max-width: $small-3) {
+    display: block;
+  }
+
+  &__logo {
+    padding: 1rem 1rem;
+    width: 2rem;
+    height: 2rem;
+  }
+
+  a {
+    text-decoration: none;
+    color: $primary-text-color-light;
+    display: flex;
+
+    span {
+      align-self: center;
+    }
+  }
+
+  &__logo-box {
+    display: flex;
+    align-items: center;
+    flex: 1 1;
+  }
+
+  &__menu {
+    list-style: none;
+    display: flex;
+    align-items: stretch;
+
+    @media (max-width: $small-3) {
+      background-color: $primary-color-dark;
+      display: block;
+    }
+
+    .menu__item {
+      // &:hover {
+      //   background-color: $accent-color;
+      // }
+    }
+
+    .menu__item a {
+      &:link,
+      &:visited {
+        text-decoration: none;
+        cursor: pointer;
+        color: inherit;
+        display: flex;
+        align-items: center;
+        height: 100%;
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+      &:hover {
+        background-color: $accent-color;
+      }
+    }
+
+    &-active {
+      background-color: $accent-color;
+    }
+
+    & > * {
+      //padding: 1rem;
+    }
+
+    @media (max-width: 550px) {
+      // display: none;
+    }
+  }
+}

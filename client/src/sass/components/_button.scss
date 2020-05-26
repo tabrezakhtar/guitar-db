@@ -1,0 +1,53 @@
+// -----------------------------------------------------------------------------
+// This file contains all styles related to the button component.
+// -----------------------------------------------------------------------------
+
+.big-button {
+  touch-action: manipulation;
+  font-size: 10rem;
+  border-radius: 1rem;
+  width: 12rem;
+  margin: 1.5rem;
+  background-color: $secondary-accent-color;
+  color: $primary-text-color-dark;
+
+  @media (max-width: $medium-4) {
+    font-size: 17rem;
+    width: 14rem;
+  }
+
+  @media (max-width: $small-1) {
+    font-size: 12rem;
+    width: 12rem;
+  }
+
+  @media (max-width: $small-2) {
+    font-size: 10rem;
+    width: 10rem;
+  }
+
+  @media (max-width: $small-4) {
+    font-size: 8rem;
+    width: 8rem;
+  }
+
+  @media (max-width: $small-5) {
+    font-size: 7rem;
+    width: 7rem;
+  }
+
+  &__start {
+    font-size: 7rem;
+    width: 20rem;
+    height: 10rem;
+  }
+}
+
+.small-button {
+  padding: 1rem;
+  width: 8rem;
+  margin: 1rem;
+  border-radius: 1rem;
+  background-color: $secondary-accent-color;
+  color: $primary-text-color-dark;
+}

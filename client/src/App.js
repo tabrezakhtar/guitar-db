@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, NavLink, Switch, Route } from 'react-router-dom'
 
 function App() {
 
@@ -8,7 +7,6 @@ function App() {
 
   useEffect(() => {
     async function fetchData() {
-      debugger;
       const response = await fetch("/api/guitars");
       const guitars = await response.json();
       setGuitars(guitars)
@@ -17,15 +15,34 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
-      <ul>
-        {
-          guitars.map(guitar => {
-            return <li>{guitar.brand + ' ' + guitar.name}</li>
-          })
-        }
-      </ul>
-    </div>
+    <BrowserRouter>
+      <header className="header">
+        <div className="header__logo-box">
+          <NavLink to='/'><img src="/ball.png" alt="Logo" className="header__logo"/><span>whatsthescore</span></NavLink>
+        </div>
+
+        <ul className="header__menu">
+          <li className="menu__item"><NavLink exact activeClassName="header__menu-active" to="/">Home</NavLink></li>
+          <li className="menu__item"><NavLink exact activeClassName="header__menu-active" to="/matches">Matches</NavLink></li>
+          <li className="menu__item"><NavLink exact activeClassName="header__menu-active"to="/about">About</NavLink></li>
+        </ul>
+            
+      </header>
+
+      <div className="main">
+        <ul>
+          {
+            guitars.map(guitar => {
+              return <li>{guitar.brand + ' ' + guitar.name}</li>
+            })
+          }
+        </ul>
+      </div>
+
+      <footer className="footer">
+        FOOTER
+      </footer>
+    </BrowserRouter>
   );
 }
 
