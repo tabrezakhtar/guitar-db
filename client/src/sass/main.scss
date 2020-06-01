@@ -24,17 +24,11 @@
 
 // 5. Components
 @import
-  'components/button',
-  'components/scoreboard',
-  'components/players',
-  'components/set',
-  'components/clock';
+  'components/sidebar';
 
 // 6. Page-specific styles
 @import
-  'pages/home',
-  'pages/about',
-  'pages/matches';
+  'pages/home';
 
 // 7. Themes
 @import

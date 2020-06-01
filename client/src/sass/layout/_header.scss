@@ -1,10 +1,10 @@
 .header {
   box-sizing: initial;
-  background-color: $primary-color;
-  min-height: 3rem;
+  background-color: $primary-color-light;
+  min-height: 6rem;
   display: flex;
   flex-wrap: wrap;
-  color: $primary-color-light;
+  color: $primary-color-dark;
   font-size: 2rem;
   font-weight: bold;
 
@@ -20,8 +20,9 @@
 
   a {
     text-decoration: none;
-    color: $primary-text-color-light;
+    color: $primary-text-color-dark;
     display: flex;
+    padding-left: 2rem;
 
     span {
       align-self: center;
@@ -53,9 +54,9 @@
     .menu__item a {
       &:link,
       &:visited {
-        text-decoration: none;
+        // text-decoration: none;
         cursor: pointer;
-        color: inherit;
+        // color: inherit;
         display: flex;
         align-items: center;
         height: 100%;
@@ -63,12 +64,14 @@
         padding-right: 1rem;
       }
       &:hover {
-        background-color: $accent-color;
+        background-color: #5a97fa;
+        color: $primary-text-color-light;
       }
     }
 
     &-active {
-      background-color: $accent-color;
+      background-color: #5a97fa;
+      color: $primary-text-color-light !important;
     }
 
     & > * {

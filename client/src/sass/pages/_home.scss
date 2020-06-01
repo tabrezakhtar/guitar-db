@@ -1,61 +1,8 @@
-.main {
-  background-color: $primary-color-light;
-}
-
-.controls {
+.container {
   display: flex;
-  padding: 2rem;
-  color: $primary-text-color-light;
 
-  @media (max-width: $small-1) {
-    display: block;
-    //padding: 1rem;
-  }
-
-  @media (max-width: $medium-1) {
-    padding-top: 0;
-  }
-
-  &__middle {
-    flex: 1 1 calc(30%);
-    width: 33.33333%;
-    text-align: center;
-    align-self: center;
-
-    @media (max-width: $medium-1) {
-      flex: 1 1 calc(30%);
-    }
-
-    @media (max-width: $small-1) {
-      align-self: center;
-    }
-
-    @media (max-width: $small-1) {
-      width: auto;
-    }
-  }
-
-  &__lhs {
-    display: flex;
-    align-items: flex-end;
-    align-self: center;
-    width: 8rem;
-
-    @media (max-width: $medium-4) {
-      display: none;
-    }
-  }
-
-  &__rhs {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    align-self: center;
-
-    @media (max-width: $small-1) {
-      flex-direction: row;
-      align-items: initial;
-      justify-content: center;
-    }
+  .rhs {
+    flex: 1;
+    background-color: yellow;
   }
 }

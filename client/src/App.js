@@ -18,7 +18,7 @@ function App() {
     <BrowserRouter>
       <header className="header">
         <div className="header__logo-box">
-          <NavLink to='/'><img src="/ball.png" alt="Logo" className="header__logo"/><span>whatsthescore</span></NavLink>
+          <NavLink to='/'><span>GuitarDB</span></NavLink>
         </div>
 
         <ul className="header__menu">
@@ -29,19 +29,21 @@ function App() {
             
       </header>
 
-      <div className="main">
-        <ul>
-          {
-            guitars.map(guitar => {
-              return <li>{guitar.brand + ' ' + guitar.name}</li>
-            })
-          }
-        </ul>
-      </div>
+      <div className="container">
+        <div className="sidebar">
+          side menu content here
+        </div>
 
-      <footer className="footer">
-        FOOTER
-      </footer>
+        <div className="rhs">
+          <ul>
+            {
+              guitars.map(guitar => {
+                return <li>{guitar.brand + ' ' + guitar.name}</li>
+              })
+            }
+          </ul>
+        </div>
+      </div>
     </BrowserRouter>
   );
 }
