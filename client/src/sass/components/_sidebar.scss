@@ -1,9 +1,11 @@
 .sidebar {
   display: flex;
-  background-color: blue;
+  background-color: $primary-color-dark;
   flex: 0 0 calc(30rem);
   flex-direction: column;
   min-height: 100vh;
+  color: $primary-text-color-light;
+  padding: 2rem;
 
   @media (max-width: 550px) {
     flex: 1 0 calc(10rem);
@@ -16,5 +18,26 @@
 
   &__item:hover {
     background-color: red;
+  }
+
+  &__category {
+    text-transform: uppercase;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  &__shapes {
+    padding: 2rem;
+
+    img {
+      width: 5rem;
+      opacity: 0.7;
+      transition: 0.3s;
+    }
+
+    img:hover {
+      opacity: 1;
+      cursor: pointer;
+    }
   }
 }

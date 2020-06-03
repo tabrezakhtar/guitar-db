@@ -36,9 +36,11 @@
   }
 
   &__menu {
+    transform: skew(-12deg, 0deg);
     list-style: none;
     display: flex;
     align-items: stretch;
+    padding-right: 2rem;
 
     @media (max-width: $small-3) {
       background-color: $primary-color-dark;
