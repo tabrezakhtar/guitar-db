@@ -14,6 +14,7 @@ function SideBar() {
 
       <div className="sidebar__filters">
         <div className="form">
+          
           <div className="form__group">
             <label className="form__label" for="brand">Brand</label>
             <select className="form__select" name="brand">
@@ -22,6 +23,24 @@ function SideBar() {
               <option value="ibanez">Ibanez</option>
             </select>
           </div>
+
+          <div className="form__group">
+            <label className="form__label" for="brand">Colours</label>
+            <div className="form__checkbox">
+              <input type="checkbox" id="colour-checkbox1"/>
+              <label for="colour-checkbox1">
+                <span className="black"></span>
+              </label>
+            </div>
+
+            <div className="form__checkbox">
+              <input type="checkbox" id="colour-checkbox2"/>
+              <label for="colour-checkbox2">
+                <span className="white"></span>
+              </label>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
