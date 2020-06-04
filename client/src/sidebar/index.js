@@ -25,10 +25,11 @@ function SideBar() {
             </select>
           </div>
 
-          <Colour id="chk1" bgColour="red"/>
-          <Colour id="chk2" bgColour="white"/>
-          <Colour id="chk3" bgColour="yellow"/>
-
+          <div className="colourContainer">
+            <Colour id="chk1" bgColour="red" checked={true}/>
+            <Colour id="chk2" bgColour="white"/>
+            <Colour id="chk3" bgColour="yellow"/>
+          </div>
         </div>
       </div>
     </div>

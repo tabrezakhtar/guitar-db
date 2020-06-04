@@ -1,14 +1,14 @@
 import React, {useState} from 'react';
 
-function Colour({id, bgColour}) {
-  const [toggle, setToggle] = useState(-1)
+function Colour({id, bgColour, checked}) {
+  const [toggle, setToggle] = useState(checked)
 
   function toggleImage() {
-    setToggle(toggle * -1);
+    setToggle(!toggle);
   }
 
   let hideImage = '';
-  if (toggle === -1) {
+  if (!toggle) {
     hideImage = 'hide';
   }
 
