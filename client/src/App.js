@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter, NavLink, Switch, Route } from 'react-router-dom'
 import SideBar from './sidebar';
+import Tiles from './rhs';
 
 function App() {
 
@@ -35,13 +36,7 @@ function App() {
         <SideBar guitars={guitars} />
 
         <div className="rhs">
-          <ul>
-            {/* {
-              guitars.map(guitar => {
-                return <li>{guitar.brand + ' ' + guitar.name}</li>
-              })
-            } */}
-          </ul>
+          <Tiles guitars={guitars}/>
         </div>
       </div>
     </BrowserRouter>
