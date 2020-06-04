@@ -1,0 +1,21 @@
+.colour {
+  width: 2rem;
+  height: 2rem;
+  margin-top: 1rem;
+  margin-right: 1rem;
+
+  label {
+    display: block;
+    width: 110%;
+    height: 110%;
+
+    cursor: pointer;
+
+    img {
+      position: relative;
+      width: 80%;
+      left: 0.05rem;
+      top: 0.05rem;
+    }
+  }
+}

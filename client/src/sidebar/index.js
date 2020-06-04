@@ -1,4 +1,5 @@
 import React from 'react';
+import Colour from './colour';
 
 function SideBar() {
   return (
@@ -16,7 +17,7 @@ function SideBar() {
         <div className="form">
           
           <div className="form__group">
-            <label className="form__label" for="brand">Brand</label>
+            <label className="form__label" htmlFor="brand">Brand</label>
             <select className="form__select" name="brand">
               <option value="fender">Fender</option>
               <option value="prs">PRS</option>
@@ -24,22 +25,9 @@ function SideBar() {
             </select>
           </div>
 
-          <div className="form__group">
-            <label className="form__label" for="brand">Colours</label>
-            <div className="form__checkbox">
-              <input type="checkbox" id="colour-checkbox1"/>
-              <label for="colour-checkbox1">
-                <span className="black"></span>
-              </label>
-            </div>
-
-            <div className="form__checkbox">
-              <input type="checkbox" id="colour-checkbox2"/>
-              <label for="colour-checkbox2">
-                <span className="white"></span>
-              </label>
-            </div>
-          </div>
+          <Colour id="chk1" bgColour="red"/>
+          <Colour id="chk2" bgColour="white"/>
+          <Colour id="chk3" bgColour="yellow"/>
 
         </div>
       </div>
