@@ -32,7 +32,7 @@ function App() {
 
       <div className="container">
         
-        <SideBar />
+        <SideBar guitars={guitars} />
 
         <div className="rhs">
           <ul>
