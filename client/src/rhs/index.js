@@ -1,4 +1,5 @@
 import React from 'react';
+import EmptyTile from './empty-tile';
 
 function Tiles({guitars}) {
   const list = guitars.map(guitar => 
@@ -8,7 +9,10 @@ function Tiles({guitars}) {
       <span className="description">Player Series Stratocaster White</span>
     </div>
   )
-  return <React.Fragment>{list}</React.Fragment>;
+  return <React.Fragment>
+    {list}
+    <EmptyTile times={3}/>
+  </React.Fragment>;
 }
 
 export default Tiles;
