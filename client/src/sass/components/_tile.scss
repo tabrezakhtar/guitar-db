@@ -1,10 +1,10 @@
 .tile {
-  border: 1px solid $divider-color;
+  border: 1px solid $accent-color;
   margin: 0 1rem 1rem 1rem;
   display: flex;
   flex-direction: column;
-  flex: 0 0 23%;
-  min-width: 40rem;
+  flex: 1 1 31.4%;
+  //min-width: 5rem;
 
   img {
     width: 100%;
