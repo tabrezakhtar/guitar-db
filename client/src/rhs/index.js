@@ -2,12 +2,13 @@ import React from 'react';
 
 function Tiles({guitars}) {
   const list = guitars.map(guitar => 
-    <div>
-      {guitar.brand + ' ' + guitar.name}
-      <img src="/images/strat1.jpeg" alt="fender1" width="100px"/>
+    <div className="tile">
+      <img src="/images/strat1.jpeg" alt="fender1"/>
+      <span className="title">{guitar.brand + ' ' + guitar.name}</span>
+      <span className="description">Player Series Stratocaster White</span>
     </div>
   )
-  return <div>{list}</div>;
+  return <React.Fragment>{list}</React.Fragment>;
 }
 
 export default Tiles;
