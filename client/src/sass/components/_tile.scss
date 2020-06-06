@@ -1,11 +1,14 @@
 .tile {
-  border: 0.5rem solid $accent-color;
+  border: 1px solid $primary-color-dark;
   margin: 0 1rem 1rem 1rem;
   display: flex;
   flex-direction: column;
-  flex: 1 1 31.4%;
+  flex: 1 1 23.2%;
   cursor: pointer;
   transition: all .2s ease-in-out;
+  box-shadow: 4px 4px $primary-color-dark;
+  max-height: 42rem;
+  background-color: $accent-color;
 
   img {
     width: 100%;
@@ -31,4 +34,7 @@
 
 .empty {
   border: none;
+  box-shadow: none;
+  background-color: transparent;
+  cursor: default;
 }
