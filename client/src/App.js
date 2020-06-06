@@ -20,7 +20,7 @@ function App() {
     <BrowserRouter>
       <header className="header">
         <div className="header__logo-box">
-          <NavLink to='/'><span>GuitarDB</span></NavLink>
+          <NavLink to='/'><span>Guitar Explorer</span></NavLink>
         </div>
 
         <ul className="header__menu">

@@ -1,21 +1,31 @@
 .tile {
-  border: 1px solid $accent-color;
+  border: 0.5rem solid $accent-color;
   margin: 0 1rem 1rem 1rem;
   display: flex;
   flex-direction: column;
   flex: 1 1 31.4%;
-  //max-width: 21rem;
+  cursor: pointer;
+  transition: all .2s ease-in-out;
 
   img {
     width: 100%;
   }
 
   .title {
-    font-size: larger;
+    font-size: 2rem;
+    padding: 1rem;
+    background-color: $accent-color;
   }
 
   .description {
+    font-size: 1.5rem;
+    color: $primary-color-dark;
+    padding: 1rem;
+    background-color: $accent-color;
+  }
 
+  &:hover {
+    filter: brightness(105%);
   }
 }
 
