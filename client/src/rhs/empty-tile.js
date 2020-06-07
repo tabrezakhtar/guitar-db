@@ -2,7 +2,7 @@ import React from 'react';
 
 function EmptyTile({times}) {
   const list = [...Array(times)].map(() => 
-    <div className="tile empty"></div>
+    <li className="tile empty"></li>
   );
 
   return <React.Fragment>
