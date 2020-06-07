@@ -18,6 +18,13 @@
   // max-height: 44rem;
   background-color: $accent-color;
 
+  .like {
+    position: absolute;
+    margin-left: 1rem;
+    margin-top: 1rem;
+    font-size: 2rem;
+  }
+
   img {
     width: 100%;
   }

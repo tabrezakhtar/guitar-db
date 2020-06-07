@@ -25,7 +25,7 @@ function App() {
 
         <ul className="header__menu">
           <li className="menu__item"><NavLink exact activeClassName="header__menu-active" to="/">Home</NavLink></li>
-          <li className="menu__item"><NavLink exact activeClassName="header__menu-active" to="/likes">❤️ Likes</NavLink></li>
+          <li className="menu__item"><NavLink exact activeClassName="header__menu-active" to="/likes">Likes</NavLink></li>
           <li className="menu__item"><NavLink exact activeClassName="header__menu-active"to="/about">About</NavLink></li>
         </ul>
             
