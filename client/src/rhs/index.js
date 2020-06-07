@@ -6,7 +6,7 @@ function Tiles({guitars}) {
     <li className="tile">
       <img src={`/images/${guitar.filename}`} alt={`${guitar.brand} ${guitar.name} image`}/>
       <span className="title">{guitar.brand + ' ' + guitar.name}</span>
-      <span className="description">Player Series Stratocaster White</span>
+      <span className="description">{guitar.description}</span>
     </li>
   )
   return <ul className="tile-container">
