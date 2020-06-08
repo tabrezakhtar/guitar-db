@@ -1,9 +1,9 @@
 import React from 'react';
 import EmptyTile from './empty-tile';
 
-function Tiles({guitars}) {
+function Tiles({guitars, onOpenModal}) {
   const list = guitars.map(guitar => 
-    <li className="tile">
+    <li className="tile" onClick={onOpenModal}>
       <span className="like">📌</span>
       <img src={`/images/${guitar.filename}`} alt={`${guitar.brand} ${guitar.name} image`}/>
       <span className="title">{guitar.brand + ' ' + guitar.name}</span>

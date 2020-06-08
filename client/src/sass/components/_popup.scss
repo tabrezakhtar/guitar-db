@@ -1,16 +1,24 @@
 .popup {
-  height: 100vh;
-  width: 100%;
-  position: fixed;
-  top: 0;
-  left: 0;
-  background-color: rgba($primary-color-dark, 0.8);
+  // height: 100vh;
+  // width: 100%;
+  // position: fixed;
+  // top: 0;
+  // left: 0;
+  // background-color: rgba($primary-color-dark, 0.8);
+  // transition: all 0.3s;
+  // opacity: 0;
+  // visibility: hidden;
+
+  // &:target {
+  //   opacity: 1;
+  //   visibility: visible ;
+  // }
   
   &__content {
-    @include abs-center;
-    width: 75%;
-    background-color: $primary-color-light;
-    box-shadow: 0 2rem 4rem rgba($primary-color-dark, 0.2);
+//    @include abs-center;
+    // width: 75%;
+    // background-color: $primary-color-light;
+    // box-shadow: 0 2rem 4rem rgba($primary-color-dark, 0.2);
     display: flex;
   }
 

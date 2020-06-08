@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter, NavLink, Switch, Route } from 'react-router-dom'
 import ImageGallery from 'react-image-gallery';
+import 'react-responsive-modal/styles.css';
+import { Modal } from 'react-responsive-modal';
 import SideBar from './sidebar';
 import Tiles from './rhs';
 
 function App() {
+
+  const [guitars, setGuitars] = useState([]);
+  const [open, setOpen] = useState(false)
 
   const images = [
     {
@@ -21,7 +26,13 @@ function App() {
     },
   ];
 
-  const [guitars, setGuitars] = useState([]);
+  const onOpenModal = () => {
+    setOpen(true);
+  };
+
+  const onCloseModal = () => {
+    setOpen(false);
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -49,24 +60,29 @@ function App() {
 
       <div className="container">
         
-        <SideBar guitars={guitars} />
+        <SideBar guitars={guitars}/>
 
         <div className="rhs">
-          <Tiles guitars={guitars}/>
+          <Tiles guitars={guitars} onOpenModal={onOpenModal}/>
         </div>
       </div>
 
-      <div className="popup">
-        <div className="popup__content">
-          <div className="popup__left">
-            {/* <img src="/images/strat1.jpeg" alt="stratocaster" className="popup__img"/> */}
-            <ImageGallery items={images} showFullscreenButton={false} showPlayButton={false}/>
-          </div>
-          <div className="popup__right">
-            Activated charcoal mixtape jean shorts pinterest vinyl post-ironic, polaroid DIY paleo single-origin coffee. Edison bulb salvia copper mug adaptogen asymmetrical unicorn. Fixie roof party chicharrones VHS, tousled cloud bread cred gluten-free ramps. Poke green juice stumptown post-ironic health goth. Cred green juice semiotics copper mug, cold-pressed pinterest vape woke jean shorts leggings edison bulb cardigan.
+      <Modal open={open} onClose={onCloseModal} center>
+        <div className="popup">
+          <div className="popup__content">
+            <div className="popup__left">
+              <ImageGallery items={images} showFullscreenButton={false} showPlayButton={false}/>
+            </div>
+            <div className="popup__right">
+            Alder body with gloss finish
+Three Player Series single-coil Stratocaster pickups
+“Modern C"-shaped neck profile
+9.5"-radius fingerboard
+2-point tremolo bridge with bent-steel saddles
+            </div>
           </div>
         </div>
-      </div>
+      </Modal>
     </BrowserRouter>
   );
 }
