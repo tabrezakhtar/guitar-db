@@ -17,6 +17,7 @@
   box-shadow: 4px 4px $drop-shadow;
   // max-height: 44rem;
   background-color: $accent-color;
+  overflow: hidden;
 
   .like {
     position: absolute;
@@ -27,12 +28,19 @@
 
   img {
     width: 100%;
+    transition: all 0.3s;
   }
+
+  &:hover img {
+    transform: scale(1.1);
+  }
+
 
   .title {
     font-size: 2rem;
     padding: 1rem;
     background-color: $accent-color;
+    z-index: 1;
   }
 
   .description {
@@ -40,6 +48,7 @@
     color: $primary-color-dark;
     padding: 1rem;
     background-color: $accent-color;
+    z-index: 1;
   }
 
   &:hover {
