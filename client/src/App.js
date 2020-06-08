@@ -74,11 +74,11 @@ function App() {
               <ImageGallery items={images} showFullscreenButton={false} showPlayButton={false}/>
             </div>
             <div className="popup__right">
-            Alder body with gloss finish
-Three Player Series single-coil Stratocaster pickups
-“Modern C"-shaped neck profile
-9.5"-radius fingerboard
-2-point tremolo bridge with bent-steel saddles
+              Alder body with gloss finish
+              Three Player Series single-coil Stratocaster pickups
+              “Modern C"-shaped neck profile
+              9.5"-radius fingerboard
+              2-point tremolo bridge with bent-steel saddles
             </div>
           </div>
         </div>
