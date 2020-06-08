@@ -27,6 +27,7 @@
   'components/sidebar',
   'components/colour',
   'components/tile',
+  'components/popup',
   'components/form';
 
 // 6. Page-specific styles
@@ -36,3 +37,5 @@
 // 7. Themes
 @import
   'themes/default';
+
+@import "~react-image-gallery/styles/scss/image-gallery.scss";

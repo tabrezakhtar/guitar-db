@@ -4,7 +4,7 @@ import EmptyTile from './empty-tile';
 function Tiles({guitars}) {
   const list = guitars.map(guitar => 
     <li className="tile">
-      <span className="like">❤️</span>
+      <span className="like">📌</span>
       <img src={`/images/${guitar.filename}`} alt={`${guitar.brand} ${guitar.name} image`}/>
       <span className="title">{guitar.brand + ' ' + guitar.name}</span>
       <span className="description">{guitar.description}</span>
