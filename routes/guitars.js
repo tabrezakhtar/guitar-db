@@ -1,10 +1,22 @@
 const express = require('express')
 const router = express.Router()
 const Guitar = require('../models/guitar')
+const queryBuilder = require('../query-builder.js');
 
 router.get('/', async (req, res) => {
   try {
     const guitar = await Guitar.find();
+    res.json(guitar)
+  } catch (err) {
+    res.status(500).json({ message: err.message })
+  }
+});
+
+router.get('/filterBy', async (req, res) => {
+  const query = '{"colour":["red","white"],"brand":"fender"}';
+  queryBuilder(query);
+  try {
+    const guitar = await Guitar.find({colour: 'red'});
     res.json(guitar)
   } catch (err) {
     res.status(500).json({ message: err.message })
