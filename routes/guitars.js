@@ -13,10 +13,9 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/filterBy', async (req, res) => {
-  const query = '{"colour":["red","white"],"brand":"fender"}';
-  queryBuilder(query);
+  const filter = queryBuilder(decodeURI(req.query.filter));
   try {
-    const guitar = await Guitar.find({colour: 'red'});
+    const guitar = await Guitar.find(filter);
     res.json(guitar)
   } catch (err) {
     res.status(500).json({ message: err.message })
