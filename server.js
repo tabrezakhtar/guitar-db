@@ -13,7 +13,7 @@ if (process.env.NODE_ENV === 'production') {
   uri = require('./config.json').connectionString;
 }
 
-mongoose.connect(uri, { useNewUrlParser: true })
+mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
 
 const db = mongoose.connection
 db.on('error', (error) => console.error(error))

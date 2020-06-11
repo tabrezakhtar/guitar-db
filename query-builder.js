@@ -1,6 +1,5 @@
 function queryBuilder(params) {
   const query = JSON.parse(params);
-  console.log('1');
   const queryKeys = Object.keys(query);
   let mongoQuery = {};
 

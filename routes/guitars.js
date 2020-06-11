@@ -13,7 +13,12 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/filterBy', async (req, res) => {
-  const filter = queryBuilder(decodeURI(req.query.filter));
+  let filter = {};
+
+  if (req.query.filter) {
+    filter = queryBuilder(decodeURI(req.query.filter));
+  }
+
   try {
     const guitar = await Guitar.find(filter);
     res.json(guitar)
