@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter, NavLink, Switch, Route } from 'react-router-dom'
+import { BrowserRouter, NavLink, withRouter } from 'react-router-dom'
+import { connect } from 'react-redux';
+import { fetchGuitars } from './actions/guitarsActions'
 import ImageGallery from 'react-image-gallery';
 import 'react-responsive-modal/styles.css';
 import { Modal } from 'react-responsive-modal';
 import SideBar from './sidebar';
 import Tiles from './rhs';
 
-function App() {
+function App({dispatch, guitars}) {
+  useEffect(() => {
+    dispatch(fetchGuitars())
+  }, [dispatch])
 
-  const [guitars, setGuitars] = useState([]);
   const [open, setOpen] = useState(false)
 
   const images = [
@@ -34,14 +38,14 @@ function App() {
     setOpen(false);
   };
 
-  useEffect(() => {
-    async function fetchData() {
-      const response = await fetch("/api/guitars");
-      const guitars = await response.json();
-      setGuitars(guitars)
-    }
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     const response = await fetch('/api/guitars');
+  //     const guitars = await response.json();
+  //     setGuitars(guitars)
+  //   }
+  //   fetchData();
+  // }, []);
 
   return (
     <BrowserRouter>
@@ -87,4 +91,9 @@ function App() {
   );
 }
 
-export default App;
+const mapStateToProps = state => ({
+  guitars: state.guitars.guitars
+})
+
+// export default withRouter(connect(mapStateToProps)(App))
+export default connect(mapStateToProps)(App)
