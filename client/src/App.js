@@ -8,7 +8,7 @@ import { Modal } from 'react-responsive-modal';
 import SideBar from './sidebar';
 import Tiles from './rhs';
 
-function App({dispatch, guitars}) {
+function App({dispatch, guitars, loading, hasErrors}) {
   useEffect(() => {
     dispatch(fetchGuitars())
   }, [dispatch])
