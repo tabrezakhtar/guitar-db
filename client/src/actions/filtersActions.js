@@ -20,7 +20,7 @@ export function fetchGuitarsByFilter(filter) {
   return async dispatch => {
     dispatch(getGuitars());
     try {
-      const response = await fetch(`/api/guitars/filterBy?filter={"shape":"ttype"}`);
+      const response = await fetch(`/api/guitars/filterBy?filter=${JSON.stringify(filter)}`);
       const data = await response.json();
       dispatch(getGuitarsSuccess(data));
     } catch (error) {
