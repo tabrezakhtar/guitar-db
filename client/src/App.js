@@ -38,15 +38,6 @@ function App({dispatch, guitars, loading, hasErrors}) {
     setOpen(false);
   };
 
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     const response = await fetch('/api/guitars');
-  //     const guitars = await response.json();
-  //     setGuitars(guitars)
-  //   }
-  //   fetchData();
-  // }, []);
-
   return (
     <BrowserRouter>
       <header className="header">

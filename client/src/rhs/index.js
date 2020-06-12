@@ -12,7 +12,7 @@ function Tiles({guitars, onOpenModal}) {
   )
   return <ul className="tile-container">
     {list}
-    <EmptyTile times={3}/>
+    <EmptyTile times={4}/>
   </ul>;
 }
 

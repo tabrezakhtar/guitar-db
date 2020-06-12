@@ -1,9 +1,12 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { fetchGuitarsByFilter } from '../actions/filterActions'
 import ShapesEnum from '../shapes-enum';
 
-function Shapes() {
+function Shapes({dispatch}) {
   const shapeClick = (shape) => {
-    // debugger;
+    debugger;
+    dispatch(fetchGuitarsByFilter())
   }
 
   return (
@@ -31,4 +34,4 @@ function Shapes() {
   );
 }
 
-export default Shapes;
+export default connect()(Shapes)
