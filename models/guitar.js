@@ -6,7 +6,7 @@ const guitarSchema = new mongoose.Schema({
     required: true,
     lowercase: true
   },
-  style: {
+  shape: {
     type: String,
     required: false,
     lowercase: true

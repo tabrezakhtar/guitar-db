@@ -1,12 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { fetchGuitarsByFilter } from '../actions/filterActions'
+import { fetchGuitarsByFilter, updateFilter } from '../actions/filtersActions'
 import ShapesEnum from '../shapes-enum';
+import FilterTypes from '../filter-types';
 
-function Shapes({dispatch}) {
+function Shapes({dispatch, filters}) {
   const shapeClick = (shape) => {
-    debugger;
-    dispatch(fetchGuitarsByFilter())
+    dispatch(updateFilter(FilterTypes.SHAPE, shape));
   }
 
   return (
@@ -34,4 +34,8 @@ function Shapes({dispatch}) {
   );
 }
 
-export default connect()(Shapes)
+const mapStateToProps = state => ({
+  filters: state.filters
+})
+
+export default connect(mapStateToProps)(Shapes)

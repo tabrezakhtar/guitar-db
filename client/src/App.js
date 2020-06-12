@@ -2,16 +2,21 @@ import React, { useEffect, useState } from 'react';
 import { BrowserRouter, NavLink, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux';
 import { fetchGuitars } from './actions/guitarsActions'
+import { fetchGuitarsByFilter } from './actions/filtersActions'
 import ImageGallery from 'react-image-gallery';
 import 'react-responsive-modal/styles.css';
 import { Modal } from 'react-responsive-modal';
 import SideBar from './sidebar';
 import Tiles from './rhs';
 
-function App({dispatch, guitars, loading, hasErrors}) {
+function App({dispatch, guitars, filters, loading, hasErrors}) {
   useEffect(() => {
-    dispatch(fetchGuitars())
-  }, [dispatch])
+    if (filters && filters.hasOwnProperty('shape')) {
+      dispatch(fetchGuitarsByFilter(filters))
+    } else {
+      dispatch(fetchGuitars())
+    }
+  }, [dispatch, filters])
 
   const [open, setOpen] = useState(false)
 
@@ -83,7 +88,8 @@ function App({dispatch, guitars, loading, hasErrors}) {
 }
 
 const mapStateToProps = state => ({
-  guitars: state.guitars.guitars
+  guitars: state.guitars.guitars,
+  filters: state.filters
 })
 
 // export default withRouter(connect(mapStateToProps)(App))
