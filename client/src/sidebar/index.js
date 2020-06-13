@@ -28,8 +28,6 @@ function SideBar({guitars}) {
 
   return (
     <div className="sidebar">
-      <span className="sidebar__category">view by shape</span>
-
       <Shapes />
 
       <div className="sidebar__filters">

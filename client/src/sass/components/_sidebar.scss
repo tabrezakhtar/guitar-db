@@ -31,6 +31,7 @@
 
   &__shapes {
     padding: 2rem;
+    display: flex;
 
     & input[type="radio"] {
       width: 0;
@@ -43,7 +44,7 @@
       border: none;
     }
 
-    & input[type="radio"]:checked + label>img{
+    & input[type="radio"]:checked + label>*{
       opacity: 1 !important;
       border: 1px solid $accent-color-2;
     }
@@ -63,9 +64,23 @@
       display: inline-block;
     }
     
-    .selected {
-      opacity: 1 !important;
-      border: 1px solid $accent-color-2;
+    .labelAll {
+      width: 3.5rem;
+      height: 4rem;
+      margin-top: 0.5rem;
+      text-align: center;
+      text-transform: uppercase;
+      border-radius: 0.5rem;
+
+      &:hover {
+        text-decoration: underline;
+        cursor: pointer;
+      }
+
+      div {
+        height: 100%;
+        padding-top: 1rem;
+      }
     }
   }
 }
