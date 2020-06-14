@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter, NavLink, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux';
+import { isEmpty } from 'lodash';
 import { fetchGuitars } from './actions/guitarsActions'
 import { fetchGuitarsByFilter } from './actions/filtersActions'
 import ImageGallery from 'react-image-gallery';
@@ -9,12 +10,12 @@ import { Modal } from 'react-responsive-modal';
 import SideBar from './sidebar';
 import Tiles from './rhs';
 
-function App({dispatch, guitars, filters, loading, hasErrors}) {
+function App({dispatch, guitarList, filters, loading, hasErrors}) {
   useEffect(() => {
-    if (filters && filters.hasOwnProperty('shape')) {
-      dispatch(fetchGuitarsByFilter(filters))
-    } else {
+    if (isEmpty(filters)) {
       dispatch(fetchGuitars())
+    } else {      
+      dispatch(fetchGuitarsByFilter(filters))
     }
   }, [dispatch, filters])
 
@@ -60,10 +61,10 @@ function App({dispatch, guitars, filters, loading, hasErrors}) {
 
       <div className="container">
         
-        <SideBar guitars={guitars}/>
+        <SideBar />
 
         <div className="rhs">
-          <Tiles guitars={guitars} onOpenModal={onOpenModal}/>
+          <Tiles guitars={guitarList} onOpenModal={onOpenModal}/>
         </div>
       </div>
 
@@ -88,7 +89,7 @@ function App({dispatch, guitars, filters, loading, hasErrors}) {
 }
 
 const mapStateToProps = state => ({
-  guitars: state.guitars.guitars,
+  guitarList: state.guitars.guitars,
   filters: state.filters
 })
 

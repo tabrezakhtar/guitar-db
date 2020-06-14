@@ -7,24 +7,16 @@ import ShapesEnum from '../shapes-enum';
 
 export const ADD_SHAPE = 'ADD_SHAPE'
 export const RESET_SHAPE = 'RESET_SHAPE'
+export const ADD_BRAND = 'ADD_BRAND'
 
-export const addSelectedValueToFilter = (filterType, filterValue) => ({
-  type: ADD_SHAPE,
-  payload: {filterType, filterValue}
-})
-
-export const removeSelectedValueToFilter = (filterType, filterValue) => ({
-  type: RESET_SHAPE,
-  payload: {filterType, filterValue}
+export const addSelectedValueToFilter = (action, filterValue) => ({
+  type: action,
+  payload: {action, filterValue}
 })
 
 export function updateFilter(filterType, filterValue) {
   return async dispatch => {
-    if (filterValue === ShapesEnum.ALL) {
-      dispatch(removeSelectedValueToFilter(filterType, filterValue));
-    } else {
-      dispatch(addSelectedValueToFilter(filterType, filterValue));
-    }
+    dispatch(addSelectedValueToFilter(filterType, filterValue));
   }
 }
 

@@ -1,12 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { fetchGuitarsByFilter, updateFilter } from '../actions/filtersActions'
+import { fetchGuitarsByFilter, updateFilter, ADD_SHAPE, RESET_SHAPE } from '../actions/filtersActions'
 import ShapesEnum from '../shapes-enum';
 import FilterTypes from '../filter-types';
 
-function Shapes({dispatch, filters}) {
+function Shapes({dispatch}) {
   const shapeClick = (shape) => {
-    dispatch(updateFilter(FilterTypes.SHAPE, shape));
+    if (shape === ShapesEnum.ALL) { 
+      dispatch(updateFilter(RESET_SHAPE, shape));
+    } else {
+      dispatch(updateFilter(ADD_SHAPE, shape));
+    }
   }
 
   return (

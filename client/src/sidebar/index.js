@@ -1,30 +1,38 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import {uniqBy} from 'lodash'
 import Colour from './colour';
 import Shapes from './shapes';
-import ShapesEnum from '../shapes-enum';
 
-function SideBar({guitars}) {
+import { fetchGuitarsByFilter, updateFilter } from '../actions/filtersActions'
+import FilterTypes from '../filter-types';
 
-  const brands = uniqBy(guitars, 'brand').map((guitar) =>
+function SideBar({dispatch, guitarList}) {
+  const brands = uniqBy(guitarList, 'brand').map((guitar) =>
     <option key={guitar._id} value={guitar.brand}>{guitar.brand}</option>
   );
 
-  const pickups = uniqBy(guitars, 'pickups').map((guitar) =>
+  const pickups = uniqBy(guitarList, 'pickups').map((guitar) =>
     <option key={guitar._id} value={guitar.pickups}>{guitar.pickups.toUpperCase()}</option>
   );
 
-  const tremolo = uniqBy(guitars, 'tremolo').map((guitar) =>
+  const tremolo = uniqBy(guitarList, 'tremolo').map((guitar) =>
     <option key={guitar._id} value={guitar.tremolo}>{guitar.tremolo}</option>
   );
 
-  const fretboard = uniqBy(guitars, 'fretboard').map((guitar) =>
+  const fretboard = uniqBy(guitarList, 'fretboard').map((guitar) =>
     <option key={guitar._id} value={guitar.fretboard}>{guitar.fretboard}</option>
   );
 
-  const colours = uniqBy(guitars, 'colour').map((guitar) =>
+  const colours = uniqBy(guitarList, 'colour').map((guitar) =>
     <Colour id={guitar._id} bgColour={guitar.colour}/>
   );
+
+  const selectClick = (e) => {
+    const type = e.target.name;
+    const value = e.target.value;
+    dispatch(updateFilter(type, value));
+  }
 
   return (
     <div className="sidebar">
@@ -35,7 +43,7 @@ function SideBar({guitars}) {
           
           <div className="form__group">
             <label className="form__label" htmlFor="brand">Brand</label>
-            <select className="form__select" name="brand">
+            <select className="form__select" name="brand" onChange={(e) => selectClick(e)}>
               <option>All</option>
               {brands}
             </select>
@@ -78,4 +86,8 @@ function SideBar({guitars}) {
   );
 }
 
-export default SideBar;
+const mapStateToProps = state => ({
+  guitarList: state.guitars.guitars
+})
+
+export default connect(mapStateToProps)(SideBar)

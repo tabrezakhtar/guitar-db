@@ -1,5 +1,6 @@
 const FilterTypes = {
-  SHAPE: 'SHAPE'
+  SHAPE: 'SHAPE',
+  BRAND: 'BRAND'
 }
 
 export default FilterTypes;
