@@ -1,1 +1,3 @@
 # guitar-db
+
+NodeJS, React
