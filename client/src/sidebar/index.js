@@ -4,10 +4,27 @@ import {startCase} from 'lodash'
 import Colour from './colour';
 import Shapes from './shapes';
 
-import { updateFilter, ADD_BRAND, ADD_PICKUPS, ADD_FRETBOARD, ADD_TREMOLO, RESET_FILTER } from '../actions/filtersActions'
+import { updateFilter, ADD_BRAND, ADD_PICKUPS, ADD_FRETBOARD, ADD_TREMOLO, RESET_FILTER, ADD_COLOUR, REMOVE_COLOUR } from '../actions/filtersActions'
 import FilterTypes from '../filter-types';
 
 function SideBar({dispatch, settings}) {
+
+  const selectClick = (action, filterType, value) => {
+    if (value === FilterTypes.ALL) {
+      dispatch(updateFilter(RESET_FILTER, filterType));
+    } else {
+      dispatch(updateFilter(action, value));
+    }
+  }
+
+  function colourClick(colour, status) {
+    if (status) {
+      dispatch(updateFilter(ADD_COLOUR, colour));
+    } else {
+      dispatch(updateFilter(REMOVE_COLOUR, colour));
+    }
+  }
+
   const brands = [...settings.brand].sort().map((brand, i) =>
     <option key={i} value={brand}>{startCase(brand)}</option>
   );
@@ -25,16 +42,8 @@ function SideBar({dispatch, settings}) {
   );
 
   const colours = [...settings.colours].sort().map((colour, i) =>
-    <Colour id={i} bgColour={colour}/>
+    <Colour id={i} bgColour={colour} onColourSelected={colourClick}/>
   );
-
-  const selectClick = (action, filterType, value) => {
-    if (value === FilterTypes.ALL) {
-      dispatch(updateFilter(RESET_FILTER, filterType));
-    } else {
-      dispatch(updateFilter(action, value));
-    }
-  }
 
   return (
     <div className="sidebar">

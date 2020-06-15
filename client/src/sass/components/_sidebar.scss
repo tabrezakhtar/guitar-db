@@ -9,7 +9,8 @@
   background-image: url('/guitar-bg.svg');
   background-size: contain;
   background-repeat: no-repeat;
-
+  background-position: center;
+  
   @media (max-width: 550px) {
     flex: 1 0 calc(10rem);
   }

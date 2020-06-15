@@ -1,10 +1,11 @@
 import React, {useState} from 'react';
 
-function Colour({id, bgColour, checked}) {
-  const [toggle, setToggle] = useState(checked)
+function Colour({id, bgColour, onColourSelected, checked}) {
+  const [toggle, setToggle] = useState(checked);
 
   function toggleImage() {
     setToggle(!toggle);
+    onColourSelected(bgColour, !toggle);
   }
 
   let hideImage = '';
@@ -19,5 +20,5 @@ function Colour({id, bgColour, checked}) {
     </label>
   </div>
 }
- 
+
 export default Colour;
