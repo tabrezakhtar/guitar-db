@@ -20,24 +20,33 @@ function App({dispatch, guitarList, filters, loading, hasErrors}) {
     }
   }, [dispatch, filters])
 
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
+  const [image, setImage] = useState();
 
-  const images = [
-    {
-      original: 'images/strat1.jpeg',
-      thumbnail: 'images/strat1.jpeg',
-    },
-    {
-      original: 'images/strat2.jpeg',
-      thumbnail: 'images/strat2.jpeg',
-    },
-    {
-      original: 'images/strat3.jpeg',
-      thumbnail: 'images/strat3.jpeg',
-    },
-  ];
+  const onOpenModal = (imageUrl) => {
+    setImage([
+      {
+        original: imageUrl,
+        thumbnail: imageUrl,
+      },
+      {
+        original: 'images/strat1.jpeg',
+        thumbnail: 'images/strat1.jpeg',
+      },
+      {
+        original: 'images/strat2.jpeg',
+        thumbnail: 'images/strat2.jpeg',
+      },
+      {
+        original: 'images/strat3.jpeg',
+        thumbnail: 'images/strat3.jpeg',
+      },
+      {
+        original: 'images/strat4.jpeg',
+        thumbnail: 'images/strat4.jpeg',
+      },
+    ]);
 
-  const onOpenModal = () => {
     setOpen(true);
   };
 
@@ -80,7 +89,7 @@ function App({dispatch, guitarList, filters, loading, hasErrors}) {
         <div className="popup">
           <div className="popup__content">
             <div className="popup__left">
-              <ImageGallery items={images} showFullscreenButton={false} showPlayButton={false}/>
+              <ImageGallery items={image} showFullscreenButton={false} showPlayButton={false}/>
             </div>
             <div className="popup__right">
               Alder body with gloss finish

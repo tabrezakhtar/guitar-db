@@ -11,7 +11,7 @@ function Tiles({guitars, onOpenModal, loading}) {
   }
 
   const list = guitars.map(guitar => 
-    <li className="tile" onClick={onOpenModal}>
+    <li className="tile" onClick={() => onOpenModal(`/images/${guitar.filename}`)}>
       <span className="like">📌</span>
       <img src={`/images/${guitar.filename}`} alt={`${guitar.brand} ${guitar.name} image`}/>
       <span className="title">{guitar.brand + ' ' + guitar.name}</span>
