@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter, NavLink, withRouter } from 'react-router-dom'
+import { BrowserRouter, NavLink, withRouter, Route, Switch } from 'react-router-dom'
 import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 import { fetchGuitars } from './actions/guitarsActions'
@@ -9,6 +9,7 @@ import 'react-responsive-modal/styles.css';
 import { Modal } from 'react-responsive-modal';
 import SideBar from './sidebar';
 import Tiles from './rhs';
+import About from './about';
 
 function App({dispatch, guitarList, filters, loading, hasErrors}) {
   useEffect(() => {
@@ -53,7 +54,7 @@ function App({dispatch, guitarList, filters, loading, hasErrors}) {
 
         <ul className="header__menu">
           <li className="menu__item"><NavLink exact activeClassName="header__menu-active" to="/">Home</NavLink></li>
-          <li className="menu__item"><NavLink exact activeClassName="header__menu-active" to="/likes">Likes</NavLink></li>
+          {/* <li className="menu__item"><NavLink exact activeClassName="header__menu-active" to="/likes">Likes</NavLink></li> */}
           <li className="menu__item"><NavLink exact activeClassName="header__menu-active"to="/about">About</NavLink></li>
         </ul>
             
@@ -64,7 +65,14 @@ function App({dispatch, guitarList, filters, loading, hasErrors}) {
         <SideBar />
 
         <div className="rhs">
-          <Tiles guitars={guitarList} onOpenModal={onOpenModal} loading={loading}/>
+        <Switch>
+          <Route exact path='/'>
+            <Tiles guitars={guitarList} onOpenModal={onOpenModal} loading={loading}/>
+          </Route>
+          
+          <Route exact path='/about' component={About}/>
+        </Switch>
+          
         </div>
       </div>
 
