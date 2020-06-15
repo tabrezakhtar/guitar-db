@@ -27,7 +27,16 @@
   }
 
   &__right {
+    align-self: center;
     
+    ul {
+      padding: 1rem;
+      list-style-type: disc !important;
+      margin-left: 1rem;
+      li {
+        padding: 1rem;
+      }
+    }
   }
 
   &__img {

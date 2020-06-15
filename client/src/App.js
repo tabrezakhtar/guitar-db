@@ -92,11 +92,14 @@ function App({dispatch, guitarList, filters, loading, hasErrors}) {
               <ImageGallery items={image} showFullscreenButton={false} showPlayButton={false}/>
             </div>
             <div className="popup__right">
-              Alder body with gloss finish
-              Three Player Series single-coil Stratocaster pickups
-              “Modern C"-shaped neck profile
-              9.5"-radius fingerboard
-              2-point tremolo bridge with bent-steel saddles
+              <h3>Specs</h3>
+              <ul>
+                <li>Alder body with gloss finish</li>
+                <li>Three Player Series single-coil Stratocaster pickups</li>
+                <li>Modern C-shaped neck profile</li>
+                <li>9.5"-radius fingerboard</li>
+                <li>2-point tremolo bridge with bent-steel saddles</li>
+              </ul>
             </div>
           </div>
         </div>
