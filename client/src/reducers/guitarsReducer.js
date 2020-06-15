@@ -5,7 +5,14 @@ import produce from 'immer';
 export const initialState = {
   loading: false,
   hasErrors: false,
-  guitars: []
+  guitars: [],
+  settings: {
+    brand: [],
+    colours: [],
+    pickups: [],
+    tremolo: [],
+    fretboard: []
+  }
 }
 
 export default function guitarsReducer(state = initialState, action) {
@@ -18,7 +25,8 @@ export default function guitarsReducer(state = initialState, action) {
         return draft;
       }
       case actions.GET_GUITARS_SUCCESS: {
-        draft.guitars = action.payload;
+        draft.guitars = action.payload.guitars;
+        draft.settings = action.payload.settings;
         draft.loading = false;
         draft.hasErrors = false;
         return draft;

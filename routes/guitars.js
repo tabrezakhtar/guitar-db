@@ -3,25 +3,30 @@ const router = express.Router()
 const Guitar = require('../models/guitar')
 const queryBuilder = require('../query-builder.js');
 
+async function getSettings() {
+  const settings = await Guitar.aggregate(
+    [
+      {
+        $group:
+          {
+            _id: 1,
+            brand: { $addToSet: "$brand" },
+            colours: { $addToSet: "$colour" },
+            pickups: { $addToSet: "$pickups" },
+            tremolo: { $addToSet: "$tremolo" },
+            fretboard: { $addToSet: "$fretboard" }
+          }
+      }
+    ]
+ )
+
+ return settings[0];
+}
+
 router.get('/', async (req, res) => {
   try {
     const guitars = await Guitar.find();
-    const settings = await Guitar.aggregate(
-      [
-        {
-          $group:
-            {
-              _id: 1,
-              brand: { $addToSet: "$brand" },
-              colours: { $addToSet: "$colour" },
-              pickups: { $addToSet: "$pickups" },
-              tremolo: { $addToSet: "$tremolo" },
-              fretboard: { $addToSet: "$fretboard" }
-            }
-        }
-      ]
-   )
-
+    const settings = await getSettings();
     res.status(200).send({ guitars, settings });
   } catch (err) {
     res.status(500).json({ message: err.message })
@@ -36,8 +41,9 @@ router.get('/filterBy', async (req, res) => {
   }
 
   try {
-    const guitar = await Guitar.find(filter);
-    res.json(guitar)
+    const guitars = await Guitar.find(filter);
+    const settings = await getSettings();
+    res.status(200).send({ guitars, settings });
   } catch (err) {
     res.status(500).json({ message: err.message })
   }

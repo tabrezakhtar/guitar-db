@@ -1,31 +1,32 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import {uniqBy} from 'lodash'
+import {sortBy} from 'lodash'
 import Colour from './colour';
 import Shapes from './shapes';
 
 import { fetchGuitarsByFilter, updateFilter, ADD_BRAND } from '../actions/filtersActions'
 import FilterTypes from '../filter-types';
 
-function SideBar({dispatch, guitarList}) {
-  const brands = uniqBy(guitarList, 'brand').map((guitar) =>
-    <option key={guitar._id} value={guitar.brand}>{guitar.brand}</option>
+function SideBar({dispatch, settings}) {
+  const brands = settings.brand.map((brand, i) =>
+    <option key={i} value={brand}>{brand}</option>
   );
 
-  const pickups = uniqBy(guitarList, 'pickups').map((guitar) =>
-    <option key={guitar._id} value={guitar.pickups}>{guitar.pickups.toUpperCase()}</option>
+  const pickups = settings.pickups.map((pickups, i) =>
+    <option key={i} value={pickups}>{pickups.toUpperCase()}</option>
   );
 
-  const tremolo = uniqBy(guitarList, 'tremolo').map((guitar) =>
-    <option key={guitar._id} value={guitar.tremolo}>{guitar.tremolo}</option>
+  const tremolo = settings.tremolo.map((tremolo, i) =>
+    <option key={i} value={tremolo}>{tremolo}</option>
   );
 
-  const fretboard = uniqBy(guitarList, 'fretboard').map((guitar) =>
-    <option key={guitar._id} value={guitar.fretboard}>{guitar.fretboard}</option>
+  const fretboard = settings.fretboard.map((fretboard, i) =>
+    <option key={i} value={fretboard}>{fretboard}</option>
   );
 
-  const colours = uniqBy(guitarList, 'colour').map((guitar) =>
-    <Colour id={guitar._id} bgColour={guitar.colour}/>
+  const sortedColors = [...settings.colours].sort()
+  const colours = sortedColors.map((colour, i) =>
+    <Colour id={i} bgColour={colour}/>
   );
 
   const selectClick = (type, e) => {
@@ -86,7 +87,7 @@ function SideBar({dispatch, guitarList}) {
 }
 
 const mapStateToProps = state => ({
-  guitarList: state.guitars.guitars
+  settings: state.guitars.settings
 })
 
 export default connect(mapStateToProps)(SideBar)
