@@ -8,6 +8,9 @@ import ShapesEnum from '../shapes-enum';
 export const ADD_SHAPE = 'ADD_SHAPE'
 export const RESET_SHAPE = 'RESET_SHAPE'
 export const ADD_BRAND = 'ADD_BRAND'
+export const ADD_PICKUPS = 'ADD_PICKUPS'
+export const ADD_TREMOLO = 'ADD_TREMOLO'
+export const ADD_FRETBOARD = 'ADD_FRETBOARD'
 
 export const addSelectedValueToFilter = (action, filterValue) => ({
   type: action,

@@ -1,31 +1,30 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import {sortBy} from 'lodash'
+import {sortBy, startCase} from 'lodash'
 import Colour from './colour';
 import Shapes from './shapes';
 
-import { fetchGuitarsByFilter, updateFilter, ADD_BRAND } from '../actions/filtersActions'
+import { fetchGuitarsByFilter, updateFilter, ADD_BRAND, ADD_PICKUPS, ADD_FRETBOARD, ADD_TREMOLO } from '../actions/filtersActions'
 import FilterTypes from '../filter-types';
 
 function SideBar({dispatch, settings}) {
-  const brands = settings.brand.map((brand, i) =>
-    <option key={i} value={brand}>{brand}</option>
+  const brands = [...settings.brand].sort().map((brand, i) =>
+    <option key={i} value={brand}>{startCase(brand)}</option>
   );
 
-  const pickups = settings.pickups.map((pickups, i) =>
+  const pickups = [...settings.pickups].sort().map((pickups, i) =>
     <option key={i} value={pickups}>{pickups.toUpperCase()}</option>
   );
 
-  const tremolo = settings.tremolo.map((tremolo, i) =>
-    <option key={i} value={tremolo}>{tremolo}</option>
+  const tremolo = [...settings.tremolo].sort().map((tremolo, i) =>
+    <option key={i} value={tremolo}>{startCase(tremolo)}</option>
   );
 
-  const fretboard = settings.fretboard.map((fretboard, i) =>
-    <option key={i} value={fretboard}>{fretboard}</option>
+  const fretboard = [...settings.fretboard].sort().map((fretboard, i) =>
+    <option key={i} value={fretboard}>{startCase(fretboard)}</option>
   );
 
-  const sortedColors = [...settings.colours].sort()
-  const colours = sortedColors.map((colour, i) =>
+  const colours = [...settings.colours].sort().map((colour, i) =>
     <Colour id={i} bgColour={colour}/>
   );
 
@@ -51,7 +50,7 @@ function SideBar({dispatch, settings}) {
 
           <div className="form__group">
             <label className="form__label" htmlFor="pickups">Pickups</label>
-            <select className="form__select" name="pickups">
+            <select className="form__select" name="pickups" onChange={(e) => selectClick(ADD_PICKUPS, e)}>
             <option>All</option>
               {pickups}
             </select>
@@ -59,7 +58,7 @@ function SideBar({dispatch, settings}) {
 
           <div className="form__group">
             <label className="form__label" htmlFor="tremolo">Tremolo</label>
-            <select className="form__select" name="tremolo">
+            <select className="form__select" name="tremolo" onChange={(e) => selectClick(ADD_TREMOLO, e)}>
             <option>All</option>
               {tremolo}
             </select>
@@ -67,7 +66,7 @@ function SideBar({dispatch, settings}) {
 
           <div className="form__group">
             <label className="form__label" htmlFor="fretboard">Fretboard</label>
-            <select className="form__select" name="fretboard">
+            <select className="form__select" name="fretboard" onChange={(e) => selectClick(ADD_FRETBOARD, e)}>
             <option>All</option>
               {fretboard}
             </select>

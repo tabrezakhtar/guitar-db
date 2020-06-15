@@ -18,6 +18,15 @@ export default function filtersReducer(state = initialState, action) {
       case actions.ADD_BRAND:
         draft.brand = action.payload.filterValue;
         return draft;
+      case actions.ADD_PICKUPS:
+        draft.pickups = action.payload.filterValue;
+        return draft;
+      case actions.ADD_TREMOLO:
+        draft.tremolo = action.payload.filterValue;
+        return draft;
+      case actions.ADD_FRETBOARD:
+        draft.fretboard = action.payload.filterValue;
+        return draft;
       default:
         return state
     }
