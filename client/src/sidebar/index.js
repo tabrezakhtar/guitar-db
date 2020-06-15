@@ -4,7 +4,7 @@ import {uniqBy} from 'lodash'
 import Colour from './colour';
 import Shapes from './shapes';
 
-import { fetchGuitarsByFilter, updateFilter } from '../actions/filtersActions'
+import { fetchGuitarsByFilter, updateFilter, ADD_BRAND } from '../actions/filtersActions'
 import FilterTypes from '../filter-types';
 
 function SideBar({dispatch, guitarList}) {
@@ -28,8 +28,7 @@ function SideBar({dispatch, guitarList}) {
     <Colour id={guitar._id} bgColour={guitar.colour}/>
   );
 
-  const selectClick = (e) => {
-    const type = e.target.name;
+  const selectClick = (type, e) => {
     const value = e.target.value;
     dispatch(updateFilter(type, value));
   }
@@ -43,7 +42,7 @@ function SideBar({dispatch, guitarList}) {
           
           <div className="form__group">
             <label className="form__label" htmlFor="brand">Brand</label>
-            <select className="form__select" name="brand" onChange={(e) => selectClick(e)}>
+            <select className="form__select" name="brand" onChange={(e) => selectClick(ADD_BRAND, e)}>
               <option>All</option>
               {brands}
             </select>

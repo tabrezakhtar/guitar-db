@@ -5,8 +5,24 @@ const queryBuilder = require('../query-builder.js');
 
 router.get('/', async (req, res) => {
   try {
-    const guitar = await Guitar.find();
-    res.json(guitar)
+    const guitars = await Guitar.find();
+    const settings = await Guitar.aggregate(
+      [
+        {
+          $group:
+            {
+              _id: 1,
+              brand: { $addToSet: "$brand" },
+              colours: { $addToSet: "$colour" },
+              pickups: { $addToSet: "$pickups" },
+              tremolo: { $addToSet: "$tremolo" },
+              fretboard: { $addToSet: "$fretboard" }
+            }
+        }
+      ]
+   )
+
+    res.status(200).send({ guitars, settings });
   } catch (err) {
     res.status(500).json({ message: err.message })
   }
