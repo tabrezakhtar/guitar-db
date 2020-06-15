@@ -6,7 +6,7 @@ function Tiles({guitars, onOpenModal, loading}) {
 
   if (loading) {
     return <ul className="tile-container">
-      <LoadingTile times={3}/>
+      <LoadingTile times={8}/>
     </ul>;
   }
 
