@@ -1,7 +1,15 @@
 import React from 'react';
 import EmptyTile from './empty-tile';
+import LoadingTile from './loading-tile';
 
-function Tiles({guitars, onOpenModal}) {
+function Tiles({guitars, onOpenModal, loading}) {
+
+  if (loading) {
+    return <ul className="tile-container">
+      <LoadingTile times={4}/>
+    </ul>;
+  }
+
   const list = guitars.map(guitar => 
     <li className="tile" onClick={onOpenModal}>
       <span className="like">📌</span>

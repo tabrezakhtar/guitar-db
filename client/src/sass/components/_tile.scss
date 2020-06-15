@@ -19,6 +19,12 @@
   background-color: $accent-color;
   overflow: hidden;
 
+  &__loading {
+    img {
+      width: 80% !important;
+    }
+  }
+
   .like {
     position: absolute;
     margin-left: 1rem;

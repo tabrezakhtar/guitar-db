@@ -64,7 +64,7 @@ function App({dispatch, guitarList, filters, loading, hasErrors}) {
         <SideBar />
 
         <div className="rhs">
-          <Tiles guitars={guitarList} onOpenModal={onOpenModal}/>
+          <Tiles guitars={guitarList} onOpenModal={onOpenModal} loading={loading}/>
         </div>
       </div>
 
@@ -90,6 +90,7 @@ function App({dispatch, guitarList, filters, loading, hasErrors}) {
 
 const mapStateToProps = state => ({
   guitarList: state.guitars.guitars,
+  loading: state.guitars.loading,
   filters: state.filters
 })
 
