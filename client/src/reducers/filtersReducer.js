@@ -12,8 +12,9 @@ export default function filtersReducer(state = initialState, action) {
       case actions.ADD_SHAPE:
         draft.shape = action.payload.filterValue;
         return draft;
-      case actions.RESET_SHAPE:
-        delete draft.shape;
+      case actions.RESET_FILTER:
+        debugger;
+        delete draft[action.payload.filterValue];
         return draft;
       case actions.ADD_BRAND:
         draft.brand = action.payload.filterValue;

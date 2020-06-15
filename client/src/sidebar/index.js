@@ -1,10 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import {sortBy, startCase} from 'lodash'
+import {startCase} from 'lodash'
 import Colour from './colour';
 import Shapes from './shapes';
 
-import { fetchGuitarsByFilter, updateFilter, ADD_BRAND, ADD_PICKUPS, ADD_FRETBOARD, ADD_TREMOLO } from '../actions/filtersActions'
+import { updateFilter, ADD_BRAND, ADD_PICKUPS, ADD_FRETBOARD, ADD_TREMOLO, RESET_FILTER } from '../actions/filtersActions'
 import FilterTypes from '../filter-types';
 
 function SideBar({dispatch, settings}) {
@@ -28,9 +28,12 @@ function SideBar({dispatch, settings}) {
     <Colour id={i} bgColour={colour}/>
   );
 
-  const selectClick = (type, e) => {
-    const value = e.target.value;
-    dispatch(updateFilter(type, value));
+  const selectClick = (action, filterType, value) => {
+    if (value === FilterTypes.ALL) {
+      dispatch(updateFilter(RESET_FILTER, filterType));
+    } else {
+      dispatch(updateFilter(action, value));
+    }
   }
 
   return (
@@ -42,32 +45,32 @@ function SideBar({dispatch, settings}) {
           
           <div className="form__group">
             <label className="form__label" htmlFor="brand">Brand</label>
-            <select className="form__select" name="brand" onChange={(e) => selectClick(ADD_BRAND, e)}>
-              <option>All</option>
+            <select className="form__select" name="brand" onChange={(e) => selectClick(ADD_BRAND, FilterTypes.BRAND, e.target.value)}>
+              <option value={FilterTypes.ALL}>All</option>
               {brands}
             </select>
           </div>
 
           <div className="form__group">
             <label className="form__label" htmlFor="pickups">Pickups</label>
-            <select className="form__select" name="pickups" onChange={(e) => selectClick(ADD_PICKUPS, e)}>
-            <option>All</option>
+            <select className="form__select" name="pickups" onChange={(e) => selectClick(ADD_PICKUPS, FilterTypes.PICKUPS, e.target.value)}>
+            <option value={FilterTypes.ALL}>All</option>
               {pickups}
             </select>
           </div>
 
           <div className="form__group">
             <label className="form__label" htmlFor="tremolo">Tremolo</label>
-            <select className="form__select" name="tremolo" onChange={(e) => selectClick(ADD_TREMOLO, e)}>
-            <option>All</option>
+            <select className="form__select" name="tremolo" onChange={(e) => selectClick(ADD_TREMOLO, FilterTypes.TREMOLO, e.target.value)}>
+            <option value={FilterTypes.ALL}>All</option>
               {tremolo}
             </select>
           </div>
 
           <div className="form__group">
             <label className="form__label" htmlFor="fretboard">Fretboard</label>
-            <select className="form__select" name="fretboard" onChange={(e) => selectClick(ADD_FRETBOARD, e)}>
-            <option>All</option>
+            <select className="form__select" name="fretboard" onChange={(e) => selectClick(ADD_FRETBOARD, FilterTypes.FRETBOARD, e.target.value)}>
+            <option value={FilterTypes.ALL}>All</option>
               {fretboard}
             </select>
           </div>
