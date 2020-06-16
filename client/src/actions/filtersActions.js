@@ -3,8 +3,6 @@ import {
   getGuitarsSuccess,
   getGuitarsFailure } from './guitarsActions';
 
-import ShapesEnum from '../shapes-enum';
-
 export const ADD_SHAPE = 'ADD_SHAPE'
 export const RESET_FILTER = 'RESET_FILTER'
 export const ADD_BRAND = 'ADD_BRAND'

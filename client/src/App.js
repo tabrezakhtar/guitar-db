@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter, NavLink, withRouter, Route, Switch } from 'react-router-dom'
+import { BrowserRouter, NavLink, Route, Switch } from 'react-router-dom'
 import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 import { fetchGuitars } from './actions/guitarsActions'
@@ -58,7 +58,7 @@ function App({dispatch, guitarList, filters, loading, hasErrors}) {
     <BrowserRouter>
       <header className="header">
         <div className="header__logo-box">
-          <NavLink to='/'><span>Guitar Explorer🔥</span></NavLink>
+          <NavLink to='/'><span>Guitar Explorer<span role="img" aria-label="logo fire">🔥</span></span></NavLink>
         </div>
 
         <ul className="header__menu">
@@ -85,7 +85,7 @@ function App({dispatch, guitarList, filters, loading, hasErrors}) {
         </div>
       </div>
 
-      <Modal open={open} onClose={onCloseModal} center>
+      <Modal open={open} onClose={onCloseModal}>
         <div className="popup">
           <div className="popup__content">
             <div className="popup__left">

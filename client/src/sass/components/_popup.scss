@@ -8,7 +8,11 @@
   }
 
   &__left {
-    flex: 1 0 calc(60%)
+    flex: 1 0 calc(60%);
+
+    @media (max-width: $medium-4) {
+      width: 80%;
+    }
   }
 
   &__right {
@@ -31,5 +35,11 @@
   &__img {
     width: 100%;
     display: block;
+  }
+}
+
+.image-gallery-content .bottom {
+  @media (max-width: $medium-4) {
+    width: 38rem;
   }
 }
