@@ -1,6 +1,9 @@
 .colourContainer {
   display: flex;
   justify-content: center;
+  @media (max-width: $large-2) {
+    flex-wrap: wrap;
+  }
 }
 
 .colour {
@@ -8,6 +11,10 @@
   height: 2.5rem;
   margin-right: 1rem;
   border: 2px solid $accent-color-2;
+  
+  @media (max-width: $large-2) {
+    margin-bottom: 1rem;
+  }
 
   label {
     display: block;

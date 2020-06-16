@@ -1,7 +1,7 @@
 .sidebar {
   display: flex;
   background-color: $primary-color-dark;
-  flex: 0 0 calc(30rem);
+  //flex: 0 0 calc(30rem);
   flex-direction: column;
   min-height: 100vh;
   color: $primary-text-color-light;
@@ -10,9 +10,9 @@
   background-size: contain;
   background-repeat: no-repeat;
   background-position: top;
-  
-  @media (max-width: 550px) {
-    flex: 1 0 calc(10rem);
+
+  @media (max-width: $large-2) {
+    width: 20rem;
   }
 
   &__item {
@@ -33,6 +33,10 @@
   &__shapes {
     padding: 2rem;
     display: flex;
+
+    @media (max-width: $large-2) {
+      flex-wrap: wrap;
+    }
 
     & input[type="radio"] {
       width: 0;
@@ -72,6 +76,11 @@
       text-align: center;
       text-transform: uppercase;
       border-radius: 0.5rem;
+
+      @media (max-width: $large-2) {
+        margin-left: 1rem;
+        margin-right: 0.5rem;
+      }
 
       &:hover {
         text-decoration: underline;

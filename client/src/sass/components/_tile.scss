@@ -19,6 +19,18 @@
   background-color: $accent-color;
   overflow: hidden;
 
+  @media (max-width: $large-1) {
+    flex: 1 1 30%;
+  }
+
+  @media (max-width: $large-2) {
+    flex: 1 1 33%;
+  }
+
+  @media (max-width: $medium-3) {
+    flex: 1 1 50%;
+  }
+
   &__loading {
     img {
       width: 80% !important;
