@@ -1,7 +1,7 @@
 import React from 'react';
 import EmptyTile from './empty-tile';
 import LoadingTile from './loading-tile';
-import {capitalize} from 'lodash'
+import {capitalize, divide} from 'lodash'
 
 function Tiles({guitars, onOpenModal, loading}) {
 
@@ -9,6 +9,10 @@ function Tiles({guitars, onOpenModal, loading}) {
     return <ul className="tile-container">
       <LoadingTile times={8}/>
     </ul>;
+  }
+
+  if (!guitars.length) {
+    return <div className="no-results">No results found with your current filter.</div>;
   }
 
   const list = guitars.map(guitar => 

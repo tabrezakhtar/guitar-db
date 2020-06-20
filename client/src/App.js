@@ -15,7 +15,7 @@ function App({dispatch, guitarList, filters, loading, hasErrors}) {
   useEffect(() => {
     if (isEmpty(filters)) {
       dispatch(fetchGuitars())
-    } else {      
+    } else {
       dispatch(fetchGuitarsByFilter(filters))
     }
   }, [dispatch, filters])
