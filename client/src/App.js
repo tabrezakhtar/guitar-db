@@ -10,6 +10,8 @@ import { Modal } from 'react-responsive-modal';
 import SideBar from './sidebar';
 import Tiles from './rhs';
 import About from './about';
+import Menu from './menu';
+import Hamburger from './menu/hamburger.js';
 
 function App({dispatch, guitarList, filters, loading, hasErrors}) {
   useEffect(() => {
@@ -61,12 +63,9 @@ function App({dispatch, guitarList, filters, loading, hasErrors}) {
           <NavLink to='/'><span>Guitar Explorer<span role="img" aria-label="logo fire">🔥</span></span></NavLink>
         </div>
 
-        <ul className="header__menu">
-          <li className="menu__item"><NavLink exact activeClassName="header__menu-active" to="/">Home</NavLink></li>
-          {/* <li className="menu__item"><NavLink exact activeClassName="header__menu-active" to="/likes">Likes</NavLink></li> */}
-          <li className="menu__item"><NavLink exact activeClassName="header__menu-active"to="/about">About</NavLink></li>
-        </ul>
-            
+        <Hamburger />
+        <Menu />
+
       </header>
 
       <div className="container">

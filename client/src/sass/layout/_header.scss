@@ -7,17 +7,12 @@
   color: $primary-color-dark;
   font-size: 2rem;
   font-weight: bold;
-  // background-image: url('/header.png');
 
-  @media (max-width: $small-3) {
-    display: block;
+  &__logo {
+    padding: 1rem 2rem;
+    width: 2rem;
+    height: 2rem;
   }
-
-  // &__logo {
-  //   padding: 1rem 1rem;
-  //   width: 2rem;
-  //   height: 2rem;
-  // }
 
   a {
     text-decoration: none;
@@ -27,10 +22,6 @@
 
     span {
       align-self: center;
-    }
-
-    @media (max-width: $small-3) {
-      padding: 0.8rem;
     }
   }
 
@@ -47,52 +38,52 @@
     align-items: stretch;
     padding-right: 2rem;
 
-    @media (max-width: $small-3) {
-      display: block;
+
+    @media (max-width: $medium-4) {
       transform: none;
-      padding-right: 0;
-      font-size: 1.5rem;
+      display: none;
+      width: 100%;
+      padding: 0;
+      margin: 0;
     }
 
-    .menu__item {
-      // &:hover {
-      //   background-color: $accent-color;
-      // }
+    @media (min-width: $medium-4) {
+      display: flex !important;
     }
 
     .menu__item a {
       &:link,
       &:visited {
-        // text-decoration: none;
+        text-decoration: none;
         cursor: pointer;
-        // color: inherit;
+        color: inherit;
         display: flex;
         align-items: center;
         height: 100%;
-        padding-left: 1rem;
-        padding-right: 1rem;
+        padding: 1rem 1rem 1rem 2rem;
       }
       &:hover {
         background-color: #5a97fa;
         color: $primary-text-color-light;
-      }
 
-      @media (max-width: $small-3) {
-        padding: 0.8rem;
       }
     }
 
     &-active {
       background-color: #5a97fa;
       color: $primary-text-color-light !important;
-    }
-
-    & > * {
-      //padding: 1rem;
-    }
-
-    @media (max-width: 550px) {
-      // display: none;
+      padding: 1rem 1rem 1rem 2rem;
     }
   }
+
+  .hamburger {
+    display: none;
+    @media (max-width: $medium-4) {
+      display: block;
+    }
+  }
+}
+
+.showMenu {
+  display: block;
 }
