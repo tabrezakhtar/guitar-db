@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node server.js",
     "start-dev": "PORT=5000 nodemon server.js",
-    "heroku-postbuild": "cd client && npm install && npm run build"
+    "heroku-postbuild": "cd client && npm install && npm run build",
+    "test": "jest"
   },
   "engines": {
     "node": "14.1.x"
@@ -19,5 +20,12 @@
     "jade": "~1.11.0",
     "mongoose": "^5.9.15",
     "morgan": "~1.9.1"
+  },
+  "devDependencies": {
+    "jest": "^26.1.0"
+  },
+  "jest": {
+    "verbose": true,
+    "modulePathIgnorePatterns": ["client"]
   }
 }
