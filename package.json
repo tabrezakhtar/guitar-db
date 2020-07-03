@@ -22,10 +22,14 @@
     "morgan": "~1.9.1"
   },
   "devDependencies": {
-    "jest": "^26.1.0"
+    "jest": "^26.1.0",
+    "mockingoose": "^2.13.2",
+    "node-mocks-http": "^1.8.1"
   },
   "jest": {
     "verbose": true,
-    "modulePathIgnorePatterns": ["client"]
+    "modulePathIgnorePatterns": [
+      "client"
+    ]
   }
 }
