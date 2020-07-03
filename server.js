@@ -1,5 +1,5 @@
 const express = require('express')
-const app = express()
+const app = express();
 const path = require('path');
 const compression = require('compression');
 const port = process.env.PORT || 5000;
@@ -19,14 +19,8 @@ const db = mongoose.connection
 db.on('error', (error) => console.error(error))
 db.once('open', () => console.log('Connected to database.'))
 
-const guitarsRouter = require('./routes/guitars')
-app.use('/api/guitars', guitarsRouter)
-
-// app.get('/api/test', async (req, res) => {
-//   //res.send(process.env.testKey)
-//   //const result = await guitarsCollection.findOne({ name: nameOfListing });
-//   res.send(result);
-// });
+const guitarsRouter = require('./routes');
+app.use('/api/guitars', guitarsRouter);
 
 const root = path.join(__dirname, './client', 'build')
 app.use(express.static(root));
