@@ -23,13 +23,14 @@
   },
   "devDependencies": {
     "jest": "^26.1.0",
-    "mockingoose": "^2.13.2",
-    "node-mocks-http": "^1.8.1"
+    "sinon": "^9.0.2",
+    "supertest": "^4.0.2"
   },
   "jest": {
     "verbose": true,
     "modulePathIgnorePatterns": [
       "client"
-    ]
+    ],
+    "testEnvironment": "node"
   }
 }

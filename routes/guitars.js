@@ -27,7 +27,7 @@ async function getGuitars(req, res) {
     const settings = await getSettings();
     res.status(200).send({ guitars, settings });
   } catch (err) {
-    res.status(500).json({ message: err.message })
+    res.status(500).json({ message: err })
   }
 }
 
