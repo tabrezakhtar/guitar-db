@@ -1,4 +1,4 @@
-const queryBuilder = require('./query-builder.js');
+const {queryBuilder} = require('./query-builder.js');
 describe('query builder tests', () => {
   
   test('when a shape query is sent', () => {

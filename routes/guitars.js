@@ -1,5 +1,5 @@
 const Guitar = require('../models/guitar')
-const queryBuilder = require('../query-builder.js');
+const {queryBuilder} = require('../query-builder.js');
 
 async function getSettings() {
   const settings = await Guitar.aggregate(

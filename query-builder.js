@@ -14,4 +14,4 @@ function queryBuilder(params) {
   return mongoQuery;
 }
 
-module.exports = queryBuilder;
+module.exports = {queryBuilder};
