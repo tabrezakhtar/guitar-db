@@ -3,7 +3,6 @@ const sinon = require('sinon');
 const mocks = require('node-mocks-http');
 
 const guitarRoute = require('./guitars');
-const queryBuilderModule = require('../query-builder.js');
 
 const guitars = [
   {
