@@ -3,7 +3,12 @@ import { shallow } from 'enzyme';
 import Shapes from './shapes';
 import ShapesEnum from '../shapes-enum';
 import FilterTypes from '../filter-types';
-import { updateFilter, RESET_FILTER } from '../actions/filtersActions'
+import * as filterActions from '../actions/filtersActions';
+import {updateFilter} from "../actions/filtersActions";
+
+afterEach( () => {
+  jest.restoreAllMocks()
+});
 
 describe('when the component is loads', () => {
   test('it renders the guitar shapes', () => {
@@ -50,20 +55,46 @@ describe('when the component is loads', () => {
 describe('when the shapes are clicked', () => {
   test('the ALL button is clicked', () => {
     const dispatchStub = jest.fn();
+    const updateFilterSpy = jest.spyOn(filterActions, 'updateFilter');
     const wrapper = shallow(<Shapes.WrappedComponent dispatch={dispatchStub}/>);
     wrapper.find('#radioAll').simulate('click');
-    expect(dispatchStub).toBeCalledWith(updateFilter(RESET_FILTER, FilterTypes.SHAPE));
+    expect(dispatchStub).toBeCalledWith(expect.any(Function));
+    expect(updateFilterSpy).toBeCalledWith(filterActions.RESET_FILTER, FilterTypes.SHAPE);
   });
 
   test('the SINGLE CUT button is clicked', () => {
+    const dispatchStub = jest.fn();
+    const updateFilterSpy = jest.spyOn(filterActions, 'updateFilter');
+    const wrapper = shallow(<Shapes.WrappedComponent dispatch={dispatchStub}/>);
+    wrapper.find('#radioSingleCut').simulate('click');
+    expect(dispatchStub).toBeCalledWith(expect.any(Function));
+    expect(updateFilterSpy).toBeCalledWith(filterActions.ADD_SHAPE, ShapesEnum.SINGLE_CUT);
   });
 
   test('the STYPE button is clicked', () => {
+    const dispatchStub = jest.fn();
+    const updateFilterSpy = jest.spyOn(filterActions, 'updateFilter');
+    const wrapper = shallow(<Shapes.WrappedComponent dispatch={dispatchStub}/>);
+    wrapper.find('#radioSType').simulate('click');
+    expect(dispatchStub).toBeCalledWith(expect.any(Function));
+    expect(updateFilterSpy).toBeCalledWith(filterActions.ADD_SHAPE, ShapesEnum.S_TYPE);
   });
 
   test('the TTYPE button is clicked', () => {
+    const dispatchStub = jest.fn();
+    const updateFilterSpy = jest.spyOn(filterActions, 'updateFilter');
+    const wrapper = shallow(<Shapes.WrappedComponent dispatch={dispatchStub}/>);
+    wrapper.find('#radioTType').simulate('click');
+    expect(dispatchStub).toBeCalledWith(expect.any(Function));
+    expect(updateFilterSpy).toBeCalledWith(filterActions.ADD_SHAPE, ShapesEnum.T_TYPE);
   });
 
   test('the VTYPE button is clicked', () => {
+    const dispatchStub = jest.fn();
+    const updateFilterSpy = jest.spyOn(filterActions, 'updateFilter');
+    const wrapper = shallow(<Shapes.WrappedComponent dispatch={dispatchStub}/>);
+    wrapper.find('#radioVType').simulate('click');
+    expect(dispatchStub).toBeCalledWith(expect.any(Function));
+    expect(updateFilterSpy).toBeCalledWith(filterActions.ADD_SHAPE, ShapesEnum.V_TYPE);
   });
 });

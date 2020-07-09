@@ -38,6 +38,5 @@ describe('when the component is clicked', () => {
     const wrapper = shallow(<Colour id="testId" bgColour="red" onColourSelected={colourSelectedStub}/>);
     wrapper.find('#testId').simulate('change');
     expect(colourSelectedStub).toBeCalledWith('red', true);
-
   });
 });

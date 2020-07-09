@@ -11,7 +11,7 @@ function Shapes({dispatch}) {
     } else {
       dispatch(updateFilter(ADD_SHAPE, shape));
     }
-  }
+  };
 
   return (
     <React.Fragment>
