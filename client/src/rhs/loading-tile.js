@@ -3,10 +3,10 @@ import React from 'react';
 function LoadingTile({times}) {
   const list = [...Array(times)].map(() => 
     <li className="tile tile__loading">
-      <span className="like"></span>
+      <span className="like" />
       <img src={'/tail-spin.svg'} alt={'loading...'}/>
-      <span className="title"></span>
-      <span className="description"></span>
+      <span className="title" />
+      <span className="description" />
     </li>
   );
 

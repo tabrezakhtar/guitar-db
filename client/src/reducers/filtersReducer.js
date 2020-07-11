@@ -3,7 +3,7 @@ import * as actions from '../actions/filtersActions';
 import deepFreeze from 'deep-freeze';
 import produce from 'immer';
 
-export const initialState = {}
+export const initialState = {};
 
 export default function filtersReducer(state = initialState, action) {
   deepFreeze(initialState);

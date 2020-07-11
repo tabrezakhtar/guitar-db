@@ -111,7 +111,7 @@ const mapStateToProps = state => ({
   guitarList: state.guitars.guitars,
   loading: state.guitars.loading,
   filters: state.filters
-})
+});
 
 // export default withRouter(connect(mapStateToProps)(App))
 export default connect(mapStateToProps)(App)

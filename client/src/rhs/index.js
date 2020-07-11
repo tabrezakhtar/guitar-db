@@ -22,7 +22,8 @@ function Tiles({guitars, onOpenModal, loading}) {
       <span className="title">{capitalize(guitar.brand) + ' ' + capitalize(guitar.name)}</span>
       <span className="description">{guitar.description}</span>
     </li>
-  )
+  );
+
   return <ul className="tile-container">
     {list}
     <EmptyTile times={4}/>

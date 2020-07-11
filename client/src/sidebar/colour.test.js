@@ -1,11 +1,21 @@
 import React from 'react';
+import renderer from 'react-test-renderer';
 import { shallow } from 'enzyme';
 import Colour from './colour';
+
+describe('snapshot', () => {
+  it('renders correctly', () => {
+    const tree = renderer
+      .create(<Colour id="testId" bgColour="red" />)
+      .toJSON();
+    expect(tree).toMatchSnapshot();
+  });
+});
 
 describe('when the component loads', () => {
   test('displays a colour block', () => {
     const wrapper = shallow(<Colour id="testId" bgColour="red" />);
-  
+
     expect(wrapper.containsMatchingElement(
       <div className="colour red" title="red">
         <label htmlFor="testId">
@@ -20,7 +30,7 @@ describe('when the component loads', () => {
 describe('when the component is toggled', () => {
   test('it hides the tick image', () => {
     const wrapper = shallow(<Colour id="testId" bgColour="red" checked={false}/>);
-  
+
     expect(wrapper.containsMatchingElement(
       <div className="colour red" title="red">
         <label htmlFor="testId">

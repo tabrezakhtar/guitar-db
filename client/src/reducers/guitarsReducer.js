@@ -13,7 +13,7 @@ export const initialState = {
     tremolo: [],
     fretboard: []
   }
-}
+};
 
 export default function guitarsReducer(state = initialState, action) {
   deepFreeze(initialState);

@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import {startCase} from 'lodash'
+import { startCase } from 'lodash'
 import Colour from './colour';
 import Shapes from './shapes';
 
@@ -15,7 +15,7 @@ function SideBar({dispatch, settings}) {
     } else {
       dispatch(updateFilter(action, value));
     }
-  }
+  };
 
   function colourClick(colour, status) {
     if (status) {
@@ -45,6 +45,26 @@ function SideBar({dispatch, settings}) {
     <Colour id={i} bgColour={colour} onColourSelected={colourClick}/>
   );
 
+  const filterSelect = (label, action, filterType, options) =>
+    <div className="form__group">
+    <label className="form__label" htmlFor="brand">{label}</label>
+    <select className="form__select" name="brand" onChange={(e) => selectClick(action, filterType, e.target.value)}>
+      <option value={FilterTypes.ALL}>All</option>
+      {options}
+    </select>
+  </div>;
+
+  const filterSelectValues = [
+    { label: 'Brand', action: ADD_BRAND, filterType: FilterTypes.BRAND, options: brands },
+    { label: 'Pickups', action: ADD_PICKUPS, filterType: FilterTypes.PICKUPS, options: pickups },
+    { label: 'Tremolo', action: ADD_TREMOLO, filterType: FilterTypes.TREMOLO, options: tremolo },
+    { label: 'Fretboard', action: ADD_FRETBOARD, filterType: FilterTypes.FRETBOARD, options: fretboard }
+  ];
+
+  const filterSelectList = filterSelectValues.map(s => {
+    return filterSelect(s.label, s.action, s.filterType, s.options);
+  });
+
   return (
     <div className="sidebar">
       <Shapes />
@@ -52,37 +72,7 @@ function SideBar({dispatch, settings}) {
       <div className="sidebar__filters">
         <div className="form">
           
-          <div className="form__group">
-            <label className="form__label" htmlFor="brand">Brand</label>
-            <select className="form__select" name="brand" onChange={(e) => selectClick(ADD_BRAND, FilterTypes.BRAND, e.target.value)}>
-              <option value={FilterTypes.ALL}>All</option>
-              {brands}
-            </select>
-          </div>
-
-          <div className="form__group">
-            <label className="form__label" htmlFor="pickups">Pickups</label>
-            <select className="form__select" name="pickups" onChange={(e) => selectClick(ADD_PICKUPS, FilterTypes.PICKUPS, e.target.value)}>
-            <option value={FilterTypes.ALL}>All</option>
-              {pickups}
-            </select>
-          </div>
-
-          <div className="form__group">
-            <label className="form__label" htmlFor="tremolo">Tremolo</label>
-            <select className="form__select" name="tremolo" onChange={(e) => selectClick(ADD_TREMOLO, FilterTypes.TREMOLO, e.target.value)}>
-            <option value={FilterTypes.ALL}>All</option>
-              {tremolo}
-            </select>
-          </div>
-
-          <div className="form__group">
-            <label className="form__label" htmlFor="fretboard">Fretboard</label>
-            <select className="form__select" name="fretboard" onChange={(e) => selectClick(ADD_FRETBOARD, FilterTypes.FRETBOARD, e.target.value)}>
-            <option value={FilterTypes.ALL}>All</option>
-              {fretboard}
-            </select>
-          </div>
+          {filterSelectList}
 
           <div className="form__group">
             <label className="form__label">Colour</label>
@@ -99,6 +89,6 @@ function SideBar({dispatch, settings}) {
 
 const mapStateToProps = state => ({
   settings: state.guitars.settings
-})
+});
 
 export default connect(mapStateToProps)(SideBar)

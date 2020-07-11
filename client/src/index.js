@@ -12,7 +12,7 @@ import './sass/main.scss';
 const store = createStore(
   rootReducer,
   applyMiddleware(thunk)
-)
+);
 
 ReactDOM.render(
   <Provider store={store}>

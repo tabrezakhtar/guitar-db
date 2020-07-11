@@ -15,7 +15,7 @@ function Menu({selected}) {
 
 const mapStateToProps = state => ({
   selected: state.selected
-})
+});
 
 export default connect(mapStateToProps)(Menu)
 

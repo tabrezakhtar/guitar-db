@@ -4,6 +4,6 @@ const ShapesEnum = {
   T_TYPE: 'ttype',
   V_TYPE: 'vtype',
   ALL: 'all'
-}
+};
 
 export default ShapesEnum;

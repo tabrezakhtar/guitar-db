@@ -11,7 +11,7 @@ function Hamburger({selected, toggleMenu}) {
   return (
     <button className={'hamburger hamburger--slider' + isSelected} type="button" onClick={burgerClick}>
       <span className="hamburger-box">
-      <span className="hamburger-inner"></span>
+        <span className="hamburger-inner" />
       </span>
     </button>
   )
@@ -19,12 +19,12 @@ function Hamburger({selected, toggleMenu}) {
 
 const mapStateToProps = state => ({
   selected: state.selected
-})
+});
 
 const mapDispatchToProps = dispatch => {
   return {
     toggleMenu: selected => dispatch({type: 'TOGGLE_MENU', payload: selected})
   }
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Hamburger)

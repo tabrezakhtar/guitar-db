@@ -5,6 +5,6 @@ const FilterTypes = {
   TREMOLO: 'tremolo',
   FRETBOARD: 'fretboard',
   ALL: 'all'
-}
+};
 
 export default FilterTypes;

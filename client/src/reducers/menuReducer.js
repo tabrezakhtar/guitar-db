@@ -2,7 +2,7 @@ import deepFreeze from 'deep-freeze';
 
 export const initialState = {
   selected: false
-}
+};
 
 export default function postReducer(state = initialState, action) {
   deepFreeze(initialState);
@@ -12,7 +12,7 @@ export default function postReducer(state = initialState, action) {
       return { 
         ...state,
         selected: action.payload
-      }
+      };
     default:
       return state
   }
