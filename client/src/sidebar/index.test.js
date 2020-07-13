@@ -60,7 +60,7 @@ afterEach( () => {
   jest.restoreAllMocks()
 });
 
-describe.only('when the component loads', () => {
+describe('when the component loads', () => {
   test('it renders the filter options', () => {
     const wrapper = shallow(<SideBar.WrappedComponent settings={settings} />);
     expect(wrapper.containsMatchingElement(
