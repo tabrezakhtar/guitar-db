@@ -18,7 +18,6 @@ export const addSelectedValueToFilter = (action, filterValue) => ({
 });
 
 export function updateFilter(filterType, filterValue) {
-  debugger;
   return async dispatch => {
     dispatch(addSelectedValueToFilter(filterType, filterValue));
   }

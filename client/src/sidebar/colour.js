@@ -15,7 +15,7 @@ function Colour({id, bgColour, onColourSelected, checked}) {
 
   return <div className={'colour ' + bgColour} title={bgColour}>
     <label htmlFor={id}>
-      <input type="checkbox" id={id} name={id} className="visually-hidden" onChange={toggleImage}/>
+      <input type="checkbox" id={id} name={id} className="colourCheckbox visually-hidden" onChange={toggleImage}/>
       <img src="/tick.svg" alt="tick" className={hideImage}/>
     </label>
   </div>

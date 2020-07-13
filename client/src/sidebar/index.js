@@ -47,8 +47,8 @@ function SideBar({dispatch, settings}) {
 
   const filterSelect = (label, action, filterType, options) =>
     <div className="form__group">
-    <label className="form__label" htmlFor="brand">{label}</label>
-    <select className="form__select" name="brand" onChange={(e) => selectClick(action, filterType, e.target.value)}>
+    <label className="form__label" htmlFor={label}>{label}</label>
+    <select className="form__select" name={label} onChange={(e) => selectClick(action, filterType, e.target.value)}>
       <option value={FilterTypes.ALL}>All</option>
       {options}
     </select>

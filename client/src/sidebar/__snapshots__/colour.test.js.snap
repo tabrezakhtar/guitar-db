@@ -9,7 +9,7 @@ exports[`snapshot renders correctly 1`] = `
     htmlFor="testId"
   >
     <input
-      className="visually-hidden"
+      className="colourCheckbox visually-hidden"
       id="testId"
       name="testId"
       onChange={[Function]}

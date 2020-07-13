@@ -19,7 +19,7 @@ describe('when the component loads', () => {
     expect(wrapper.containsMatchingElement(
       <div className="colour red" title="red">
         <label htmlFor="testId">
-          <input type="checkbox" id="testId" name="testId" className="visually-hidden"/>
+          <input type="checkbox" id="testId" name="testId" className="colourCheckbox visually-hidden"/>
           <img src="/tick.svg" alt="tick"/>
         </label>
       </div>
@@ -34,7 +34,7 @@ describe('when the component is toggled', () => {
     expect(wrapper.containsMatchingElement(
       <div className="colour red" title="red">
         <label htmlFor="testId">
-          <input type="checkbox" id="testId" name="testId" className="visually-hidden"/>
+          <input type="checkbox" id="testId" name="testId" className="colourCheckbox visually-hidden"/>
           <img src="/tick.svg" alt="tick" className="hide"/>
         </label>
       </div>
