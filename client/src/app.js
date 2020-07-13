@@ -20,7 +20,7 @@ function App({dispatch, guitarList, filters, loading, hasErrors}) {
     } else {
       dispatch(fetchGuitarsByFilter(filters))
     }
-  }, [dispatch, filters])
+  }, [dispatch, filters]);
 
   const [open, setOpen] = useState(false);
   const [image, setImage] = useState();
