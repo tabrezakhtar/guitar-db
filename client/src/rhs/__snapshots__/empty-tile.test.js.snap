@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`snapshot renders correctly 1`] = `
+Array [
+  <li
+    className="tile empty"
+  />,
+  <li
+    className="tile empty"
+  />,
+  <li
+    className="tile empty"
+  />,
+  <li
+    className="tile empty"
+  />,
+  <li
+    className="tile empty"
+  />,
+]
+`;
