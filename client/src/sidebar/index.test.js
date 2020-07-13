@@ -88,7 +88,7 @@ describe('when a filter component is clicked', () => {
     const dispatchStub = jest.fn();
     const updateFilterSpy = jest.spyOn(filterActions, 'updateFilter');
     const wrapper = shallow(<SideBar.WrappedComponent dispatch={dispatchStub} settings={settings} />);
-    const brandSelect = wrapper.find({ name: 'Brand' }).simulate('change', { target: { value: FilterTypes.ALL }});
+    wrapper.find({ name: 'Brand' }).simulate('change', { target: { value: FilterTypes.ALL }});
     expect(dispatchStub).toBeCalledWith(expect.any(Function));
     expect(updateFilterSpy).toBeCalledWith(filterActions.RESET_FILTER, FilterTypes.BRAND);
   });

@@ -1,0 +1,91 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`snapshot renders correctly 1`] = `
+Array [
+  <li
+    className="tile tile__loading"
+  >
+    <span
+      className="like"
+    />
+    <img
+      alt="loading..."
+      src="/tail-spin.svg"
+    />
+    <span
+      className="title"
+    />
+    <span
+      className="description"
+    />
+  </li>,
+  <li
+    className="tile tile__loading"
+  >
+    <span
+      className="like"
+    />
+    <img
+      alt="loading..."
+      src="/tail-spin.svg"
+    />
+    <span
+      className="title"
+    />
+    <span
+      className="description"
+    />
+  </li>,
+  <li
+    className="tile tile__loading"
+  >
+    <span
+      className="like"
+    />
+    <img
+      alt="loading..."
+      src="/tail-spin.svg"
+    />
+    <span
+      className="title"
+    />
+    <span
+      className="description"
+    />
+  </li>,
+  <li
+    className="tile tile__loading"
+  >
+    <span
+      className="like"
+    />
+    <img
+      alt="loading..."
+      src="/tail-spin.svg"
+    />
+    <span
+      className="title"
+    />
+    <span
+      className="description"
+    />
+  </li>,
+  <li
+    className="tile tile__loading"
+  >
+    <span
+      className="like"
+    />
+    <img
+      alt="loading..."
+      src="/tail-spin.svg"
+    />
+    <span
+      className="title"
+    />
+    <span
+      className="description"
+    />
+  </li>,
+]
+`;
