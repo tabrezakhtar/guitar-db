@@ -19,6 +19,7 @@ Change to the client directory and
 
 `npm start`
 
+
 The client app will run on port 3000.
 
 Open `localhost:3000` to run the app.
