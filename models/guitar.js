@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
 
 const guitarSchema = new mongoose.Schema({
   brand: {
@@ -56,4 +56,4 @@ const guitarSchema = new mongoose.Schema({
   }
 })
 
-module.exports = mongoose.model('Guitar', guitarSchema)
+module.exports = mongoose.model("Guitar", guitarSchema);

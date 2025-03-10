@@ -1,4 +1,4 @@
-const Guitar = require('../models/guitar')
+const Guitar = require("../models/guitar");
 // const {queryBuilder} = require('../query-builder.js');
 
 // async function getSettings() {
@@ -62,4 +62,4 @@ async function getGuitars(req, res) {
 
 // // module.exports = router;
 
-module.exports = {getGuitars};
+module.exports = { getGuitars };
