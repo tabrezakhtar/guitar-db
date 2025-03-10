@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node server.js",
-    "start-dev": "PORT=5000 nodemon server.js",
+    "dev": "PORT=5000 nodemon server.js",
     "heroku-postbuild": "cd client && npm install && npm run build",
     "test": "jest"
   },
@@ -19,13 +19,15 @@
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
     "mongoose": "^5.9.15",
-    "morgan": "~1.9.1",
-    "express-graphql": "^0.11.0",
-    "graphql": "^15.3.0"
+    "morgan": "~1.9.1"
   },
   "devDependencies": {
+    "@eslint/js": "^9.22.0",
+    "eslint": "^9.22.0",
+    "globals": "^16.0.0",
     "jest": "^26.1.0",
     "node-mocks-http": "^1.8.1",
+    "nodemon": "^3.1.9",
     "sinon": "^9.0.2"
   },
   "jest": {
