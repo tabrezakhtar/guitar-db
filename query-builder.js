@@ -5,7 +5,7 @@ function queryBuilder(params) {
 
   for (const key of queryKeys) {
     if (Array.isArray(query[key])) {
-      mongoQuery[key] = {'$in': query[key]}
+      mongoQuery[key] = {"$in": query[key]}
     } else {
       mongoQuery[key] = query[key];
     }

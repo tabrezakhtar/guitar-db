@@ -1,0 +1,8 @@
+{
+  "restartable": "rs",
+  "ignore": ["node_modules/**"],
+  "verbose": true,
+  "events": {
+    "crash": "echo 'App crashed, restarting...'"
+  }
+}
