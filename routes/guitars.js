@@ -47,19 +47,28 @@ async function filterBy(req, res) {
   }
 }
 
-// // router.post('/', async (req, res) => {
-// //   const guitar = new Guitar({
-// //     brand: 'squier'
-// //   })
+async function createGuitar(req, res) {
+  const guitar = new Guitar(req.body);
 
-// //   try {
-// //     const newGuitar = await guitar.save()
-// //     res.status(201).json(newGuitar)
-// //   } catch (err) {
-// //     res.status(400).json({ message: err.message })
-// //   }
-// // })
+  try {
+    const newGuitar = await guitar.save();
+    res.status(201).json(newGuitar);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+}
 
-// // module.exports = router;
+async function updateGuitar(req, res) {
+  try {
+    const updatedGuitar = await Guitar.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updatedGuitar) {
+      return res.status(404).json({ message: "Guitar not found" });
+    }
+    res.status(200).json(updatedGuitar);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+}
 
-module.exports = { getGuitars, filterBy };
+
+module.exports = { getGuitars, filterBy, createGuitar, updateGuitar };
