@@ -21,7 +21,7 @@ async function getSettings() {
  return settings[0];
 }
 
-async function getGuitars(req, res) {
+async function get(req, res) {
   try {
     const guitars = await Guitar.find();
     const settings = await getSettings();
@@ -31,7 +31,7 @@ async function getGuitars(req, res) {
   }
 }
 
-async function filterBy(req, res) {
+async function filter(req, res) {
   let filter = {};
 
   if (req.query.filter) {
@@ -47,7 +47,7 @@ async function filterBy(req, res) {
   }
 }
 
-async function createGuitar(req, res) {
+async function create(req, res) {
   const guitar = new Guitar(req.body);
 
   try {
@@ -58,7 +58,7 @@ async function createGuitar(req, res) {
   }
 }
 
-async function updateGuitar(req, res) {
+async function update(req, res) {
   try {
     const updatedGuitar = await Guitar.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!updatedGuitar) {
@@ -71,4 +71,4 @@ async function updateGuitar(req, res) {
 }
 
 
-module.exports = { getGuitars, filterBy, createGuitar, updateGuitar };
+module.exports = { get, filter, create, update };
