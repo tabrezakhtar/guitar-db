@@ -22,12 +22,17 @@ async function getSettings() {
 }
 
 async function get(req, res) {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+
   try {
-    const guitars = await Guitar.find();
+    const guitars = await Guitar.find().skip(skip).limit(limit);
+    const total = await Guitar.countDocuments();
     const settings = await getSettings();
-    res.status(200).send({ guitars, settings });
+    res.status(200).send({ guitars, settings, total, page, pages: Math.ceil(total / limit) });
   } catch (err) {
-    res.status(500).json({ message: err })
+    res.status(500).json({ message: err.message });
   }
 }
 
