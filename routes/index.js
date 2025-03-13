@@ -1,10 +1,16 @@
 const express = require("express");
 const router = express.Router();
 const guitarRoutes = require("./guitars");
+const userRoutes = require("./users");
 
-router.get("/", guitarRoutes.get);
-router.get("/filterBy", guitarRoutes.filter);
-router.post("/", guitarRoutes.create);
-router.put("/:id", guitarRoutes.update);
+//guitars
+router.get("/guitars/", guitarRoutes.get);
+router.get("/guitars/filterBy", guitarRoutes.filter);
+router.post("/guitars/create", guitarRoutes.create);
+router.put("/guitars/update:id", guitarRoutes.update);
+
+//login
+router.post("/users/login", userRoutes.login);
+router.post("/users/register", userRoutes.register);
 
 module.exports = router;
