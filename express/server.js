@@ -30,7 +30,7 @@ app.use(express.json());
 
 const apiRoutes = require("../routes");
 app.use("/api/", apiRoutes);
-app.use("/.netlify/functions/server/guitars", apiRoutes);
+app.use("/.netlify/functions/guitars", apiRoutes);
 
 // app.use(compression());
 
