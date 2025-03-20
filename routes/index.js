@@ -5,7 +5,7 @@ const userRoutes = require("./users");
 
 //guitars
 router.get("/guitars/", guitarRoutes.get);
-// router.get("/guitars/filterBy", guitarRoutes.filter);
+router.get("/guitars/filterBy", guitarRoutes.filter);
 // router.post("/guitars/create", guitarRoutes.create);
 // router.put("/guitars/update:id", guitarRoutes.update);
 
