@@ -4,6 +4,9 @@ const guitarRoutes = require("./guitars");
 const userRoutes = require("./users");
 
 //guitars
+router.get("/", (req, res) => {
+  res.send("Welcome to the Guitar Database API!");
+});
 router.get("/guitars/", guitarRoutes.get);
 router.get("/guitars/filterBy", guitarRoutes.filter);
 // router.post("/guitars/create", guitarRoutes.create);
