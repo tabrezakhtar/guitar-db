@@ -1,61 +1,91 @@
-// require("dotenv").config();
-// const User = require("../models/user");
-// const bcrypt = require("bcrypt");
-// const jwt = require("jsonwebtoken");
+require("dotenv").config();
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const sqlite3 = require("sqlite3").verbose();
+const db = new sqlite3.Database("./guitar-db.sqlite");
 
-// async function login(req, res) {
-//   if (!req.body) {
-//     return res.status(400).send("No request body provided");
-//   }
+// Ensure the users table exists
+db.run(`
+  CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL
+  )
+`);
 
-//   const { email, password } = req.body;
-//   const jwtSecret = process.env.JWT_SECRET;
+async function login(req, res) {
+  if (!req.body) {
+    return res.status(400).send("No request body provided");
+  }
 
-//   try {
-//     const user = await User.findOne({ email });
-//     if (!user) {
-//       return res.status(400).json({ message: "User not found" });
-//     }
+  const { email, password } = req.body;
+  const jwtSecret = process.env.JWT_SECRET;
 
-//     const isMatch = await bcrypt.compare(password, user.password);
-//     if (!isMatch) {
-//       return res.status(400).json({ message: "Invalid credentials" });
-//     }
+  try {
+    db.get("SELECT * FROM users WHERE email = ?", [email], async (err, user) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Database error" });
+      }
 
-//     const token = jwt.sign({ id: user._id }, jwtSecret, { expiresIn: "15m" });
-//     res.json({ token });
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({ message: "Server error" });
-//   }
-// }
+      if (!user) {
+        return res.status(400).json({ message: "User not found" });
+      }
 
-// async function register(req, res) {
-//   if (!req.body) {
-//     return res.status(400).send("No request body provided");
-//   }
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) {
+        return res.status(400).json({ message: "Invalid credentials" });
+      }
 
-//   const { email, password } = req.body;
-//   const jwtSecret = process.env.JWT_SECRET;
+      const token = jwt.sign({ id: user.id }, jwtSecret, { expiresIn: "15m" });
+      res.json({ token });
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Server error" });
+  }
+}
 
-//   try {
-//     let user = await User.findOne({ email });
-//     if (user) {
-//       return res.status(400).json({ message: "User already exists" });
-//     }
+async function register(req, res) {
+  if (!req.body) {
+    return res.status(400).send("No request body provided");
+  }
 
-//     const salt = await bcrypt.genSalt(10);
-//     const hashedPassword = await bcrypt.hash(password, salt);
+  const { email, password } = req.body;
+  const jwtSecret = process.env.JWT_SECRET;
 
-//     user = new User({ email, password: hashedPassword });
-//     await user.save();
+  try {
+    db.get("SELECT * FROM users WHERE email = ?", [email], async (err, user) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Database error" });
+      }
 
-//     const token = jwt.sign({ id: user._id }, jwtSecret, { expiresIn: "15m" });
-//     res.status(201).json({ token });
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({ message: "Server error" });
-//   }
-// }
+      if (user) {
+        return res.status(400).json({ message: "User already exists" });
+      }
 
-// module.exports = { login, register };
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+
+      db.run(
+        "INSERT INTO users (email, password) VALUES (?, ?)",
+        [email, hashedPassword],
+        function (err) {
+          if (err) {
+            console.error(err);
+            return res.status(500).json({ message: "Database error" });
+          }
+
+          const token = jwt.sign({ id: this.lastID }, jwtSecret, { expiresIn: "15m" });
+          res.status(201).json({ token });
+        }
+      );
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Server error" });
+  }
+}
+
+module.exports = { login, register };

@@ -406,7 +406,7 @@ async function main() {
   });
 
   db.serialize(() => {
-    // Drop the table if it exists
+    // Drop the guitars table if it exists
     db.run(`DROP TABLE IF EXISTS ${tableName}`, (err) => {
       if (err) {
         console.error("Error dropping table:", err.message);
@@ -415,7 +415,7 @@ async function main() {
       }
     });
 
-    // Create the table with an auto-incrementing id field
+    // Create the guitars table
     db.run(
       `CREATE TABLE ${tableName} (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -440,7 +440,7 @@ async function main() {
       }
     );
 
-    // Insert the data
+    // Insert data into the guitars table
     const insertStmt = db.prepare(
       `INSERT INTO ${tableName} (brand, shape, name, series, pickups, trem, frets, tuners, colour, fretboard, description)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
@@ -474,6 +474,23 @@ async function main() {
         console.log("Data inserted into table");
       }
     });
+
+    // Create the users table if it doesn't exist
+    db.run(
+      `CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        email TEXT NOT NULL UNIQUE,
+        password TEXT NOT NULL,
+        createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+      )`,
+      (err) => {
+        if (err) {
+          console.error("Error creating users table:", err.message);
+        } else {
+          console.log('Table "users" created or already exists');
+        }
+      }
+    );
   });
 
   db.close((err) => {
