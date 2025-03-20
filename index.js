@@ -8,6 +8,7 @@ require('dotenv').config();
 
 console.log("process.env.NODE_ENV", process.env.NODE_ENV);
 const uri = process.env.DATABASE_URI;
+console.log("uri", uri);
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 const db = mongoose.connection;
