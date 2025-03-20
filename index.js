@@ -10,7 +10,7 @@ console.log("process.env.NODE_ENV", process.env.NODE_ENV);
 const uri = process.env.DATABASE_URI;
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
-const db = mongoose.connection;
+const db = mongoose.connection.useDb("guitar-db");
 db.on("error", (error) => console.error(error));
 db.once("open", () => console.log("Connected to database."));
 
