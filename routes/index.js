@@ -5,12 +5,12 @@ const userRoutes = require("./users");
 
 //guitars
 router.get("/guitars/", guitarRoutes.get);
-router.get("/guitars/filterBy", guitarRoutes.filter);
-router.post("/guitars/create", guitarRoutes.create);
-router.put("/guitars/update:id", guitarRoutes.update);
+// router.get("/guitars/filterBy", guitarRoutes.filter);
+// router.post("/guitars/create", guitarRoutes.create);
+// router.put("/guitars/update:id", guitarRoutes.update);
 
-//login
-router.post("/users/login", userRoutes.login);
-router.post("/users/register", userRoutes.register);
+// //login
+// router.post("/users/login", userRoutes.login);
+// router.post("/users/register", userRoutes.register);
 
 module.exports = router;
