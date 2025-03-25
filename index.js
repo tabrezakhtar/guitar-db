@@ -4,11 +4,11 @@ const path = require("path");
 const compression = require("compression");
 const port = process.env.PORT || 5000;
 const mongoose = require("mongoose");
+const cors = require("cors");
 require('dotenv').config();
 
 console.log("process.env.NODE_ENV", process.env.NODE_ENV);
 const uri = process.env.DATABASE_URI;
-console.log("uri", uri);
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 const db = mongoose.connection;
@@ -18,6 +18,13 @@ db.once("open", () => console.log("Connected to database."));
 app.use(express.json());
 
 const apiRoutes = require("./routes");
+
+const corsOptions = {
+  origin: "http://127.0.0.1:5173",
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
 app.use("/api/", apiRoutes);
 
 const root = path.join(__dirname, "./client", "build");
