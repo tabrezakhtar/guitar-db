@@ -17,7 +17,8 @@ const guitars = [
     "tuners": "Standard Cast/Sealed",
     "colour": "Yellow",
     "fretboard": "Maple",
-    "description": "A versatile guitar with a classic design."
+    "description": "A versatile guitar with a classic design.",
+    "price": 1500
   },
   {
     "_id": "67ccee27316eceb6d520ce3c",
@@ -31,7 +32,8 @@ const guitars = [
     "tuners": "Deluxe Cast/Sealed",
     "colour": "Yellow",
     "fretboard": "Rosewood",
-    "description": "A modern take on the classic Telecaster."
+    "description": "A modern take on the classic Telecaster.",
+    "price": 1800
   },
   {
     "_id": "67ccee27316eceb6d520ce3d",
@@ -45,7 +47,8 @@ const guitars = [
     "tuners": "Standard Cast/Sealed",
     "colour": "Black",
     "fretboard": "Pau Ferro",
-    "description": "A versatile guitar with a unique design."
+    "description": "A versatile guitar with a unique design.",
+    "price": 1200
   },
   {
     "_id": "67ccee27316eceb6d520ce3e",
@@ -59,7 +62,8 @@ const guitars = [
     "tuners": "Classic Gear",
     "colour": "Purple",
     "fretboard": "Maple",
-    "description": "A short-scale guitar with a distinctive sound."
+    "description": "A short-scale guitar with a distinctive sound.",
+    "price": 1400
   },
   {
     "_id": "67ccee27316eceb6d520ce3f",
@@ -73,7 +77,8 @@ const guitars = [
     "tuners": "Vintage-Style",
     "colour": "White",
     "fretboard": "Rosewood",
-    "description": "A classic guitar with a rich history."
+    "description": "A classic guitar with a rich history.",
+    "price": 2000
   },
   {
     "_id": "67ccee27316eceb6d520ce40",
@@ -87,7 +92,8 @@ const guitars = [
     "tuners": "Standard Cast/Sealed",
     "colour": "White",
     "fretboard": "Maple",
-    "description": "A versatile guitar with a classic design."
+    "description": "A versatile guitar with a classic design.",
+    "price": 1100
   },
   {
     "_id": "67ccee27316eceb6d520ce41",
@@ -101,7 +107,8 @@ const guitars = [
     "tuners": "Standard Cast/Sealed",
     "colour": "Blue",
     "fretboard": "Maple",
-    "description": "A modern take on the classic Telecaster."
+    "description": "A modern take on the classic Telecaster.",
+    "price": 1500
   },
   {
     "_id": "67ccee27316eceb6d520ce42",
@@ -115,7 +122,8 @@ const guitars = [
     "tuners": "Classic Gear",
     "colour": "Blue",
     "fretboard": "Rosewood",
-    "description": "A versatile guitar with a unique design."
+    "description": "A versatile guitar with a unique design.",
+    "price": 1300
   },
   {
     "_id": "67ccee27316eceb6d520ce43",
@@ -129,7 +137,8 @@ const guitars = [
     "tuners": "Standard Cast/Sealed",
     "colour": "Yellow",
     "fretboard": "Pau Ferro",
-    "description": "A short-scale guitar with a distinctive sound."
+    "description": "A short-scale guitar with a distinctive sound.",
+    "price": 1000
   },
   {
     "_id": "67ccee27316eceb6d520ce44",
@@ -143,7 +152,8 @@ const guitars = [
     "tuners": "Deluxe Cast/Sealed",
     "colour": "Black",
     "fretboard": "Rosewood",
-    "description": "A classic guitar with a rich history."
+    "description": "A classic guitar with a rich history.",
+    "price": 1900
   },
   {
     "_id": "67ccee27316eceb6d520ce45",
@@ -157,7 +167,8 @@ const guitars = [
     "tuners": "Vintage Deluxe",
     "colour": "Red",
     "fretboard": "Rosewood",
-    "description": "A classic guitar with a powerful sound."
+    "description": "A classic guitar with a powerful sound.",
+    "price": 2500
   },
   {
     "_id": "67ccee27316eceb6d520ce46",
@@ -171,7 +182,8 @@ const guitars = [
     "tuners": "Vintage Deluxe",
     "colour": "Red",
     "fretboard": "Rosewood",
-    "description": "A lightweight guitar with a fast neck."
+    "description": "A lightweight guitar with a fast neck.",
+    "price": 2000
   },
   {
     "_id": "67ccee27316eceb6d520ce47",
@@ -185,7 +197,8 @@ const guitars = [
     "tuners": "Grover Mini Rotomatics",
     "colour": "Yellow",
     "fretboard": "Rosewood",
-    "description": "A futuristic guitar with a bold design."
+    "description": "A futuristic guitar with a bold design.",
+    "price": 2200
   },
   {
     "_id": "67ccee27316eceb6d520ce48",
@@ -199,7 +212,8 @@ const guitars = [
     "tuners": "Grover Mini Rotomatics",
     "colour": "White",
     "fretboard": "Rosewood",
-    "description": "A radical guitar with a distinctive look."
+    "description": "A radical guitar with a distinctive look.",
+    "price": 2300
   },
   {
     "_id": "67ccee27316eceb6d520ce49",
@@ -213,7 +227,8 @@ const guitars = [
     "tuners": "Grover Mini Rotomatics",
     "colour": "Yellow",
     "fretboard": "Rosewood",
-    "description": "A unique guitar with a reverse body design."
+    "description": "A unique guitar with a reverse body design.",
+    "price": 2400
   },
   {
     "_id": "67ccee27316eceb6d520ce4a",
@@ -227,7 +242,8 @@ const guitars = [
     "tuners": "Vintage Deluxe",
     "colour": "Yellow",
     "fretboard": "Rosewood",
-    "description": "A classic guitar with a powerful sound."
+    "description": "A classic guitar with a powerful sound.",
+    "price": 2600
   },
   {
     "_id": "67ccee27316eceb6d520ce4b",
@@ -241,7 +257,8 @@ const guitars = [
     "tuners": "Vintage Deluxe",
     "colour": "Blue",
     "fretboard": "Rosewood",
-    "description": "A lightweight guitar with a fast neck."
+    "description": "A lightweight guitar with a fast neck.",
+    "price": 2100
   },
   {
     "_id": "67ccee27316eceb6d520ce4c",
@@ -255,7 +272,8 @@ const guitars = [
     "tuners": "Grover Mini Rotomatics",
     "colour": "Black",
     "fretboard": "Ebony",
-    "description": "A futuristic guitar with a bold design."
+    "description": "A futuristic guitar with a bold design.",
+    "price": 2700
   },
   {
     "_id": "67ccee27316eceb6d520ce4d",
@@ -269,7 +287,8 @@ const guitars = [
     "tuners": "Grover Mini Rotomatics",
     "colour": "Black",
     "fretboard": "Ebony",
-    "description": "A radical guitar with a distinctive look."
+    "description": "A radical guitar with a distinctive look.",
+    "price": 2800
   },
   {
     "_id": "67ccee27316eceb6d520ce4e",
@@ -283,7 +302,8 @@ const guitars = [
     "tuners": "Grover Mini Rotomatics",
     "colour": "Black",
     "fretboard": "Ebony",
-    "description": "A unique guitar with a reverse body design."
+    "description": "A unique guitar with a reverse body design.",
+    "price": 2900
   },
   {
     "_id": "67ccee27316eceb6d520ce4f",
@@ -297,7 +317,8 @@ const guitars = [
     "tuners": "Gotoh",
     "colour": "Red",
     "fretboard": "Maple",
-    "description": "A high-performance guitar with a fast neck."
+    "description": "A high-performance guitar with a fast neck.",
+    "price": 1700
   },
   {
     "_id": "67ccee27316eceb6d520ce50",
@@ -311,7 +332,8 @@ const guitars = [
     "tuners": "Gotoh",
     "colour": "Yellow",
     "fretboard": "Rosewood",
-    "description": "A sleek guitar with a versatile sound."
+    "description": "A sleek guitar with a versatile sound.",
+    "price": 1500
   },
   {
     "_id": "67ccee27316eceb6d520ce51",
@@ -325,7 +347,8 @@ const guitars = [
     "tuners": "Gotoh",
     "colour": "White",
     "fretboard": "Rosewood",
-    "description": "A signature guitar with a unique design."
+    "description": "A signature guitar with a unique design.",
+    "price": 1800
   },
   {
     "_id": "67ccee27316eceb6d520ce52",
@@ -339,7 +362,8 @@ const guitars = [
     "tuners": "Gotoh",
     "colour": "Brown",
     "fretboard": "Rosewood",
-    "description": "A high-performance guitar with a fast neck."
+    "description": "A high-performance guitar with a fast neck.",
+    "price": 1400
   },
   {
     "_id": "67ccee27316eceb6d520ce53",
@@ -353,7 +377,8 @@ const guitars = [
     "tuners": "Gotoh",
     "colour": "Yellow",
     "fretboard": "Rosewood",
-    "description": "A sleek guitar with a versatile sound."
+    "description": "A sleek guitar with a versatile sound.",
+    "price": 1600
   },
   {
     "_id": "67ccee27316eceb6d520ce54",
@@ -367,7 +392,8 @@ const guitars = [
     "tuners": "Gotoh",
     "colour": "White",
     "fretboard": "Ebony",
-    "description": "A signature guitar with a unique design."
+    "description": "A signature guitar with a unique design.",
+    "price": 3000
   },
   {
     "_id": "67ccee27316eceb6d520ce55",
@@ -381,7 +407,8 @@ const guitars = [
     "tuners": "Gotoh",
     "colour": "Purple",
     "fretboard": "Maple",
-    "description": "A high-performance guitar with a fast neck."
+    "description": "A high-performance guitar with a fast neck.",
+    "price": 1900
   },
   {
     "_id": "67ccee27316eceb6d520ce56",
@@ -395,7 +422,8 @@ const guitars = [
     "tuners": "Gotoh",
     "colour": "Yellow",
     "fretboard": "Rosewood",
-    "description": "A sleek guitar with a versatile sound."
+    "description": "A sleek guitar with a versatile sound.",
+    "price": 1500
   },
   {
     "_id": "67ccee27316eceb6d520ce57",
@@ -409,7 +437,8 @@ const guitars = [
     "tuners": "Gotoh",
     "colour": "Blue",
     "fretboard": "Maple",
-    "description": "A signature guitar with a unique design."
+    "description": "A signature guitar with a unique design.",
+    "price": 3200
   },
   {
     "_id": "67ccee27316eceb6d520ce58",
@@ -423,7 +452,8 @@ const guitars = [
     "tuners": "Gotoh",
     "colour": "Yellow",
     "fretboard": "Maple",
-    "description": "A high-performance guitar with a fast neck."
+    "description": "A high-performance guitar with a fast neck.",
+    "price": 1700
   }
 ];
 
