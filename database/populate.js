@@ -6,7 +6,6 @@ const collectionName = "guitars";
 
 const guitars = [
   {
-    "_id": "67ccee27316eceb6d520ce3b",
     "brand": "Fender",
     "shape": "Stratocaster",
     "name": "American Professional Ii",
@@ -21,7 +20,6 @@ const guitars = [
     "price": 1500
   },
   {
-    "_id": "67ccee27316eceb6d520ce3c",
     "brand": "Fender",
     "shape": "Telecaster",
     "name": "American Ultra",
@@ -36,7 +34,6 @@ const guitars = [
     "price": 1800
   },
   {
-    "_id": "67ccee27316eceb6d520ce3d",
     "brand": "Fender",
     "shape": "Jaguar",
     "name": "Player",
@@ -51,7 +48,6 @@ const guitars = [
     "price": 1200
   },
   {
-    "_id": "67ccee27316eceb6d520ce3e",
     "brand": "Fender",
     "shape": "Mustang",
     "name": "American Performer",
@@ -66,7 +62,6 @@ const guitars = [
     "price": 1400
   },
   {
-    "_id": "67ccee27316eceb6d520ce3f",
     "brand": "Fender",
     "shape": "Jazzmaster",
     "name": "American Original",
@@ -81,7 +76,6 @@ const guitars = [
     "price": 2000
   },
   {
-    "_id": "67ccee27316eceb6d520ce40",
     "brand": "Fender",
     "shape": "Stratocaster",
     "name": "Player",
@@ -96,7 +90,6 @@ const guitars = [
     "price": 1100
   },
   {
-    "_id": "67ccee27316eceb6d520ce41",
     "brand": "Fender",
     "shape": "Telecaster",
     "name": "American Professional Ii",
@@ -111,7 +104,6 @@ const guitars = [
     "price": 1500
   },
   {
-    "_id": "67ccee27316eceb6d520ce42",
     "brand": "Fender",
     "shape": "Jaguar",
     "name": "American Performer",
@@ -126,7 +118,6 @@ const guitars = [
     "price": 1300
   },
   {
-    "_id": "67ccee27316eceb6d520ce43",
     "brand": "Fender",
     "shape": "Mustang",
     "name": "Player",
@@ -141,7 +132,6 @@ const guitars = [
     "price": 1000
   },
   {
-    "_id": "67ccee27316eceb6d520ce44",
     "brand": "Fender",
     "shape": "Jazzmaster",
     "name": "American Ultra",
@@ -156,7 +146,6 @@ const guitars = [
     "price": 1900
   },
   {
-    "_id": "67ccee27316eceb6d520ce45",
     "brand": "Gibson",
     "shape": "Les Paul",
     "name": "Standard 50S",
@@ -171,7 +160,6 @@ const guitars = [
     "price": 2500
   },
   {
-    "_id": "67ccee27316eceb6d520ce46",
     "brand": "Gibson",
     "shape": "Sg",
     "name": "Standard",
@@ -186,7 +174,6 @@ const guitars = [
     "price": 2000
   },
   {
-    "_id": "67ccee27316eceb6d520ce47",
     "brand": "Gibson",
     "shape": "Explorer",
     "name": "Original",
@@ -201,7 +188,6 @@ const guitars = [
     "price": 2200
   },
   {
-    "_id": "67ccee27316eceb6d520ce48",
     "brand": "Gibson",
     "shape": "Flying V",
     "name": "Original",
@@ -216,7 +202,6 @@ const guitars = [
     "price": 2300
   },
   {
-    "_id": "67ccee27316eceb6d520ce49",
     "brand": "Gibson",
     "shape": "Firebird",
     "name": "Original",
@@ -231,7 +216,6 @@ const guitars = [
     "price": 2400
   },
   {
-    "_id": "67ccee27316eceb6d520ce4a",
     "brand": "Gibson",
     "shape": "Les Paul",
     "name": "Standard 60S",
@@ -246,7 +230,6 @@ const guitars = [
     "price": 2600
   },
   {
-    "_id": "67ccee27316eceb6d520ce4b",
     "brand": "Gibson",
     "shape": "Sg",
     "name": "Special",
@@ -261,7 +244,6 @@ const guitars = [
     "price": 2100
   },
   {
-    "_id": "67ccee27316eceb6d520ce4c",
     "brand": "Gibson",
     "shape": "Explorer",
     "name": "Custom",
@@ -276,7 +258,6 @@ const guitars = [
     "price": 2700
   },
   {
-    "_id": "67ccee27316eceb6d520ce4d",
     "brand": "Gibson",
     "shape": "Flying V",
     "name": "Custom",
@@ -291,7 +272,6 @@ const guitars = [
     "price": 2800
   },
   {
-    "_id": "67ccee27316eceb6d520ce4e",
     "brand": "Gibson",
     "shape": "Firebird",
     "name": "Custom",
@@ -306,7 +286,6 @@ const guitars = [
     "price": 2900
   },
   {
-    "_id": "67ccee27316eceb6d520ce4f",
     "brand": "Ibanez",
     "shape": "Rg",
     "name": "Rg550",
@@ -321,7 +300,6 @@ const guitars = [
     "price": 1700
   },
   {
-    "_id": "67ccee27316eceb6d520ce50",
     "brand": "Ibanez",
     "shape": "S",
     "name": "S670Qm",
@@ -336,7 +314,6 @@ const guitars = [
     "price": 1500
   },
   {
-    "_id": "67ccee27316eceb6d520ce51",
     "brand": "Ibanez",
     "shape": "Jem",
     "name": "Jemjr",
@@ -351,7 +328,6 @@ const guitars = [
     "price": 1800
   },
   {
-    "_id": "67ccee27316eceb6d520ce52",
     "brand": "Ibanez",
     "shape": "Rg",
     "name": "Rg421",
@@ -366,7 +342,6 @@ const guitars = [
     "price": 1400
   },
   {
-    "_id": "67ccee27316eceb6d520ce53",
     "brand": "Ibanez",
     "shape": "S",
     "name": "S520",
@@ -381,7 +356,6 @@ const guitars = [
     "price": 1600
   },
   {
-    "_id": "67ccee27316eceb6d520ce54",
     "brand": "Ibanez",
     "shape": "Jem",
     "name": "Jem7V",
@@ -396,7 +370,6 @@ const guitars = [
     "price": 3000
   },
   {
-    "_id": "67ccee27316eceb6d520ce55",
     "brand": "Ibanez",
     "shape": "Rg",
     "name": "Rg550Dx",
@@ -411,7 +384,6 @@ const guitars = [
     "price": 1900
   },
   {
-    "_id": "67ccee27316eceb6d520ce56",
     "brand": "Ibanez",
     "shape": "S",
     "name": "S670Ah",
@@ -426,7 +398,6 @@ const guitars = [
     "price": 1500
   },
   {
-    "_id": "67ccee27316eceb6d520ce57",
     "brand": "Ibanez",
     "shape": "Jem",
     "name": "Jem77P",
@@ -441,7 +412,6 @@ const guitars = [
     "price": 3200
   },
   {
-    "_id": "67ccee27316eceb6d520ce58",
     "brand": "Ibanez",
     "shape": "Rg",
     "name": "Rg550",
