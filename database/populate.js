@@ -17,7 +17,9 @@ const guitars = [
     "colour": "Yellow",
     "fretboard": "Maple",
     "description": "A versatile guitar with a classic design.",
-    "price": 1500
+    "price": 1500,
+    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "thumbnail": "https://res.cloudinary.com/dx8d5hlk1/image/upload/c_thumb,w_200,g_face/v1742943524/epiphone2_ivfdkx.jpg"
   },
   {
     "brand": "Fender",
@@ -31,7 +33,9 @@ const guitars = [
     "colour": "Yellow",
     "fretboard": "Rosewood",
     "description": "A modern take on the classic Telecaster.",
-    "price": 1800
+    "price": 1800,
+    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "thumbnail": "https://res.cloudinary.com/dx8d5hlk1/image/upload/c_thumb,w_200,g_face/v1742943524/epiphone2_ivfdkx.jpg"
   },
   {
     "brand": "Fender",
@@ -45,7 +49,9 @@ const guitars = [
     "colour": "Black",
     "fretboard": "Pau Ferro",
     "description": "A versatile guitar with a unique design.",
-    "price": 1200
+    "price": 1200,
+    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "thumbnail": "https://res.cloudinary.com/dx8d5hlk1/image/upload/c_thumb,w_200,g_face/v1742943524/epiphone2_ivfdkx.jpg"
   },
   {
     "brand": "Fender",
@@ -59,7 +65,9 @@ const guitars = [
     "colour": "Purple",
     "fretboard": "Maple",
     "description": "A short-scale guitar with a distinctive sound.",
-    "price": 1400
+    "price": 1400,
+    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "thumbnail": "https://res.cloudinary.com/dx8d5hlk1/image/upload/c_thumb,w_200,g_face/v1742943524/epiphone2_ivfdkx.jpg"
   },
   {
     "brand": "Fender",
@@ -73,7 +81,9 @@ const guitars = [
     "colour": "White",
     "fretboard": "Rosewood",
     "description": "A classic guitar with a rich history.",
-    "price": 2000
+    "price": 2000,
+    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "thumbnail": "https://res.cloudinary.com/dx8d5hlk1/image/upload/c_thumb,w_200,g_face/v1742943524/epiphone2_ivfdkx.jpg"
   },
   {
     "brand": "Fender",
@@ -87,7 +97,9 @@ const guitars = [
     "colour": "White",
     "fretboard": "Maple",
     "description": "A versatile guitar with a classic design.",
-    "price": 1100
+    "price": 1100,
+    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "thumbnail": "https://res.cloudinary.com/dx8d5hlk1/image/upload/c_thumb,w_200,g_face/v1742943524/epiphone2_ivfdkx.jpg"
   },
   {
     "brand": "Fender",
@@ -101,7 +113,9 @@ const guitars = [
     "colour": "Blue",
     "fretboard": "Maple",
     "description": "A modern take on the classic Telecaster.",
-    "price": 1500
+    "price": 1500,
+    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "thumbnail": "https://res.cloudinary.com/dx8d5hlk1/image/upload/c_thumb,w_200,g_face/v1742943524/epiphone2_ivfdkx.jpg"
   },
   {
     "brand": "Fender",
@@ -115,7 +129,9 @@ const guitars = [
     "colour": "Blue",
     "fretboard": "Rosewood",
     "description": "A versatile guitar with a unique design.",
-    "price": 1300
+    "price": 1300,
+    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "thumbnail": "https://res.cloudinary.com/dx8d5hlk1/image/upload/c_thumb,w_200,g_face/v1742943524/epiphone2_ivfdkx.jpg"
   },
   {
     "brand": "Fender",
@@ -129,7 +145,9 @@ const guitars = [
     "colour": "Yellow",
     "fretboard": "Pau Ferro",
     "description": "A short-scale guitar with a distinctive sound.",
-    "price": 1000
+    "price": 1000,
+    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "thumbnail": "https://res.cloudinary.com/dx8d5hlk1/image/upload/c_thumb,w_200,g_face/v1742943524/epiphone2_ivfdkx.jpg"
   },
   {
     "brand": "Fender",
@@ -143,287 +161,9 @@ const guitars = [
     "colour": "Black",
     "fretboard": "Rosewood",
     "description": "A classic guitar with a rich history.",
-    "price": 1900
-  },
-  {
-    "brand": "Gibson",
-    "shape": "Les Paul",
-    "name": "Standard 50S",
-    "series": "Standard",
-    "pickups": "Humbucker",
-    "tremolo": "None",
-    "frets": 22,
-    "tuners": "Vintage Deluxe",
-    "colour": "Red",
-    "fretboard": "Rosewood",
-    "description": "A classic guitar with a powerful sound.",
-    "price": 2500
-  },
-  {
-    "brand": "Gibson",
-    "shape": "Sg",
-    "name": "Standard",
-    "series": "Standard",
-    "pickups": "Humbucker",
-    "tremolo": "None",
-    "frets": 22,
-    "tuners": "Vintage Deluxe",
-    "colour": "Red",
-    "fretboard": "Rosewood",
-    "description": "A lightweight guitar with a fast neck.",
-    "price": 2000
-  },
-  {
-    "brand": "Gibson",
-    "shape": "Explorer",
-    "name": "Original",
-    "series": "Original",
-    "pickups": "Humbucker",
-    "tremolo": "None",
-    "frets": 22,
-    "tuners": "Grover Mini Rotomatics",
-    "colour": "Yellow",
-    "fretboard": "Rosewood",
-    "description": "A futuristic guitar with a bold design.",
-    "price": 2200
-  },
-  {
-    "brand": "Gibson",
-    "shape": "Flying V",
-    "name": "Original",
-    "series": "Original",
-    "pickups": "Humbucker",
-    "tremolo": "None",
-    "frets": 22,
-    "tuners": "Grover Mini Rotomatics",
-    "colour": "White",
-    "fretboard": "Rosewood",
-    "description": "A radical guitar with a distinctive look.",
-    "price": 2300
-  },
-  {
-    "brand": "Gibson",
-    "shape": "Firebird",
-    "name": "Original",
-    "series": "Original",
-    "pickups": "Mini-Humbucker",
-    "tremolo": "None",
-    "frets": 22,
-    "tuners": "Grover Mini Rotomatics",
-    "colour": "Yellow",
-    "fretboard": "Rosewood",
-    "description": "A unique guitar with a reverse body design.",
-    "price": 2400
-  },
-  {
-    "brand": "Gibson",
-    "shape": "Les Paul",
-    "name": "Standard 60S",
-    "series": "Standard",
-    "pickups": "Humbucker",
-    "tremolo": "None",
-    "frets": 22,
-    "tuners": "Vintage Deluxe",
-    "colour": "Yellow",
-    "fretboard": "Rosewood",
-    "description": "A classic guitar with a powerful sound.",
-    "price": 2600
-  },
-  {
-    "brand": "Gibson",
-    "shape": "Sg",
-    "name": "Special",
-    "series": "Special",
-    "pickups": "P-90",
-    "tremolo": "None",
-    "frets": 22,
-    "tuners": "Vintage Deluxe",
-    "colour": "Blue",
-    "fretboard": "Rosewood",
-    "description": "A lightweight guitar with a fast neck.",
-    "price": 2100
-  },
-  {
-    "brand": "Gibson",
-    "shape": "Explorer",
-    "name": "Custom",
-    "series": "Custom",
-    "pickups": "Humbucker",
-    "tremolo": "None",
-    "frets": 22,
-    "tuners": "Grover Mini Rotomatics",
-    "colour": "Black",
-    "fretboard": "Ebony",
-    "description": "A futuristic guitar with a bold design.",
-    "price": 2700
-  },
-  {
-    "brand": "Gibson",
-    "shape": "Flying V",
-    "name": "Custom",
-    "series": "Custom",
-    "pickups": "Humbucker",
-    "tremolo": "None",
-    "frets": 22,
-    "tuners": "Grover Mini Rotomatics",
-    "colour": "Black",
-    "fretboard": "Ebony",
-    "description": "A radical guitar with a distinctive look.",
-    "price": 2800
-  },
-  {
-    "brand": "Gibson",
-    "shape": "Firebird",
-    "name": "Custom",
-    "series": "Custom",
-    "pickups": "Mini-Humbucker",
-    "tremolo": "None",
-    "frets": 22,
-    "tuners": "Grover Mini Rotomatics",
-    "colour": "Black",
-    "fretboard": "Ebony",
-    "description": "A unique guitar with a reverse body design.",
-    "price": 2900
-  },
-  {
-    "brand": "Ibanez",
-    "shape": "Rg",
-    "name": "Rg550",
-    "series": "Genesis Collection",
-    "pickups": "Humbucker",
-    "tremolo": "Edge",
-    "frets": 24,
-    "tuners": "Gotoh",
-    "colour": "Red",
-    "fretboard": "Maple",
-    "description": "A high-performance guitar with a fast neck.",
-    "price": 1700
-  },
-  {
-    "brand": "Ibanez",
-    "shape": "S",
-    "name": "S670Qm",
-    "series": "Standard",
-    "pickups": "Humbucker",
-    "tremolo": "Edge Zero Ii",
-    "frets": 24,
-    "tuners": "Gotoh",
-    "colour": "Yellow",
-    "fretboard": "Rosewood",
-    "description": "A sleek guitar with a versatile sound.",
-    "price": 1500
-  },
-  {
-    "brand": "Ibanez",
-    "shape": "Jem",
-    "name": "Jemjr",
-    "series": "Standard",
-    "pickups": "Humbucker",
-    "tremolo": "Double Locking Tremolo",
-    "frets": 24,
-    "tuners": "Gotoh",
-    "colour": "White",
-    "fretboard": "Rosewood",
-    "description": "A signature guitar with a unique design.",
-    "price": 1800
-  },
-  {
-    "brand": "Ibanez",
-    "shape": "Rg",
-    "name": "Rg421",
-    "series": "Standard",
-    "pickups": "Humbucker",
-    "tremolo": "None",
-    "frets": 24,
-    "tuners": "Gotoh",
-    "colour": "Brown",
-    "fretboard": "Rosewood",
-    "description": "A high-performance guitar with a fast neck.",
-    "price": 1400
-  },
-  {
-    "brand": "Ibanez",
-    "shape": "S",
-    "name": "S520",
-    "series": "Standard",
-    "pickups": "Humbucker",
-    "tremolo": "Edge Zero Ii",
-    "frets": 24,
-    "tuners": "Gotoh",
-    "colour": "Yellow",
-    "fretboard": "Rosewood",
-    "description": "A sleek guitar with a versatile sound.",
-    "price": 1600
-  },
-  {
-    "brand": "Ibanez",
-    "shape": "Jem",
-    "name": "Jem7V",
-    "series": "Signature",
-    "pickups": "Humbucker",
-    "tremolo": "Edge",
-    "frets": 24,
-    "tuners": "Gotoh",
-    "colour": "White",
-    "fretboard": "Ebony",
-    "description": "A signature guitar with a unique design.",
-    "price": 3000
-  },
-  {
-    "brand": "Ibanez",
-    "shape": "Rg",
-    "name": "Rg550Dx",
-    "series": "Genesis Collection",
-    "pickups": "Humbucker",
-    "tremolo": "Edge",
-    "frets": 24,
-    "tuners": "Gotoh",
-    "colour": "Purple",
-    "fretboard": "Maple",
-    "description": "A high-performance guitar with a fast neck.",
-    "price": 1900
-  },
-  {
-    "brand": "Ibanez",
-    "shape": "S",
-    "name": "S670Ah",
-    "series": "Standard",
-    "pickups": "Humbucker",
-    "tremolo": "Edge Zero Ii",
-    "frets": 24,
-    "tuners": "Gotoh",
-    "colour": "Yellow",
-    "fretboard": "Rosewood",
-    "description": "A sleek guitar with a versatile sound.",
-    "price": 1500
-  },
-  {
-    "brand": "Ibanez",
-    "shape": "Jem",
-    "name": "Jem77P",
-    "series": "Premium",
-    "pickups": "Humbucker",
-    "tremolo": "Edge",
-    "frets": 24,
-    "tuners": "Gotoh",
-    "colour": "Blue",
-    "fretboard": "Maple",
-    "description": "A signature guitar with a unique design.",
-    "price": 3200
-  },
-  {
-    "brand": "Ibanez",
-    "shape": "Rg",
-    "name": "Rg550",
-    "series": "Genesis Collection",
-    "pickups": "Humbucker",
-    "tremolo": "Edge",
-    "frets": 24,
-    "tuners": "Gotoh",
-    "colour": "Yellow",
-    "fretboard": "Maple",
-    "description": "A high-performance guitar with a fast neck.",
-    "price": 1700
+    "price": 1900,
+    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "thumbnail": "https://res.cloudinary.com/dx8d5hlk1/image/upload/c_thumb,w_200,g_face/v1742943524/epiphone2_ivfdkx.jpg"
   }
 ];
 

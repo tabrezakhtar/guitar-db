@@ -53,6 +53,14 @@ const guitarSchema = new mongoose.Schema({
   description: {
     type: String,
     required: false
+  },
+  thumbnail: {
+    type: String,
+    required: true
+  },
+  images: {
+    type: [String],
+    required: true
   }
 })
 
