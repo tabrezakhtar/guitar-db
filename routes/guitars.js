@@ -77,6 +77,9 @@ async function create(req, res) {
 }
 
 async function update(req, res) {
+  console.log("Update Guitar");
+  console.log(req.params.id);
+  console.log(req.body);
   try {
     const updatedGuitar = await Guitar.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!updatedGuitar) {
