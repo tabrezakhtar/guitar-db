@@ -39,10 +39,11 @@ async function get(req, res) {
 async function getById(req, res) {
   try {
     const guitar = await Guitar.findById(req.query.id);
+    const settings = await getSettings();
     if (!guitar) {
       return res.status(404).json({ message: "Guitar not found" });
     }
-    res.status(200).json(guitar);
+    res.status(200).json({guitar, settings});
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
