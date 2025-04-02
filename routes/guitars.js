@@ -93,5 +93,16 @@ async function update(req, res) {
   }
 }
 
+async function remove(req, res) {
+  try {
+    const deletedGuitar = await Guitar.findByIdAndDelete(req.params.id);
+    if (!deletedGuitar) {
+      return res.status(404).json({ message: "Guitar not found" });
+    }
+    res.status(200).json({ message: "Guitar deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+}
 
-module.exports = { get, getById, filter, create, update };
+module.exports = { get, getById, filter, create, update, remove };
