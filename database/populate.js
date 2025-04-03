@@ -19,7 +19,12 @@ const fender = [
     "description": "A versatile guitar with a classic design.",
     "detailedDescription": "The Fender American Professional II Stratocaster features a timeless design with a modern twist. Its single-coil pickups deliver crisp tones, while the 2-point synchronized tremolo ensures smooth playability. With 22 frets and a maple fretboard, this guitar is perfect for professionals seeking versatility and reliability across various genres.",
     "price": 1500,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [
+      "https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg",
+      "https://res.cloudinary.com/dx8d5hlk1/image/upload/v1743673086/epi2_cnkaeo.jpg",
+      "https://res.cloudinary.com/dx8d5hlk1/image/upload/v1743673086/epi3_k2zv4w.jpg",
+      "https://res.cloudinary.com/dx8d5hlk1/image/upload/v1743673086/epi4_rwhh6l.jpg"
+    ],
   },
   {
     "brand": "Fender",
