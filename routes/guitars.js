@@ -1,5 +1,6 @@
 const Guitar = require("../models/guitar");
 const { queryBuilder } = require("../query-builder.js");
+const cloudinary = require('cloudinary').v2;
 
 async function getSettings() {
   const settings = await Guitar.aggregate(
@@ -95,13 +96,40 @@ async function update(req, res) {
 
 async function remove(req, res) {
   try {
-    const deletedGuitar = await Guitar.findByIdAndDelete(req.params.id);
-    if (!deletedGuitar) {
+    const guitarToDelete = await Guitar.findById(req.params.id);
+    if (!guitarToDelete) {
       return res.status(404).json({ message: "Guitar not found" });
     }
+    await deleteAllCloudinary(guitarToDelete.images);
+    await guitarToDelete.deleteOne();
     res.status(200).json({ message: "Guitar deleted successfully" });
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+}
+
+function getPublicIdFromUrl(url) {
+  // Remove the base URL and delivery type
+  const regex = /https:\/\/res\.cloudinary\.com\/[^/]+\/image\/upload\/(?:v\d+\/)?(.+?)(\.\w+)?$/;
+  const match = url.match(regex);
+  return match ? match[1] : null;
+}
+
+async function deleteAllCloudinary(images) {
+  cloudinary.config({
+    cloud_name: process.ENV.CLOUD_NAME,
+    api_key: process.env.API_KEY,
+    api_secret: process.env.API_SECRET,
+  });
+
+  try {
+    const deletePromises = images.map((image) =>
+      cloudinary.uploader.destroy(getPublicIdFromUrl(image))
+    );
+
+    await Promise.all(deletePromises);
+  } catch (err) {
+    console.log({ message: err.message });
   }
 }
 

@@ -21,7 +21,6 @@ const fender = [
     "price": 1500,
     "images": [
       "https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg",
-      "https://res.cloudinary.com/dx8d5hlk1/image/upload/v1743673086/epi2_cnkaeo.jpg",
       "https://res.cloudinary.com/dx8d5hlk1/image/upload/v1743673086/epi3_k2zv4w.jpg",
       "https://res.cloudinary.com/dx8d5hlk1/image/upload/v1743673086/epi4_rwhh6l.jpg"
     ],
