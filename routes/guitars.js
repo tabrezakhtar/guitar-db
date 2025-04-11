@@ -100,9 +100,24 @@ async function remove(req, res) {
     if (!guitarToDelete) {
       return res.status(404).json({ message: "Guitar not found" });
     }
-    await deleteAllCloudinary(guitarToDelete.images);
+    await deleteCloudinaryImages(guitarToDelete.images);
     await guitarToDelete.deleteOne();
     res.status(200).json({ message: "Guitar deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+}
+
+async function deleteImage(req, res) {
+  try {
+    const guitar = await Guitar.findById(req.params.id);
+    if (!guitar) {
+      return res.status(404).json({ message: "Guitar not found" });
+    }
+
+    const imageToDelete = guitar.images.find((image) => image === req.params.image);
+    await deleteCloudinaryImages([imageToDelete]);
+    res.status(200).json({ message: "Image deleted successfully" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -115,7 +130,7 @@ function getPublicIdFromUrl(url) {
   return match ? match[1] : null;
 }
 
-async function deleteAllCloudinary(images) {
+async function deleteCloudinaryImages(images) {
   cloudinary.config({
     cloud_name: process.ENV.CLOUD_NAME,
     api_key: process.env.API_KEY,
@@ -133,4 +148,4 @@ async function deleteAllCloudinary(images) {
   }
 }
 
-module.exports = { get, getById, filter, create, update, remove };
+module.exports = { get, getById, filter, create, update, remove, deleteImage };

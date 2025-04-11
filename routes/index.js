@@ -10,6 +10,7 @@ router.get("/guitars/filterBy", guitarRoutes.filter);
 router.post("/guitars/create", guitarRoutes.create);
 router.put("/guitars/update/:id", guitarRoutes.update);
 router.delete("/guitars/remove/:id", guitarRoutes.remove);
+router.delete("/guitars/deleteImage/:id", guitarRoutes.deleteImage);
 
 //login
 router.post("/users/login", userRoutes.login);
