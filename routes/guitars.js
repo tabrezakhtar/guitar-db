@@ -115,8 +115,10 @@ async function deleteImage(req, res) {
       return res.status(404).json({ message: "Guitar not found" });
     }
 
-    const imageToDelete = guitar.images.find((image) => image === req.params.image);
+    const imageToDelete = guitar.images.find((image) => image === req.body.imageUrl);
+    console.log("Image to delete: ", imageToDelete);
     await deleteCloudinaryImages([imageToDelete]);
+    console.log(5)
     res.status(200).json({ message: "Image deleted successfully" });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -131,8 +133,10 @@ function getPublicIdFromUrl(url) {
 }
 
 async function deleteCloudinaryImages(images) {
+  console.log("Delete Cloudinary Images");
+  console.log(images);
   cloudinary.config({
-    cloud_name: process.ENV.CLOUD_NAME,
+    cloud_name: process.env.CLOUD_NAME,
     api_key: process.env.API_KEY,
     api_secret: process.env.API_SECRET,
   });
