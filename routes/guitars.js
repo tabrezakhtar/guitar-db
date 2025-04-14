@@ -80,9 +80,6 @@ async function create(req, res) {
 }
 
 async function update(req, res) {
-  console.log("Update Guitar");
-  console.log(req.params.id);
-  console.log(req.body);
   try {
     const updatedGuitar = await Guitar.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!updatedGuitar) {
@@ -118,7 +115,8 @@ async function deleteImage(req, res) {
     const imageToDelete = guitar.images.find((image) => image === req.body.imageUrl);
     console.log("Image to delete: ", imageToDelete);
     await deleteCloudinaryImages([imageToDelete]);
-    console.log(5)
+    guitar.images = guitar.images.filter((image) => image !== req.body.imageUrl);
+    await guitar.save();
     res.status(200).json({ message: "Image deleted successfully" });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -133,8 +131,6 @@ function getPublicIdFromUrl(url) {
 }
 
 async function deleteCloudinaryImages(images) {
-  console.log("Delete Cloudinary Images");
-  console.log(images);
   cloudinary.config({
     cloud_name: process.env.CLOUD_NAME,
     api_key: process.env.API_KEY,
