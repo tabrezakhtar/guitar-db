@@ -39,6 +39,15 @@ async function get(req, res) {
   }
 }
 
+async function settings(req, res) {
+  try {
+    const settings = await getSettings();
+    res.status(200).send({ settings });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+}
+
 async function getById(req, res) {
   try {
     const guitar = await Guitar.findById(req.query.id);
@@ -68,12 +77,13 @@ async function filter(req, res) {
   }
 }
 
-async function create(req, res) {
+async function add(req, res) {
   const guitar = new Guitar(req.body);
 
   try {
-    const newGuitar = await guitar.save();
-    res.status(201).json(newGuitar);
+    const savedGuitar = await guitar.save();
+    console.log("Saved guitar: ", savedGuitar);
+    res.status(201).json(savedGuitar);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -124,10 +134,15 @@ async function deleteImage(req, res) {
 }
 
 function getPublicIdFromUrl(url) {
-  // Remove the base URL and delivery type
-  const regex = /https:\/\/res\.cloudinary\.com\/[^/]+\/image\/upload\/(?:v\d+\/)?(.+?)(\.\w+)?$/;
-  const match = url.match(regex);
-  return match ? match[1] : null;
+  try {
+    const parts = url.split('/');
+    const fileName = parts[parts.length - 1]; // Get the last part of the URL
+    const publicId = fileName.split('.')[0]; // Remove the file extension
+    return publicId;
+  } catch (err) {
+    console.error("Error extracting public ID from URL:", err);
+    return null;
+  }
 }
 
 async function deleteCloudinaryImages(images) {
@@ -148,4 +163,4 @@ async function deleteCloudinaryImages(images) {
   }
 }
 
-module.exports = { get, getById, filter, create, update, remove, deleteImage };
+module.exports = { get, getById, filter, update, remove, deleteImage, settings, add };

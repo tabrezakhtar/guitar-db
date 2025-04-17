@@ -19,11 +19,7 @@ const fender = [
     "description": "A versatile guitar with a classic design.",
     "detailedDescription": "The Fender American Professional II Stratocaster features a timeless design with a modern twist. Its single-coil pickups deliver crisp tones, while the 2-point synchronized tremolo ensures smooth playability. With 22 frets and a maple fretboard, this guitar is perfect for professionals seeking versatility and reliability across various genres.",
     "price": 1500,
-    "images": [
-      "https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg",
-      "https://res.cloudinary.com/dx8d5hlk1/image/upload/v1743673086/epi3_k2zv4w.jpg",
-      "https://res.cloudinary.com/dx8d5hlk1/image/upload/v1743673086/epi4_rwhh6l.jpg"
-    ],
+    "images": []
   },
   {
     "brand": "Fender",
@@ -39,7 +35,7 @@ const fender = [
     "description": "A modern take on a classic Telecaster.",
     "detailedDescription": "The Fender American Ultra Telecaster offers cutting-edge performance with a classic design. Its single-coil pickups provide a dynamic range of tones, while the fixed bridge ensures stability. With 22 frets and a rosewood fretboard, this guitar is ideal for players seeking modern features in a timeless instrument.",
     "price": 1800,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": []
   },
   {
     "brand": "Fender",
@@ -55,7 +51,7 @@ const fender = [
     "description": "A guitar for the modern performer.",
     "detailedDescription": "The Fender American Performer Jazzmaster is designed for the modern musician. Its single-coil pickups deliver a wide range of tones, while the floating tremolo adds expressive capabilities. With 22 frets and a maple fretboard, this guitar is perfect for players seeking versatility and style.",
     "price": 1400,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": []
   },
   {
     "brand": "Fender",
@@ -71,7 +67,7 @@ const fender = [
     "description": "A vintage-inspired Jaguar with modern playability.",
     "detailedDescription": "The Fender American Original '60s Jaguar combines vintage aesthetics with modern playability. Its single-coil pickups provide authentic tones, while the floating tremolo offers expressive control. With 22 frets and a rosewood fretboard, this guitar is perfect for players seeking a retro vibe.",
     "price": 2000,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": []
   },
   {
     "brand": "Fender",
@@ -87,87 +83,7 @@ const fender = [
     "description": "A compact guitar with a unique sound.",
     "detailedDescription": "The Fender Player Series Mustang is a compact guitar with a unique sound. Its single-coil pickups deliver bright tones, while the dynamic vibrato adds expressive capabilities. With 22 frets and a maple fretboard, this guitar is ideal for players seeking a smaller, versatile instrument.",
     "price": 1200,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
-  },
-  {
-    "brand": "Fender",
-    "shape": "Stratocaster",
-    "name": "Player Plus",
-    "series": "Player Plus",
-    "pickups": "Noiseless Single-Coil",
-    "tremolo": "2-Point Synchronized Tremolo",
-    "frets": 22,
-    "tuners": "Locking Tuners",
-    "colour": "Tequila Sunrise",
-    "fretboard": "Maple",
-    "description": "A modern Stratocaster with advanced features.",
-    "detailedDescription": "The Fender Player Plus Stratocaster offers advanced features for modern players. Its noiseless single-coil pickups provide clear tones, while the 2-point synchronized tremolo ensures smooth playability. With 22 frets and a maple fretboard, this guitar is perfect for players seeking innovation and style.",
-    "price": 1600,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
-  },
-  {
-    "brand": "Fender",
-    "shape": "Telecaster",
-    "name": "Vintera '50s",
-    "series": "Vintera",
-    "pickups": "Single-Coil",
-    "tremolo": "Fixed Bridge",
-    "frets": 21,
-    "tuners": "Vintage-Style",
-    "colour": "Vintage Blonde",
-    "fretboard": "Maple",
-    "description": "A vintage-inspired Telecaster with classic tones.",
-    "detailedDescription": "The Fender Vintera '50s Telecaster captures the essence of the 1950s with its vintage-inspired design. Its single-coil pickups deliver authentic tones, while the fixed bridge ensures stability. With 21 frets and a maple fretboard, this guitar is perfect for players seeking a retro aesthetic.",
-    "price": 1300,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
-  },
-  {
-    "brand": "Fender",
-    "shape": "Stratocaster",
-    "name": "Deluxe Roadhouse",
-    "series": "Deluxe",
-    "pickups": "Noiseless Single-Coil",
-    "tremolo": "2-Point Synchronized Tremolo",
-    "frets": 22,
-    "tuners": "Locking Tuners",
-    "colour": "Olympic White",
-    "fretboard": "Rosewood",
-    "description": "A Stratocaster with deluxe features.",
-    "detailedDescription": "The Fender Deluxe Roadhouse Stratocaster offers premium features for discerning players. Its noiseless single-coil pickups provide clear tones, while the 2-point synchronized tremolo ensures smooth playability. With 22 frets and a rosewood fretboard, this guitar is perfect for players seeking a high-performance instrument.",
-    "price": 1700,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
-  },
-  {
-    "brand": "Fender",
-    "shape": "Jazzmaster",
-    "name": "Noventa",
-    "series": "Noventa",
-    "pickups": "P90",
-    "tremolo": "Floating Tremolo",
-    "frets": 22,
-    "tuners": "Standard Cast/Sealed",
-    "colour": "Surf Green",
-    "fretboard": "Maple",
-    "description": "A Jazzmaster with a bold sound.",
-    "detailedDescription": "The Fender Noventa Jazzmaster features a bold sound with its P90 pickups. Its floating tremolo adds expressive capabilities, while the maple fretboard ensures smooth playability. With 22 frets, this guitar is perfect for players seeking a unique tone and style.",
-    "price": 1500,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
-  },
-  {
-    "brand": "Fender",
-    "shape": "Jaguar",
-    "name": "Player Series",
-    "series": "Player",
-    "pickups": "Single-Coil",
-    "tremolo": "Floating Tremolo",
-    "frets": 22,
-    "tuners": "Standard Cast/Sealed",
-    "colour": "Candy Apple Red",
-    "fretboard": "Rosewood",
-    "description": "A modern Jaguar with classic features.",
-    "detailedDescription": "The Fender Player Series Jaguar combines modern playability with classic features. Its single-coil pickups deliver versatile tones, while the floating tremolo adds expressive control. With 22 frets and a rosewood fretboard, this guitar is perfect for players seeking a contemporary instrument with vintage charm.",
-    "price": 1400,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": []
   }
 ];
 
@@ -186,7 +102,7 @@ const gibson = [
     "description": "A classic guitar with rich, warm tones.",
     "detailedDescription": "The Gibson Les Paul Standard '50s pays homage to the original design with humbucker pickups for thick, powerful sound. Featuring a Tune-O-Matic bridge and 22 frets on a rosewood fretboard, it’s a favorite for rock and blues players seeking vintage vibe and modern reliability.",
     "price": 2500,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [],
   },
   {
     "brand": "Gibson",
@@ -202,7 +118,7 @@ const gibson = [
     "description": "A lightweight guitar with a biting tone.",
     "detailedDescription": "The Gibson SG Standard offers a sleek double-cutaway body and dual humbuckers for aggressive, versatile tones. With a Tune-O-Matic bridge and 22 frets, this guitar is a rock icon known for its playability and distinctive edge.",
     "price": 1800,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [],
   },
   {
     "brand": "Gibson",
@@ -218,7 +134,7 @@ const gibson = [
     "description": "A semi-hollow guitar with a versatile sound.",
     "detailedDescription": "The Gibson ES-335 Traditional blends hollowbody warmth with solidbody sustain, thanks to its humbucker pickups. Featuring a Tune-O-Matic bridge and rosewood fretboard with 22 frets, it’s ideal for jazz, blues, and rock players alike.",
     "price": 3000,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [],
   },
   {
     "brand": "Gibson",
@@ -234,7 +150,7 @@ const gibson = [
     "description": "A luxurious guitar with premium features.",
     "detailedDescription": "The Gibson Les Paul Custom exudes elegance with its gold hardware and humbucker pickups delivering rich tones. Equipped with a Tune-O-Matic bridge and an ebony fretboard with 22 frets, it’s a top-tier choice for discerning players.",
     "price": 4500,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [],
   },
   {
     "brand": "Gibson",
@@ -250,7 +166,7 @@ const gibson = [
     "description": "A bold guitar with a unique design.",
     "detailedDescription": "The Gibson Explorer Standard features an angular body and humbucker pickups for a heavy, aggressive sound. With a Tune-O-Matic bridge and 22 frets on a rosewood fretboard, it’s perfect for players who want to stand out.",
     "price": 2000,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [],
   },
   {
     "brand": "Gibson",
@@ -266,7 +182,7 @@ const gibson = [
     "description": "A striking guitar with a distinctive tone.",
     "detailedDescription": "The Gibson Firebird V boasts a reverse body and humbucker pickups for a unique, bright sound. Its Tune-O-Matic bridge and 22-fret rosewood fretboard make it a standout choice for adventurous musicians.",
     "price": 2200,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [],
   },
   {
     "brand": "Gibson",
@@ -282,7 +198,7 @@ const gibson = [
     "description": "A contemporary take on a classic design.",
     "detailedDescription": "The Gibson Les Paul Modern updates the iconic design with humbucker pickups and modern features like a Tune-O-Matic bridge and locking tuners. With 22 frets on an ebony fretboard, it’s built for today’s players.",
     "price": 2800,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [],
   },
   {
     "brand": "Gibson",
@@ -298,7 +214,7 @@ const gibson = [
     "description": "A modernized SG with extended range.",
     "detailedDescription": "The Gibson SG Modern enhances the classic SG with humbuckers and 24 frets for extended playability. Featuring a Tune-O-Matic bridge and locking tuners, it’s a versatile choice for contemporary guitarists.",
     "price": 2300,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [],
   },
   {
     "brand": "Gibson",
@@ -314,7 +230,7 @@ const gibson = [
     "description": "A compact semi-hollow with big tone.",
     "detailedDescription": "The Gibson ES-339 Custom offers a smaller semi-hollow body with humbucker pickups for a rich, resonant sound. With a Tune-O-Matic bridge and 22 frets on a rosewood fretboard, it’s perfect for players seeking comfort and versatility.",
     "price": 3200,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [],
   },
   {
     "brand": "Gibson",
@@ -330,7 +246,7 @@ const gibson = [
     "description": "A streamlined guitar for pure performance.",
     "detailedDescription": "The Gibson Les Paul Studio delivers the classic Les Paul tone with humbucker pickups in a no-frills package. Featuring a Tune-O-Matic bridge and 22 frets on a rosewood fretboard, it’s a workhorse for gigging musicians.",
     "price": 1600,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [],
   }
 ];
 
@@ -349,7 +265,7 @@ const ibanez = [
     "description": "A reliable guitar for modern players.",
     "detailedDescription": "The Ibanez RG421 offers a sleek RG shape with dual humbucker pickups for powerful tones. Its fixed bridge ensures tuning stability, and with 24 frets on a rosewood fretboard, it’s ideal for shredders and rock enthusiasts on a budget.",
     "price": 300,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [],
   },
   {
     "brand": "Ibanez",
@@ -365,7 +281,7 @@ const ibanez = [
     "description": "A throwback guitar with modern playability.",
     "detailedDescription": "The Ibanez RG Genesis RG550 revives the ‘80s classic with HSH pickups for versatile tones. Featuring an Edge tremolo and 24 frets on a maple fretboard, it’s a vibrant choice for players who love dive bombs and high-speed runs.",
     "price": 1000,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [],
   },
   {
     "brand": "Ibanez",
@@ -381,7 +297,7 @@ const ibanez = [
     "description": "A sleek guitar with a lightweight feel.",
     "detailedDescription": "The Ibanez S670QM features a contoured S-shape body and HSH pickups for a wide tonal range. With an Edge-Zero II tremolo and 24 frets on a jatoba fretboard, it’s built for speed and comfort in a striking finish.",
     "price": 600,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [],
   },
   {
     "brand": "Ibanez",
@@ -397,7 +313,7 @@ const ibanez = [
     "description": "A premium guitar for versatile players.",
     "detailedDescription": "The Ibanez AZ242BC from the Premium series offers dual humbuckers and a Gotoh T1502 tremolo for smooth playability. With 24 frets on a roasted maple fretboard, it’s designed for precision and comfort across genres.",
     "price": 1300,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [],
   },
   {
     "brand": "Ibanez",
@@ -413,7 +329,7 @@ const ibanez = [
     "description": "A high-end guitar with stunning looks.",
     "detailedDescription": "The Ibanez RG652AHMFX Prestige boasts dual humbuckers and an Edge tremolo for top-tier performance. With 24 frets on a birdseye maple fretboard, its eye-catching finish matches its exceptional playability.",
     "price": 1500,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [],
   },
   {
     "brand": "Ibanez",
@@ -429,7 +345,7 @@ const ibanez = [
     "description": "Steve Vai’s iconic signature guitar.",
     "detailedDescription": "The Ibanez JEM7V, designed with Steve Vai, features HSH pickups and an Edge tremolo for wild tonal possibilities. With 24 frets on an ebony fretboard and a monkey grip handle, it’s a legend in the shred world.",
     "price": 3000,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [],
   },
   {
     "brand": "Ibanez",
@@ -445,7 +361,7 @@ const ibanez = [
     "description": "A minimalist guitar with bold tone.",
     "detailedDescription": "The Ibanez FR800 offers a streamlined FR shape with dual humbuckers and a fixed bridge for rock-solid tuning stability. With 24 frets on a rosewood fretboard, it’s perfect for heavy riffing and sleek design lovers.",
     "price": 900,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [],
   },
   {
     "brand": "Ibanez",
@@ -461,7 +377,7 @@ const ibanez = [
     "description": "A versatile guitar with a warm tone.",
     "detailedDescription": "The Ibanez SA460QM blends HSS pickups with a T102 tremolo for a mix of classic and modern sounds. With 22 frets on a jatoba fretboard, it’s a great all-rounder for players exploring multiple styles.",
     "price": 500,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [],
   },
   {
     "brand": "Ibanez",
@@ -477,7 +393,7 @@ const ibanez = [
     "description": "A striking guitar for heavy tones.",
     "detailedDescription": "The Ibanez RGA42FM features a sculpted RG body with dual humbuckers and a fixed bridge for aggressive, stable sound. With 24 frets on a jatoba fretboard, it’s built for metal and hard rock enthusiasts.",
     "price": 400,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [],
   },
   {
     "brand": "Ibanez",
@@ -493,7 +409,7 @@ const ibanez = [
     "description": "Paul Gilbert’s signature shred machine.",
     "detailedDescription": "The Ibanez PGM50, crafted with Paul Gilbert, delivers dual humbuckers and a fixed bridge for precise, high-speed playing. With 24 frets on a rosewood fretboard, it’s a dream for technical guitarists.",
     "price": 1400,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [],
   }
 ];
 
@@ -512,7 +428,7 @@ const jackson = [
     "description": "A shredder’s dream with bold tones.",
     "detailedDescription": "The Jackson SL3X DX Soloist features a triple-humbucker setup for crushing tones, paired with a Floyd Rose double-locking tremolo for extreme stability. With 24 frets on a laurel fretboard, it’s built for speed and aggression.",
     "price": 700,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [],
   },
   {
     "brand": "Jackson",
@@ -528,7 +444,7 @@ const jackson = [
     "description": "A budget-friendly guitar for heavy riffs.",
     "detailedDescription": "The Jackson JS32 DKA Dinky offers dual humbuckers and a Floyd Rose tremolo for dive-bombing fun. With 24 frets on an amaranth fretboard, it’s a solid entry-level choice for metal players.",
     "price": 350,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [],
   },
   {
     "brand": "Jackson",
@@ -544,7 +460,7 @@ const jackson = [
     "description": "A premium guitar with a sharp edge.",
     "detailedDescription": "The Jackson KE2 Kelly from the USA Series features dual humbuckers and a Floyd Rose Original tremolo for top-tier performance. With 24 frets on an ebony fretboard, its angular design screams attitude.",
     "price": 4000,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [],
   },
   {
     "brand": "Jackson",
@@ -560,7 +476,7 @@ const jackson = [
     "description": "A bold guitar for aggressive players.",
     "detailedDescription": "The Jackson KVXMG King V delivers dual humbuckers and a Floyd Rose Special tremolo for wild, stable playability. With 24 frets on a laurel fretboard, its V-shaped body is a metal icon.",
     "price": 800,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [],
   },
   {
     "brand": "Jackson",
@@ -576,7 +492,7 @@ const jackson = [
     "description": "A tribute to Randy Rhoads’ legacy.",
     "detailedDescription": "The Jackson RRX24 Rhoads features dual humbuckers and a Floyd Rose Special tremolo, honoring its namesake’s style. With 24 frets on a laurel fretboard, it’s perfect for technical, high-energy playing.",
     "price": 750,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [],
   },
   {
     "brand": "Jackson",
@@ -592,7 +508,7 @@ const jackson = [
     "description": "A professional-grade shred machine.",
     "detailedDescription": "The Jackson SL2 Pro Series Soloist offers dual humbuckers and a Floyd Rose 1000 Series tremolo for precise, aggressive tones. With 24 frets on an ebony fretboard, it’s built for speed and durability.",
     "price": 1000,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [],
   },
   {
     "brand": "Jackson",
@@ -608,7 +524,7 @@ const jackson = [
     "description": "A vibrant guitar with modern flair.",
     "detailedDescription": "The Jackson DK2MQ Pro Dinky features dual humbuckers and a Floyd Rose 1000 Series tremolo for dynamic performance. With 24 frets on a maple fretboard and a quilted maple top, it’s as stunning as it is playable.",
     "price": 1100,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [],
   },
   {
     "brand": "Jackson",
@@ -624,7 +540,7 @@ const jackson = [
     "description": "An extreme guitar for heavy tones.",
     "detailedDescription": "The Jackson WRX24M Warrior offers dual humbuckers and a fixed bridge for rock-solid stability. With 24 frets on a maple fretboard, its radical shape delivers both style and substance.",
     "price": 650,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [],
   },
   {
     "brand": "Jackson",
@@ -640,7 +556,7 @@ const jackson = [
     "description": "A high-octane guitar with retro roots.",
     "detailedDescription": "The Jackson SDX San Dimas blends ‘80s vibe with modern specs, featuring dual humbuckers and a Floyd Rose Special tremolo. With 24 frets on a laurel fretboard, it’s a standout for bold players.",
     "price": 700,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [],
   },
   {
     "brand": "Jackson",
@@ -656,7 +572,7 @@ const jackson = [
     "description": "A flagship guitar for elite performers.",
     "detailedDescription": "The Jackson SL1 USA Select Soloist features an HSH pickup configuration and a Floyd Rose Original tremolo for unmatched versatility. With 24 frets on an ebony fretboard, it’s a premium choice for serious shredders.",
     "price": 4500,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [],
   }
 ];
 
@@ -675,7 +591,7 @@ const gretch = [
     "description": "A versatile semi-hollow with classic twang.",
     "detailedDescription": "The Gretsch G2622 Streamliner offers dual humbuckers and a Bigsby B50 vibrato for that signature Gretsch shimmer. With 22 frets on a laurel fretboard, it’s perfect for players seeking vintage tone with modern playability.",
     "price": 500,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [],
   },
   {
     "brand": "Gretsch",
@@ -691,7 +607,7 @@ const gretch = [
     "description": "A luxurious hollow-body icon.",
     "detailedDescription": "The Gretsch G6136T White Falcon features Filter’Tron pickups and a Bigsby B6 vibrato for rich, sparkling tones. With 22 frets on an ebony fretboard, its ornate design makes it a standout for stage and studio.",
     "price": 3500,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [],
   },
   {
     "brand": "Gretsch",
@@ -707,7 +623,7 @@ const gretch = [
     "description": "A semi-hollow with modern punch.",
     "detailedDescription": "The Gretsch G6228 Players Edition Jet delivers Filter’Tron pickups and a Bigsby B7 vibrato for a blend of twang and power. With 22 frets on a rosewood fretboard, it’s built for performance and style.",
     "price": 2200,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [],
   },
   {
     "brand": "Gretsch",
@@ -723,7 +639,7 @@ const gretch = [
     "description": "A retro guitar with bold tone.",
     "detailedDescription": "The Gretsch G6134T-58 Vintage Select Penguin offers Filter’Tron pickups and a Bigsby B3C vibrato for classic Gretsch jangle. With 22 frets on an ebony fretboard, it’s a nod to ‘50s elegance with modern playability.",
     "price": 2500,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [],
   },
   {
     "brand": "Gretsch",
@@ -739,7 +655,7 @@ const gretch = [
     "description": "A hollow-body with timeless appeal.",
     "detailedDescription": "The Gretsch G5420T Electromatic features Filter’Tron pickups and a Bigsby B60 vibrato for that quintessential Gretsch sound. With 22 frets on a rosewood fretboard, it’s an affordable entry into hollow-body heaven.",
     "price": 900,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [],
   },
   {
     "brand": "Gretsch",
@@ -755,7 +671,7 @@ const gretch = [
     "description": "A compact guitar with big tone.",
     "detailedDescription": "The Gretsch G5230T Electromatic Jet offers Filter’Tron pickups and a Bigsby B50 vibrato in a chambered double-cut body. With 22 frets on a laurel fretboard, it’s perfect for rockabilly and beyond.",
     "price": 600,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [],
   },
   {
     "brand": "Gretsch",
@@ -771,7 +687,7 @@ const gretch = [
     "description": "A smaller Falcon with pro features.",
     "detailedDescription": "The Gretsch G6655TG Players Edition Falcon Jr. features Filter’Tron pickups and a Bigsby B7GP vibrato in a compact semi-hollow body. With 22 frets on an ebony fretboard, it’s a pro-grade axe with flair.",
     "price": 2800,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [],
   },
   {
     "brand": "Gretsch",
@@ -787,7 +703,7 @@ const gretch = [
     "description": "A vintage-inspired hollow-body gem.",
     "detailedDescription": "The Gretsch G6118T-60 Vintage Select Anniversary boasts Filter’Tron pickups and a Bigsby B6 vibrato for authentic ‘60s tone. With 22 frets on a rosewood fretboard, it’s a tribute to Gretsch’s golden era.",
     "price": 2300,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [],
   },
   {
     "brand": "Gretsch",
@@ -803,7 +719,7 @@ const gretch = [
     "description": "A full-bodied guitar with rich resonance.",
     "detailedDescription": "The Gretsch G6609 Broadkaster features Filter’Tron pickups and a Bigsby B7 vibrato for deep, resonant tones. With 22 frets on a rosewood fretboard, its hollow-body design shines in any setting.",
     "price": 2600,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [],
   },
   {
     "brand": "Gretsch",
@@ -819,7 +735,7 @@ const gretch = [
     "description": "A compact semi-hollow with punchy tone.",
     "detailedDescription": "The Gretsch G2655T Streamliner Center Block Jr. offers dual humbuckers and a Bigsby B50 vibrato in a smaller body with a center block for feedback resistance. With 22 frets on a laurel fretboard, it’s a versatile performer.",
     "price": 550,
-    "images": ["https://res.cloudinary.com/dx8d5hlk1/image/upload/v1742943524/epiphone2_ivfdkx.jpg"],
+    "images": [],
   }
 ];
 

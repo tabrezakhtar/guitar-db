@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const guitarSchema = new mongoose.Schema({
   brand: {
     type: String,
-    required: true,
+    required: false,
   },
   shape: {
     type: String,
@@ -45,9 +45,13 @@ const guitarSchema = new mongoose.Schema({
     type: String,
     required: false
   },
+  detailedDescription: {
+    type: String,
+    required: false
+  },
   images: {
     type: [String],
-    required: true
+    required: false
   }
 })
 
