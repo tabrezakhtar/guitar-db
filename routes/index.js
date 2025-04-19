@@ -1,17 +1,17 @@
 const express = require("express");
 const router = express.Router();
-const guitarRoutes = require("./guitars");
+const equipmentRoutes = require("./equipment");
 const userRoutes = require("./users");
 
-//guitars
-router.get("/guitars/", guitarRoutes.get);
-router.get("/guitar/", guitarRoutes.getById);
-router.get("/guitars/filterBy", guitarRoutes.filter);
-router.post("/guitars/add", guitarRoutes.add);
-router.put("/guitars/update/:id", guitarRoutes.update);
-router.delete("/guitars/remove/:id", guitarRoutes.remove);
-router.delete("/guitars/deleteImage/:id", guitarRoutes.deleteImage);
-router.get("/guitar/settings", guitarRoutes.settings);
+//equipment
+router.get("/equipment/", equipmentRoutes.get);
+router.get("/equipment/", equipmentRoutes.getById);
+router.get("/equipment/filterBy", equipmentRoutes.filter);
+router.post("/equipment/add", equipmentRoutes.add);
+router.put("/equipment/update/:id", equipmentRoutes.update);
+router.delete("/equipment/remove/:id", equipmentRoutes.remove);
+router.delete("/equipment/deleteImage/:id", equipmentRoutes.deleteImage);
+router.get("/equipment/settings", equipmentRoutes.settings);
 
 //login
 router.post("/users/login", userRoutes.login);
