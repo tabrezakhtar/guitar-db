@@ -4,8 +4,8 @@ const equipmentRoutes = require("./equipment");
 const userRoutes = require("./users");
 
 //equipment
-router.get("/equipment/", equipmentRoutes.get);
-router.get("/equipment/", equipmentRoutes.getById);
+router.get("/equipmentList/", equipmentRoutes.get);
+router.get("/equipmentById/", equipmentRoutes.getById);
 router.get("/equipment/filterBy", equipmentRoutes.filter);
 router.post("/equipment/add", equipmentRoutes.add);
 router.put("/equipment/update/:id", equipmentRoutes.update);
