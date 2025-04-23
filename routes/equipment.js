@@ -218,18 +218,17 @@ async function deleteCloudinaryImages(images) {
   });
 
   try {
-    const results = [];
-    
-    for (const image of images) {
+    const deletePromises = images.map((image) => {
       const publicId = getPublicIdFromUrl(image);
       console.log("publicid", publicId);
       
       if (publicId) {
-        const result = await cloudinary.uploader.destroy(publicId, { invalidate: true });
-        results.push(result);
+        return cloudinary.uploader.destroy(publicId, { invalidate: true });
       }
-    }
+      return Promise.resolve();
+    });
     
+    const results = await Promise.all(deletePromises);
     console.log(results);
     return results;
   } catch (err) {
