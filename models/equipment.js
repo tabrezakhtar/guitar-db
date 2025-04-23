@@ -32,7 +32,6 @@ const AmpSchema = new Schema({
 
 const PedalSchema = new Schema({
   effectType: String,
-  controls: [String]
 });
 
 const Equipment = mongoose.model("Equipment", EquipmentSchema);

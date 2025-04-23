@@ -191,10 +191,19 @@ async function deleteImage(req, res) {
 
 function getPublicIdFromUrl(url) {
   try {
+    // Extract everything after /upload/ but before file extension
+    const regex = /\/upload\/(?:v\d+\/)?(.+?)(?:\.[^.]+)?$/;
+    const match = url.match(regex);
+    
+    if (match && match[1]) {
+      return match[1];
+    }
+    
+    // Fallback to simpler extraction
+    console.log("Regex extraction failed for URL:", url);
     const parts = url.split("/");
-    const fileName = parts[parts.length - 1]; // Get the last part of the URL
-    const publicId = fileName.split(".")[0]; // Remove the file extension
-    return publicId;
+    const fileName = parts[parts.length - 1]; 
+    return fileName.split(".")[0]; 
   } catch (err) {
     console.error("Error extracting public ID from URL:", err);
     return null;
@@ -209,11 +218,20 @@ async function deleteCloudinaryImages(images) {
   });
 
   try {
-    const deletePromises = images.map((image) =>
-      cloudinary.uploader.destroy(getPublicIdFromUrl(image))
-    );
-
-    await Promise.all(deletePromises);
+    const results = [];
+    
+    for (const image of images) {
+      const publicId = getPublicIdFromUrl(image);
+      console.log("publicid", publicId);
+      
+      if (publicId) {
+        const result = await cloudinary.uploader.destroy(publicId, { invalidate: true });
+        results.push(result);
+      }
+    }
+    
+    console.log(results);
+    return results;
   } catch (err) {
     console.log({ message: err.message });
   }
