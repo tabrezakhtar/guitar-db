@@ -51,8 +51,8 @@ async function get(req, res) {
   try {
     const items = await model.find().skip(skip).limit(limit);
     const total = await model.countDocuments();
-    const settings = await getSettings(type);
-    res.status(200).send({ items, settings, total, page, pages: Math.ceil(total / limit) });
+    // const settings = await getSettings(type);
+    res.status(200).send({ items, total, page, pages: Math.ceil(total / limit) });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -77,7 +77,7 @@ async function getById(req, res) {
 
   try {
     const item = await model.findById(req.query.id);
-    const settings = await getSettings(type);
+    // const settings = await getSettings(type);
     if (!item) {
       return res.status(404).json({ message: `${type} not found` });
     }
@@ -102,8 +102,8 @@ async function filter(req, res) {
 
   try {
     const items = await model.find(filter);
-    const settings = await getSettings(type);
-    res.status(200).send({ items, settings });
+    // const settings = await getSettings(type);
+    res.status(200).send({ items });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
