@@ -1,4 +1,4 @@
-const { Guitar, Amp, Pedal } = require("../models/equipment.js");
+const { Guitar, Amp, Pedal, Equipment } = require("../models/equipment.js");
 const { queryBuilder } = require("../query-builder.js");
 const cloudinary = require("cloudinary").v2;
 
@@ -38,7 +38,7 @@ async function getSettings(type) {
 }
 
 async function get(req, res) {
-  const type = req.query.type || "guitar";
+  const type = (req.query.type || "guitar").toLowerCase();
   const model = getModelByType(type);
   if (!model) {
     return res.status(400).send("Invalid type");
@@ -59,7 +59,7 @@ async function get(req, res) {
 }
 
 async function settings(req, res) {
-  const type = req.query.type || "guitar";
+  const type = (req.query.type || "guitar").toLowerCase();
   try {
     const settings = await getSettings(type);
     res.status(200).send({ settings });
@@ -69,7 +69,7 @@ async function settings(req, res) {
 }
 
 async function getById(req, res) {
-  const type = req.query.type || "guitar";
+  const type = (req.query.type || "guitar").toLowerCase();
   const model = getModelByType(type);
   if (!model) {
     return res.status(400).send("Invalid type");
@@ -88,7 +88,7 @@ async function getById(req, res) {
 }
 
 async function filter(req, res) {
-  const type = req.query.type || "guitar";
+  const type =(req.query.type || "guitar").toLowerCase();
   const model = getModelByType(type);
   if (!model) {
     return res.status(400).send("Invalid type");
@@ -110,25 +110,32 @@ async function filter(req, res) {
 }
 
 async function add(req, res) {
-  const type = req.body.type || "guitar";
+  console.log(1);
+  const type = (req.query.type || "guitar").toLowerCase();
+  console.log(2);
   const model = getModelByType(type);
+  console.log(3);
   if (!model) {
     return res.status(400).send("Invalid type");
   }
+  console.log(4);
 
   const newEquipment = new model(req.body);
-
+  console.log(5);
   try {
     const savedEquipment = await newEquipment.save();
+    console.log(6);
     console.log("Saved equipment: ", savedEquipment);
+    console.log(7);
     res.status(201).json(savedEquipment);
   } catch (err) {
+    console.log(8);
     res.status(400).json({ message: err.message });
   }
 }
 
 async function update(req, res) {
-  const type = req.body.type || "guitar";
+  const type = (req.query.type || "guitar").toLowerCase();
   const model = getModelByType(type);
   if (!model) {
     return res.status(400).send("Invalid type");
@@ -146,36 +153,32 @@ async function update(req, res) {
 }
 
 async function remove(req, res) {
-  const type = req.query.type || "guitar";
-  const model = getModelByType(type);
-  if (!model) {
-    return res.status(400).send("Invalid type");
-  }
-
   try {
-    const itemToDelete = await model.findById(req.params.id);
+    const itemToDelete = await Equipment.findById(req.params.id);
+    console.log("remove",itemToDelete);
+    console.log("remove",4);
     if (!itemToDelete) {
-      return res.status(404).json({ message: `${type} not found` });
+      console.log("remove",5);
+      return res.status(404).json({ message: `Equipment not found` });
     }
-    await deleteCloudinaryImages(itemToDelete.images);
+
+    if (itemToDelete.images && itemToDelete.images.length > 0) {
+      await deleteCloudinaryImages(itemToDelete.images);
+    }
+    console.log("remove",6);
     await itemToDelete.deleteOne();
-    res.status(200).json({ message: `${type} deleted successfully` });
+    console.log("remove",7);
+    res.status(200).json({ message: `Equipment deleted successfully` });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 }
 
 async function deleteImage(req, res) {
-  const type = req.query.type || "guitar";
-  const model = getModelByType(type);
-  if (!model) {
-    return res.status(400).send("Invalid type");
-  }
-
   try {
-    const item = await model.findById(req.params.id);
+    const item = await Equipment.findById(req.params.id);
     if (!item) {
-      return res.status(404).json({ message: `${type} not found` });
+      return res.status(404).json({ message: `Equipment not found` });
     }
 
     const imageToDelete = item.images.find((image) => image === req.body.imageUrl);

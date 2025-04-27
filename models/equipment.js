@@ -27,7 +27,7 @@ const GuitarSchema = new Schema({
 
 const AmpSchema = new Schema({
   power: Number,
-  tubeType: String,
+  ampType: String,
 });
 
 const PedalSchema = new Schema({
