@@ -14,7 +14,10 @@ const EquipmentSchema = new Schema({
   comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
   images: [String],
   year: Number,
-  date: { type: Date, default: Date.now },
+  date: { 
+    type: Date, 
+    default: () => new Date(new Date().toISOString())
+  },
   colour: String,
   rating: { type: Number, default: 0 },
 });
@@ -43,7 +46,10 @@ const CommentSchema = new Schema({
   equipmentId: { type: Schema.Types.ObjectId, ref: "Equipment" },
   userId: { type: Schema.Types.ObjectId, ref: "User" },
   text: String,
-  date: { type: Date, default: Date.now }
+  date: { 
+    type: Date, 
+    default: () => new Date(new Date().toISOString())
+  }
 });
 
 const Comments = mongoose.model("Comment", CommentSchema);

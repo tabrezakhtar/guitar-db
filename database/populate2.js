@@ -249,7 +249,7 @@ function generateComments(equipmentIds, userIds) {
         equipmentId: equipment._id,
         userId: userIds[randomUserIndex],
         text: commentText,
-        date: pastDate
+        date: new Date(pastDate.toISOString())
       });
     }
   });
