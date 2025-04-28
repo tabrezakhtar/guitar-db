@@ -10,7 +10,7 @@ const EquipmentSchema = new Schema({
   why: String,
   recommendation: String,
   brand: String,
-  likes: { type: Schema.Types.ObjectId, ref: "User" },
+  likes: [{ type: Schema.Types.ObjectId, ref: "User" }],
   comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
   images: [String],
   year: Number,
