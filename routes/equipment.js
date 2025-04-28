@@ -50,9 +50,21 @@ async function get(req, res) {
 
   try {
     const items = await model.find().skip(skip).limit(limit);
+    
+    const itemsWithCommentCount = items.map(item => {
+      const itemObject = item.toObject();
+      itemObject.commentCount = item.comments ? item.comments.length : 0;
+      delete itemObject.comments;
+      return itemObject;
+    });
+    
     const total = await model.countDocuments();
-    // const settings = await getSettings(type);
-    res.status(200).send({ items, total, page, pages: Math.ceil(total / limit) });
+    res.status(200).send({ 
+      items: itemsWithCommentCount, 
+      total, 
+      page, 
+      pages: Math.ceil(total / limit) 
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -76,12 +88,16 @@ async function getById(req, res) {
   }
 
   try {
-    const item = await model.findById(req.query.id);
-    // const settings = await getSettings(type);
+    const item = await model.findById(req.query.id).populate("comments");
     if (!item) {
       return res.status(404).json({ message: `${type} not found` });
     }
-    res.status(200).json({ item, settings });
+    
+    // Add comment count to the item
+    const itemWithCommentCount = item.toObject();
+    itemWithCommentCount.commentCount = item.comments ? item.comments.length : 0;
+    
+    res.status(200).json({ item: itemWithCommentCount, settings: {} });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

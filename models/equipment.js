@@ -46,4 +46,6 @@ const CommentSchema = new Schema({
   date: { type: Date, default: Date.now }
 });
 
-module.exports = { Equipment, Guitar, Amp, Pedal, CommentSchema };
+const Comments = mongoose.model("Comment", CommentSchema);
+
+module.exports = { Equipment, Guitar, Amp, Pedal, Comments };
