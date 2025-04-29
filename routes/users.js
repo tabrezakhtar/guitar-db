@@ -60,16 +60,13 @@ async function register(req, res) {
 
 async function getUserProfile(req, res) {
   try {
-    const token = req.header("x-auth-token");
+    const userId = req.query.userId;
     
-    if (!token) {
-      return res.status(401).json({ message: "No token, authorization denied" });
+    if (!userId) {
+      return res.status(400).json({ message: "User ID is required" });
     }
     
-    const jwtSecret = process.env.JWT_SECRET;
-    const decoded = jwt.verify(token, jwtSecret);
-    
-    const user = await User.findById(decoded.id).select("-password");
+    const user = await User.findById(userId).select("username bio location website createdAt");
     
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -78,8 +75,8 @@ async function getUserProfile(req, res) {
     res.json(user);
   } catch (error) {
     console.log(error);
-    if (error.name === "JsonWebTokenError") {
-      return res.status(401).json({ message: "Invalid token" });
+    if (error.name === "CastError") {
+      return res.status(400).json({ message: "Invalid user ID format" });
     }
     res.status(500).json({ message: "Server error" });
   }
