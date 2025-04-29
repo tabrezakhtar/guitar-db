@@ -17,5 +17,6 @@ router.post("/equipment/addComment", equipmentRoutes.addComment);
 //login
 router.post("/users/login", userRoutes.login);
 router.post("/users/register", userRoutes.register);
+router.get("/users/profile", userRoutes.getUserProfile);
 
 module.exports = router;
