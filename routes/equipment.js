@@ -1,4 +1,4 @@
-const { Guitar, Amp, Pedal, Equipment } = require("../models/equipment.js");
+const { Guitar, Amp, Pedal, Equipment, Comments } = require("../models/equipment.js");
 const { queryBuilder } = require("../query-builder.js");
 const cloudinary = require("cloudinary").v2;
 
@@ -88,12 +88,14 @@ async function getById(req, res) {
   }
 
   try {
-    const item = await model.findById(req.query.id).populate("comments");
+    const item = await model.findById(req.query.id).populate({
+      path: "comments",
+      options: { sort: { date: -1 } }
+    });
     if (!item) {
       return res.status(404).json({ message: `${type} not found` });
     }
-    
-    // Add comment count to the item
+
     const itemWithCommentCount = item.toObject();
     itemWithCommentCount.commentCount = item.comments ? item.comments.length : 0;
     
@@ -208,6 +210,37 @@ async function deleteImage(req, res) {
   }
 }
 
+async function addComment(req, res) {
+  try {
+    const { equipmentId, userId, text } = req.body;
+    
+    if (!equipmentId || !userId || !text) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    const equipment = await Equipment.findById(equipmentId);
+    if (!equipment) {
+      return res.status(404).json({ message: "Equipment not found" });
+    }
+
+    const newComment = new Comments({
+      equipmentId,
+      userId,
+      text,
+      date: new Date(new Date().toISOString())
+    });
+
+    const savedComment = await newComment.save();
+
+    equipment.comments.push(savedComment._id);
+    await equipment.save();
+
+    res.status(201).json(savedComment);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+}
+
 function getPublicIdFromUrl(url) {
   try {
     // Extract everything after /upload/ but before file extension
@@ -255,4 +288,4 @@ async function deleteCloudinaryImages(images) {
   }
 }
 
-module.exports = { get, getById, filter, update, remove, deleteImage, settings, add };
+module.exports = { get, getById, filter, update, remove, deleteImage, settings, add, addComment };

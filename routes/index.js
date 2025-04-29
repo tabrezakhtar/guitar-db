@@ -12,6 +12,7 @@ router.put("/equipment/update/:id", equipmentRoutes.update);
 router.delete("/equipment/remove/:id", equipmentRoutes.remove);
 router.delete("/equipment/deleteImage/:id", equipmentRoutes.deleteImage);
 router.get("/equipment/settings", equipmentRoutes.settings);
+router.post("/equipment/addComment", equipmentRoutes.addComment);
 
 //login
 router.post("/users/login", userRoutes.login);
