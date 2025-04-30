@@ -18,5 +18,7 @@ router.post("/equipment/addComment", equipmentRoutes.addComment);
 router.post("/users/login", userRoutes.login);
 router.post("/users/register", userRoutes.register);
 router.get("/users/profile", userRoutes.getUserProfile);
+router.post("/users/createProfile", userRoutes.createUserProfile);
+router.post("/users/verifyMagicLink", userRoutes.verifyMagicLink);
 
 module.exports = router;
