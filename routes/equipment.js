@@ -41,7 +41,10 @@ async function get(req, res) {
   const type = (req.query.type || "guitar").toLowerCase();
   const model = getModelByType(type);
   if (!model) {
-    return res.status(400).send("Invalid type");
+    return res.status(400).send({ 
+      message: "Invalid type", 
+      errors: { type: "Invalid equipment type provided" } 
+    });
   }
 
   const page = parseInt(req.query.page) || 1;
@@ -66,7 +69,10 @@ async function get(req, res) {
       pages: Math.ceil(total / limit) 
     });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ 
+      message: err.message,
+      errors: "Failed to retrieve equipment data"
+    });
   }
 }
 
@@ -76,7 +82,10 @@ async function settings(req, res) {
     const settings = await getSettings(type);
     res.status(200).send({ settings });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ 
+      message: err.message,
+      errors: "Failed to retrieve settings"
+    });
   }
 }
 
@@ -84,7 +93,10 @@ async function getById(req, res) {
   const type = (req.query.type || "guitar").toLowerCase();
   const model = getModelByType(type);
   if (!model) {
-    return res.status(400).send("Invalid type");
+    return res.status(400).send({ 
+      message: "Invalid type", 
+      errors: { type: "Invalid equipment type provided" }
+    });
   }
 
   try {
@@ -93,7 +105,10 @@ async function getById(req, res) {
       options: { sort: { date: -1 } }
     });
     if (!item) {
-      return res.status(404).json({ message: `${type} not found` });
+      return res.status(404).json({ 
+        message: `${type} not found`,
+        errors: { id: `The requested ${type} could not be found` }
+      });
     }
 
     const itemWithCommentCount = item.toObject();
@@ -101,15 +116,21 @@ async function getById(req, res) {
     
     res.status(200).json({ item: itemWithCommentCount, settings: {} });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ 
+      message: err.message,
+      errors: "Failed to retrieve equipment details"
+    });
   }
 }
 
 async function filter(req, res) {
-  const type =(req.query.type || "guitar").toLowerCase();
+  const type = (req.query.type || "guitar").toLowerCase();
   const model = getModelByType(type);
   if (!model) {
-    return res.status(400).send("Invalid type");
+    return res.status(400).send({ 
+      message: "Invalid type", 
+      errors: "Invalid equipment type provided"
+    });
   }
 
   let filter = {};
@@ -120,35 +141,36 @@ async function filter(req, res) {
 
   try {
     const items = await model.find(filter);
-    // const settings = await getSettings(type);
     res.status(200).send({ items });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ 
+      message: err.message,
+      errors: "Failed to filter equipment data"
+    });
   }
 }
 
 async function add(req, res) {
-  console.log(1);
   const type = (req.query.type || "guitar").toLowerCase();
-  console.log(2);
   const model = getModelByType(type);
-  console.log(3);
   if (!model) {
-    return res.status(400).send("Invalid type");
+    return res.status(400).send({ 
+      message: "Invalid type",
+      errors: "Invalid equipment type provided"
+    });
   }
-  console.log(4);
 
   const newEquipment = new model(req.body);
-  console.log(5);
   try {
     const savedEquipment = await newEquipment.save();
-    console.log(6);
     console.log("Saved equipment: ", savedEquipment);
-    console.log(7);
     res.status(201).json(savedEquipment);
   } catch (err) {
-    console.log(8);
-    res.status(400).json({ message: err.message });
+   
+    res.status(400).json({ 
+      message: err.message,
+      errors: "Failed to save equipment"
+    });
   }
 }
 
@@ -156,39 +178,50 @@ async function update(req, res) {
   const type = (req.query.type || "guitar").toLowerCase();
   const model = getModelByType(type);
   if (!model) {
-    return res.status(400).send("Invalid type");
+    return res.status(400).send({ 
+      message: "Invalid type", 
+      errors: "Invalid equipment type provided"
+    });
   }
 
   try {
     const updatedEquipment = await model.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!updatedEquipment) {
-      return res.status(404).json({ message: `${type} not found` });
+      return res.status(404).json({ 
+        message: `${type} not found`,
+        errors: `The ${type} you're trying to update could not be found`
+      });
     }
     res.status(200).json(updatedEquipment);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
+  } catch (err) {    
+    res.status(400).json({ 
+      message: err.message,
+      errors: "Failed to update equipment"
+    });
   }
 }
 
 async function remove(req, res) {
   try {
     const itemToDelete = await Equipment.findById(req.params.id);
-    console.log("remove",itemToDelete);
-    console.log("remove",4);
     if (!itemToDelete) {
       console.log("remove",5);
-      return res.status(404).json({ message: `Equipment not found` });
+      return res.status(404).json({ 
+        message: "Equipment not found", 
+        errors: "The equipment you're trying to delete could not be found"
+      });
     }
 
     if (itemToDelete.images && itemToDelete.images.length > 0) {
       await deleteCloudinaryImages(itemToDelete.images);
     }
-    console.log("remove",6);
     await itemToDelete.deleteOne();
-    console.log("remove",7);
-    res.status(200).json({ message: `Equipment deleted successfully` });
+    res.status(200).json({ message: "Equipment deleted successfully" });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ 
+      message: err.message,
+      errors: "Failed to delete equipment"
+    });
   }
 }
 
@@ -196,17 +229,31 @@ async function deleteImage(req, res) {
   try {
     const item = await Equipment.findById(req.params.id);
     if (!item) {
-      return res.status(404).json({ message: `Equipment not found` });
+      return res.status(404).json({ 
+        message: "Equipment not found", 
+        errors: "The equipment associated with this image could not be found"
+      });
     }
 
     const imageToDelete = item.images.find((image) => image === req.body.imageUrl);
     console.log("Image to delete: ", imageToDelete);
+    
+    if (!imageToDelete) {
+      return res.status(404).json({ 
+        message: "Image not found", 
+        errors: "The specified image URL could not be found"
+      });
+    }
+    
     await deleteCloudinaryImages([imageToDelete]);
     item.images = item.images.filter((image) => image !== req.body.imageUrl);
     await item.save();
     res.status(200).json({ message: "Image deleted successfully" });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ 
+      message: err.message,
+      errors: "Failed to delete image"
+    });
   }
 }
 
@@ -215,12 +262,22 @@ async function addComment(req, res) {
     const { equipmentId, userId, text } = req.body;
     
     if (!equipmentId || !userId || !text) {
-      return res.status(400).json({ message: "Missing required fields" });
+      return res.status(400).json({ 
+        message: "Missing required fields",
+        errors: {
+          equipmentId: !equipmentId ? "Equipment ID is required" : undefined,
+          userId: !userId ? "User ID is required" : undefined,
+          text: !text ? "Comment text is required" : undefined
+        }
+      });
     }
 
     const equipment = await Equipment.findById(equipmentId);
     if (!equipment) {
-      return res.status(404).json({ message: "Equipment not found" });
+      return res.status(404).json({ 
+        message: "Equipment not found",
+        errors: "The specified equipment could not be found"
+      });
     }
 
     const newComment = new Comments({
@@ -237,13 +294,15 @@ async function addComment(req, res) {
 
     res.status(201).json(savedComment);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ 
+      message: err.message,
+      errors: "Failed to add comment"
+    });
   }
 }
 
 function getPublicIdFromUrl(url) {
   try {
-    // Extract everything after /upload/ but before file extension
     const regex = /\/upload\/(?:v\d+\/)?(.+?)(?:\.[^.]+)?$/;
     const match = url.match(regex);
     
@@ -251,7 +310,6 @@ function getPublicIdFromUrl(url) {
       return match[1];
     }
     
-    // Fallback to simpler extraction
     console.log("Regex extraction failed for URL:", url);
     const parts = url.split("/");
     const fileName = parts[parts.length - 1]; 
