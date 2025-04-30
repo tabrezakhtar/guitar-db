@@ -2,14 +2,14 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const EquipmentSchema = new Schema({
-  userId: { type: Schema.Types.ObjectId, ref: "User" },
-  name: String,
+  userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+  name: { type: String, required: true },
   price: String,
   type: String,
-  description: String,
+  description: { type: String, required: true },
   why: String,
   recommendation: String,
-  brand: String,
+  brand: { type: String, required: true },
   likes: [{ type: Schema.Types.ObjectId, ref: "User" }],
   comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
   images: [String],

@@ -1,9 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const equipmentRoutes = require("./equipment");
-const userRoutes = require("./users");
+const { login, register, getUserProfile, createUserProfile, updateUserProfile, verifyMagicLink } = require("./users");
 
-//equipment
 router.get("/equipmentList/", equipmentRoutes.get);
 router.get("/equipmentById/", equipmentRoutes.getById);
 router.get("/equipment/filterBy", equipmentRoutes.filter);
@@ -14,11 +13,11 @@ router.delete("/equipment/deleteImage/:id", equipmentRoutes.deleteImage);
 router.get("/equipment/settings", equipmentRoutes.settings);
 router.post("/equipment/addComment", equipmentRoutes.addComment);
 
-//login
-router.post("/users/login", userRoutes.login);
-router.post("/users/register", userRoutes.register);
-router.get("/users/profile", userRoutes.getUserProfile);
-router.post("/users/createProfile", userRoutes.createUserProfile);
-router.post("/users/verifyMagicLink", userRoutes.verifyMagicLink);
+router.post("/users/login", login);
+router.post("/users/register", register);
+router.get("/users/profile", getUserProfile);
+router.post("/users/createProfile", createUserProfile);
+router.put("/users/updateProfile", updateUserProfile);
+router.post("/users/verifyMagicLink", verifyMagicLink);
 
 module.exports = router;

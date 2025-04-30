@@ -117,18 +117,17 @@ async function createUserProfile(req, res) {
     });
   }
 
-  const { username, bio, location, website, email } = req.body;
+  const { username, bio, location, website } = req.body;
   const jwtSecret = process.env.JWT_SECRET;
 
   if (!username) {
     return res.status(400).json({ 
-      message: "Username and email are required",
-      errors: { username: "Username is required" }
+      message: "Username is required",
+      errors: "Username is required"
     });
   }
 
   try {
-    // Check if username already exists (with a different email)
     const existingUsername = await User.findOne({ username });
     if (existingUsername) {
       return res.status(400).json({
@@ -137,22 +136,12 @@ async function createUserProfile(req, res) {
       });
     }
 
-    let user = await User.findOne({ email });
-    
-    if (user) {
-      user.username = username;
-      user.bio = bio || user.bio;
-      user.location = location || user.location;
-      user.website = website || user.website;
-    } else {
-      user = new User({
-        username,
-        email,
-        bio,
-        location,
-        website
-      });
-    }
+    const user = new User({
+      username,
+      bio,
+      location,
+      website
+    });
 
     await user.save();
 
@@ -172,7 +161,6 @@ async function createUserProfile(req, res) {
     });
   } catch (error) {
     console.log(error);
-
     res.status(500).json({ 
       message: "Server error",
       errors: "An internal server error occurred"
@@ -245,4 +233,74 @@ async function verifyMagicLink(req, res) {
   }
 }
 
-module.exports = { login, register, getUserProfile, createUserProfile, verifyMagicLink };
+async function updateUserProfile(req, res) {
+  if (!req.body) {
+    return res.status(400).send({
+      message: "No request body provided",
+      errors: { body: "Request body is required" }
+    });
+  }
+
+  const { id, username, bio, location, website } = req.body;
+
+  if (!id) {
+    return res.status(400).json({ 
+      message: "User ID is required",
+      errors: { id: "User ID is required" }
+    });
+  }
+
+  if (!username) {
+    return res.status(400).json({ 
+      message: "Username is required",
+      errors: { username: "Username is required" }
+    });
+  }
+
+  try {
+    const existingUsername = await User.findOne({ username, _id: { $ne: id } });
+    if (existingUsername) {
+      return res.status(400).json({
+        message: "Username already exists",
+        errors: "This username is already taken"
+      });
+    }
+
+    let user = await User.findById(id);
+    
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+        errors: "No user found with this ID"
+      });
+    }
+
+    user.username = username;
+    user.bio = bio || user.bio;
+    user.location = location || user.location;
+    user.website = website || user.website;
+
+    await user.save();
+
+    res.status(200).json({ 
+      message: "Profile updated successfully",
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        bio: user.bio,
+        location: user.location,
+        website: user.website,
+        createdAt: user.createdAt
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ 
+      message: "Server error",
+      errors: "An internal server error occurred"
+    });
+  }
+}
+
+module.exports = { login, register, getUserProfile, createUserProfile, updateUserProfile, verifyMagicLink };
