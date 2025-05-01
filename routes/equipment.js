@@ -259,12 +259,12 @@ async function deleteImage(req, res) {
 
 async function addComment(req, res) {
   try {
-    const { equipmentId, userId, text } = req.body;
+    const { equipmentId, username, text } = req.body;
     
-    if (!equipmentId || !userId || !text) {
+    if (!equipmentId || !username || !text) {
       return res.status(400).json({ 
         message: "Missing required fields",
-        errors: "Missing required fields - Equipment Id, User Id, Comment text"
+        errors: "Missing required fields - Equipment Id, Username, Comment text"
       });
     }
 
@@ -278,7 +278,7 @@ async function addComment(req, res) {
 
     const newComment = new Comments({
       equipmentId,
-      userId,
+      username,
       text,
       date: new Date(new Date().toISOString())
     });

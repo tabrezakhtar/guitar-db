@@ -247,7 +247,7 @@ function generateComments(equipmentIds, userIds) {
       
       comments.push({
         equipmentId: equipment._id,
-        userId: userIds[randomUserIndex],
+        username: username,  // Using username string directly instead of userId
         text: commentText,
         date: new Date(pastDate.toISOString())
       });
