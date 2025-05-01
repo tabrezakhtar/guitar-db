@@ -27,7 +27,7 @@ async function login(req, res) {
     if (!isMatch) {
       return res.status(400).json({
         message: "Invalid credentials",
-        errors: { password: "Incorrect password" }
+        errors: "Incorrect password"
       });
     }
 
@@ -113,7 +113,7 @@ async function createUserProfile(req, res) {
   if (!req.body) {
     return res.status(400).send({
       message: "No request body provided",
-      errors: { body: "Request body is required" }
+      errors: "Request body is required"
     });
   }
 
@@ -237,7 +237,7 @@ async function updateUserProfile(req, res) {
   if (!req.body) {
     return res.status(400).send({
       message: "No request body provided",
-      errors: { body: "Request body is required" }
+      errors: "Request body is required"
     });
   }
 
@@ -246,14 +246,14 @@ async function updateUserProfile(req, res) {
   if (!id) {
     return res.status(400).json({ 
       message: "User ID is required",
-      errors: { id: "User ID is required" }
+      errors: "User ID is required"
     });
   }
 
   if (!username) {
     return res.status(400).json({ 
       message: "Username is required",
-      errors: { username: "Username is required" }
+      errors: "Username is required"
     });
   }
 

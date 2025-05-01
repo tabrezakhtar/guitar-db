@@ -43,7 +43,7 @@ async function get(req, res) {
   if (!model) {
     return res.status(400).send({ 
       message: "Invalid type", 
-      errors: { type: "Invalid equipment type provided" } 
+      errors: "Invalid equipment type provided"
     });
   }
 
@@ -95,7 +95,7 @@ async function getById(req, res) {
   if (!model) {
     return res.status(400).send({ 
       message: "Invalid type", 
-      errors: { type: "Invalid equipment type provided" }
+      errors: "Invalid equipment type provided"
     });
   }
 
@@ -107,7 +107,7 @@ async function getById(req, res) {
     if (!item) {
       return res.status(404).json({ 
         message: `${type} not found`,
-        errors: { id: `The requested ${type} could not be found` }
+        errors: `The requested ${type} could not be found`
       });
     }
 
@@ -264,11 +264,7 @@ async function addComment(req, res) {
     if (!equipmentId || !userId || !text) {
       return res.status(400).json({ 
         message: "Missing required fields",
-        errors: {
-          equipmentId: !equipmentId ? "Equipment ID is required" : undefined,
-          userId: !userId ? "User ID is required" : undefined,
-          text: !text ? "Comment text is required" : undefined
-        }
+        errors: "Missing required fields - Equipment Id, User Id, Comment text"
       });
     }
 
