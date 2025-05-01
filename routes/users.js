@@ -168,6 +168,78 @@ async function createUserProfile(req, res) {
   }
 }
 
+async function updateUserProfile(req, res) {
+  if (!req.body) {
+    return res.status(400).send({
+      message: "No request body provided",
+      errors: "Request body is required"
+    });
+  }
+
+  const { id, username, bio, location, website, avatarUrl } = req.body;
+
+  if (!id) {
+    return res.status(400).json({ 
+      message: "User ID is required",
+      errors: "User ID is required"
+    });
+  }
+
+  if (!username) {
+    return res.status(400).json({ 
+      message: "Username is required",
+      errors: "Username is required"
+    });
+  }
+
+  try {
+    const existingUsername = await User.findOne({ username, _id: { $ne: id } });
+    if (existingUsername) {
+      return res.status(400).json({
+        message: "Username already exists",
+        errors: "This username is already taken"
+      });
+    }
+
+    let user = await User.findById(id);
+    
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+        errors: "No user found with this ID"
+      });
+    }
+
+    user.username = username;
+    user.bio = bio || user.bio;
+    user.location = location || user.location;
+    user.website = website || user.website;
+    user.avatarUrl = avatarUrl || user.avatarUrl;
+
+    await user.save();
+
+    res.status(200).json({ 
+      message: "Profile updated successfully",
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        bio: user.bio,
+        location: user.location,
+        website: user.website,
+        createdAt: user.createdAt,
+        avatarUrl: user.avatarUrl
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ 
+      message: "Server error",
+      errors: "An internal server error occurred"
+    });
+  }
+}
+
 async function verifyMagicLink(req, res) {
   const { token } = req.body;
   const jwtSecret = process.env.JWT_SECRET;
@@ -226,76 +298,6 @@ async function verifyMagicLink(req, res) {
         errors: "Token has expired"
       });
     }
-    res.status(500).json({ 
-      message: "Server error",
-      errors: "An internal server error occurred"
-    });
-  }
-}
-
-async function updateUserProfile(req, res) {
-  if (!req.body) {
-    return res.status(400).send({
-      message: "No request body provided",
-      errors: "Request body is required"
-    });
-  }
-
-  const { id, username, bio, location, website } = req.body;
-
-  if (!id) {
-    return res.status(400).json({ 
-      message: "User ID is required",
-      errors: "User ID is required"
-    });
-  }
-
-  if (!username) {
-    return res.status(400).json({ 
-      message: "Username is required",
-      errors: "Username is required"
-    });
-  }
-
-  try {
-    const existingUsername = await User.findOne({ username, _id: { $ne: id } });
-    if (existingUsername) {
-      return res.status(400).json({
-        message: "Username already exists",
-        errors: "This username is already taken"
-      });
-    }
-
-    let user = await User.findById(id);
-    
-    if (!user) {
-      return res.status(404).json({
-        message: "User not found",
-        errors: "No user found with this ID"
-      });
-    }
-
-    user.username = username;
-    user.bio = bio || user.bio;
-    user.location = location || user.location;
-    user.website = website || user.website;
-
-    await user.save();
-
-    res.status(200).json({ 
-      message: "Profile updated successfully",
-      user: {
-        id: user._id,
-        username: user.username,
-        email: user.email,
-        bio: user.bio,
-        location: user.location,
-        website: user.website,
-        createdAt: user.createdAt
-      }
-    });
-  } catch (error) {
-    console.log(error);
     res.status(500).json({ 
       message: "Server error",
       errors: "An internal server error occurred"
