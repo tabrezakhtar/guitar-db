@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const equipmentRoutes = require("./equipment");
-const { login, register, getUserProfile, createUserProfile, updateUserProfile, verifyMagicLink } = require("./users");
+const { login, register, getUserProfile, createUserProfile, updateUserProfile, verifyMagicLink, deleteUserAvatar } = require("./users");
 
 router.get("/equipmentList/", equipmentRoutes.get);
 router.get("/equipmentById/", equipmentRoutes.getById);
@@ -19,5 +19,6 @@ router.get("/users/profile", getUserProfile);
 router.post("/users/createProfile", createUserProfile);
 router.put("/users/updateProfile", updateUserProfile);
 router.post("/users/verifyMagicLink", verifyMagicLink);
+router.delete("/users/deleteAvatar", deleteUserAvatar);
 
 module.exports = router;

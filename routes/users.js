@@ -2,6 +2,7 @@ require("dotenv").config();
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { deleteCloudinaryImages } = require("../helpers/cloudinary");
 
 async function login(req, res) {
   if (!req.body) {
@@ -221,7 +222,7 @@ async function updateUserProfile(req, res) {
     res.status(200).json({ 
       message: "Profile updated successfully",
       user: {
-        id: user._id,
+        _id: user._id,
         username: user.username,
         email: user.email,
         bio: user.bio,
@@ -297,4 +298,58 @@ async function verifyMagicLink(req, res) {
   }
 }
 
-module.exports = { login, register, getUserProfile, createUserProfile, updateUserProfile, verifyMagicLink };
+async function deleteUserAvatar(req, res) {
+  if (!req.body || !req.body.userId || !req.body.avatarUrl) {
+    return res.status(400).json({
+      message: "AvatarUrl is required",
+      errors: "User Id is required.  AvatarUrl is required"
+    });
+  }
+
+  const { avatarUrl, userId } = req.body;
+
+  try {
+    const user = await User.findById(userId);
+    
+    // if (!user) {
+    //   return res.status(404).json({
+    //     message: "User not found",
+    //     errors: "No user found with this ID"
+    //   });
+    // }
+
+    // if (!user.avatarUrl) {
+    //   return res.status(400).json({
+    //     message: "No avatar to delete",
+    //     errors: "This user does not have an avatar"
+    //   });
+    // }
+
+    await deleteCloudinaryImages([avatarUrl]);
+    
+    user.avatarUrl = null;
+    await user.save();
+
+    res.status(200).json({
+      message: "Avatar deleted successfully",
+      user: {
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        bio: user.bio,
+        location: user.location,
+        website: user.website,
+        createdAt: user.createdAt,
+        avatarUrl: null
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Server error",
+      errors: "An internal server error occurred"
+    });
+  }
+}
+
+module.exports = { login, register, getUserProfile, createUserProfile, updateUserProfile, verifyMagicLink, deleteUserAvatar };
