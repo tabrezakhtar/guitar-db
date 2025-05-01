@@ -275,15 +275,7 @@ async function verifyMagicLink(req, res) {
     // Return session token and user info
     res.json({
       token: sessionToken,
-      user: {
-        id: user._id,
-        username: user.username,
-        email: user.email,
-        bio: user.bio,
-        location: user.location,
-        website: user.website,
-        createdAt: user.createdAt
-      }
+      user
     });
   } catch (error) {
     console.log(error);
