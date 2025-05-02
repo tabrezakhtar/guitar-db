@@ -177,9 +177,9 @@ async function updateUserProfile(req, res) {
     });
   }
 
-  const { id, username, bio, location, website, avatarUrl } = req.body;
+  const { _id, username, bio, location, website, avatarUrl } = req.body;
 
-  if (!id) {
+  if (!_id) {
     return res.status(400).json({ 
       message: "User ID is required",
       errors: "User ID is required"
@@ -194,7 +194,7 @@ async function updateUserProfile(req, res) {
   }
 
   try {
-    const existingUsername = await User.findOne({ username, _id: { $ne: id } });
+    const existingUsername = await User.findOne({ username, _id: { $ne: _id } });
     if (existingUsername) {
       return res.status(400).json({
         message: "Username already exists",
@@ -202,7 +202,7 @@ async function updateUserProfile(req, res) {
       });
     }
 
-    let user = await User.findById(id);
+    let user = await User.findById(_id);
     
     if (!user) {
       return res.status(404).json({
