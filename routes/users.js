@@ -118,7 +118,7 @@ async function createUserProfile(req, res) {
     });
   }
 
-  const { username, bio, location, website } = req.body;
+  const { username, bio, location, website, avatarUrl } = req.body;
   const jwtSecret = process.env.JWT_SECRET;
 
   if (!username) {
@@ -141,7 +141,8 @@ async function createUserProfile(req, res) {
       username,
       bio,
       location,
-      website
+      website,
+      avatarUrl
     });
 
     await user.save();
