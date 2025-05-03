@@ -192,7 +192,11 @@ async function update(req, res) {
         errors: `The ${type} you're trying to update could not be found`
       });
     }
-    res.status(200).json(updatedEquipment);
+
+    const itemObject = updatedEquipment.toObject();
+    itemObject.commentCount = itemObject.comments ? itemObject.comments.length : 0;
+
+    res.status(200).json(itemObject);
   } catch (err) {    
     res.status(400).json({ 
       message: err.message,
