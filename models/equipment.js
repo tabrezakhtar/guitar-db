@@ -20,6 +20,7 @@ const EquipmentSchema = new Schema({
   },
   colour: String,
   rating: { type: Number, default: 0 },
+  tags: [{ type: Schema.Types.ObjectId, ref: "Tag" }],
 });
 
 const GuitarSchema = new Schema({

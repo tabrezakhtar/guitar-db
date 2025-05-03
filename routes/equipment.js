@@ -1,6 +1,7 @@
 const { Guitar, Amp, Pedal, Equipment, Comments } = require("../models/equipment.js");
 const { queryBuilder } = require("../query-builder.js");
 const { deleteCloudinaryImages } = require("../helpers/cloudinary");
+const Tag = require("../models/tag");
 
 function getModelByType(type) {
   switch (type) {
@@ -52,7 +53,10 @@ async function get(req, res) {
   const skip = (page - 1) * limit;
 
   try {
-    const items = await model.find().skip(skip).limit(limit);
+    const items = await model.find()
+      .skip(skip)
+      .limit(limit)
+      .populate("tags"); // Populate tags
     
     const itemsWithCommentCount = items.map(item => {
       const itemObject = item.toObject();
@@ -100,10 +104,13 @@ async function getById(req, res) {
   }
 
   try {
-    const item = await model.findById(req.query.id).populate({
-      path: "comments",
-      options: { sort: { date: -1 } }
-    });
+    const item = await model.findById(req.query.id)
+      .populate({
+        path: "comments",
+        options: { sort: { date: -1 } }
+      })
+      .populate("tags"); // Populate tags
+      
     if (!item) {
       return res.status(404).json({ 
         message: `${type} not found`,
@@ -140,7 +147,7 @@ async function filter(req, res) {
   }
 
   try {
-    const items = await model.find(filter);
+    const items = await model.find(filter).populate("tags"); // Populate tags
     res.status(200).send({ items });
   } catch (err) {
     res.status(500).json({ 
@@ -301,4 +308,27 @@ async function addComment(req, res) {
   }
 }
 
-module.exports = { get, getById, filter, update, remove, deleteImage, settings, add, addComment };
+async function getAllTags(req, res) {
+  try {
+    const tags = await Tag.find().sort({ name: 1 });
+    res.status(200).json({ tags });
+  } catch (err) {
+    res.status(500).json({ 
+      message: err.message,
+      errors: "Failed to retrieve tags"
+    });
+  }
+}
+
+module.exports = { 
+  get, 
+  getById, 
+  filter, 
+  update, 
+  remove, 
+  deleteImage, 
+  settings, 
+  add, 
+  addComment,
+  getAllTags
+};

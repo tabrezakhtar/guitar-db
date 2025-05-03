@@ -3,6 +3,7 @@ const fs = require("fs");
 const path = require("path");
 const { Guitar, Amp, Pedal, Comments } = require("../models/equipment");
 const User = require("../models/user");
+const Tag = require("../models/tag");
 
 const uri = "mongodb://localhost:27017/guitar-db";
 
@@ -23,6 +24,7 @@ const amps = loadJsonFile("amps.json").map(amp => {
   return amp;
 });
 const pedals = loadJsonFile("pedals.json");
+const tags = loadJsonFile("tags.json");
 
 // Generate realistic comments
 function generateComments(equipmentIds, userIds) {
@@ -265,13 +267,35 @@ function assignUsersToEquipment(equipment, userIds) {
   });
 }
 
+// Assign random tags to equipment
+function assignTagsToEquipment(equipment, tagIds) {
+  return equipment.map(item => {
+    // Determine how many tags to assign (1-4 tags per item)
+    const tagCount = Math.floor(Math.random() * 4) + 1;
+    
+    // Create a copy of the tag IDs array to shuffle
+    const availableTags = [...tagIds];
+    
+    // Simple shuffle algorithm to randomize tags
+    for (let i = availableTags.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [availableTags[i], availableTags[j]] = [availableTags[j], availableTags[i]];
+    }
+    
+    // Assign randomly selected tags
+    item.tags = availableTags.slice(0, tagCount);
+    
+    return item;
+  });
+}
+
 async function populateDatabase() {
   try {
     await mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     console.log("Connected to database");
 
     // Drop the collections if they exist
-    const collectionNames = ["equipment", "users", "comments"];
+    const collectionNames = ["equipment", "users", "comments", "tags"];
     for (const name of collectionNames) {
       const collections = await mongoose.connection.db.listCollections({ name }).toArray();
       if (collections.length > 0) {
@@ -285,19 +309,29 @@ async function populateDatabase() {
     console.log("Inserted users");
     const userIds = insertedUsers.map(user => user._id);
 
+    // Insert tags to get their IDs
+    const insertedTags = await Tag.insertMany(tags);
+    console.log(`Inserted ${insertedTags.length} tags`);
+    const tagIds = insertedTags.map(tag => tag._id);
+
     // Assign users to equipment
     const guitarsWithUsers = assignUsersToEquipment(guitars, userIds);
     const ampsWithUsers = assignUsersToEquipment(amps, userIds);
     const pedalsWithUsers = assignUsersToEquipment(pedals, userIds);
 
+    // Assign tags to equipment
+    const guitarsWithTags = assignTagsToEquipment(guitarsWithUsers, tagIds);
+    const ampsWithTags = assignTagsToEquipment(ampsWithUsers, tagIds);
+    const pedalsWithTags = assignTagsToEquipment(pedalsWithUsers, tagIds);
+
     // Insert equipment
-    const insertedGuitars = await Guitar.insertMany(guitarsWithUsers);
+    const insertedGuitars = await Guitar.insertMany(guitarsWithTags);
     console.log(`Inserted ${insertedGuitars.length} guitars`);
 
-    const insertedAmps = await Amp.insertMany(ampsWithUsers);
+    const insertedAmps = await Amp.insertMany(ampsWithTags);
     console.log(`Inserted ${insertedAmps.length} amps`);
 
-    const insertedPedals = await Pedal.insertMany(pedalsWithUsers);
+    const insertedPedals = await Pedal.insertMany(pedalsWithTags);
     console.log(`Inserted ${insertedPedals.length} pedals`);
 
     // Combine all equipment
@@ -339,7 +373,8 @@ async function populateDatabase() {
     - ${insertedGuitars.length} guitars
     - ${insertedAmps.length} amps
     - ${insertedPedals.length} pedals
-    - ${insertedComments.length} comments`);
+    - ${insertedComments.length} comments
+    - ${insertedTags.length} tags`);
   } catch (err) {
     console.error("Error populating database:", err);
   } finally {
