@@ -170,9 +170,9 @@ async function add(req, res) {
   const newEquipment = new model(req.body);
   try {
     const savedEquipment = await newEquipment.save();
-    const populatedEquipment = await savedEquipment.populate("tags").execPopulate();
-    console.log("Saved equipment: ", populatedEquipment);
-    res.status(201).json(populatedEquipment);
+    await savedEquipment.populate("tags");
+    console.log("Saved equipment: ", savedEquipment);
+    res.status(201).json(savedEquipment);
   } catch (err) {
     res.status(400).json({ 
       message: err.message,
