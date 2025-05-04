@@ -109,8 +109,8 @@ async function getById(req, res) {
         path: "comments",
         options: { sort: { date: -1 } }
       })
-      .populate("tags"); // Populate tags
-      
+      .populate("tags");
+
     if (!item) {
       return res.status(404).json({ 
         message: `${type} not found`,
@@ -170,10 +170,10 @@ async function add(req, res) {
   const newEquipment = new model(req.body);
   try {
     const savedEquipment = await newEquipment.save();
-    console.log("Saved equipment: ", savedEquipment);
-    res.status(201).json(savedEquipment);
+    const populatedEquipment = await savedEquipment.populate("tags").execPopulate();
+    console.log("Saved equipment: ", populatedEquipment);
+    res.status(201).json(populatedEquipment);
   } catch (err) {
-   
     res.status(400).json({ 
       message: err.message,
       errors: "Failed to save equipment"
@@ -192,7 +192,7 @@ async function update(req, res) {
   }
 
   try {
-    const updatedEquipment = await model.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const updatedEquipment = await model.findByIdAndUpdate(req.params.id, req.body, { new: true }).populate("tags");
     if (!updatedEquipment) {
       return res.status(404).json({ 
         message: `${type} not found`,
@@ -216,7 +216,6 @@ async function remove(req, res) {
   try {
     const itemToDelete = await Equipment.findById(req.params.id);
     if (!itemToDelete) {
-      console.log("remove",5);
       return res.status(404).json({ 
         message: "Equipment not found", 
         errors: "The equipment you're trying to delete could not be found"
