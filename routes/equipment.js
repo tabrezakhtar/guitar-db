@@ -51,15 +51,16 @@ async function get(req, res) {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const skip = (page - 1) * limit;
-  const sortBy = req.query.sortBy || "_id";
+  const sortBy = req.query.sortBy || "date";
   const sortOrder = req.query.sortOrder === "desc" ? -1 : 1;
 
   try {
     const items = await model.find()
+      .collation({ locale: "en", strength: 2 })
       .sort({ [sortBy]: sortOrder })
       .skip(skip)
       .limit(limit)
-      .populate("tags"); // Populate tags
+      .populate("tags");
     
     const itemsWithCommentCount = items.map(item => {
       const itemObject = item.toObject();
@@ -312,7 +313,9 @@ async function addComment(req, res) {
 
 async function getAllTags(req, res) {
   try {
-    const tags = await Tag.find().sort({ name: 1 });
+    const tags = await Tag.find()
+      .collation({ locale: "en", strength: 2 })
+      .sort({ name: 1 });
     res.status(200).json({ tags });
   } catch (err) {
     res.status(500).json({ 
