@@ -51,9 +51,12 @@ async function get(req, res) {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const skip = (page - 1) * limit;
+  const sortBy = req.query.sortBy || "_id";
+  const sortOrder = req.query.sortOrder === "desc" ? -1 : 1;
 
   try {
     const items = await model.find()
+      .sort({ [sortBy]: sortOrder })
       .skip(skip)
       .limit(limit)
       .populate("tags"); // Populate tags
