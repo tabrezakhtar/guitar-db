@@ -55,7 +55,21 @@ async function get(req, res) {
   const sortOrder = req.query.sortOrder === "desc" ? -1 : 1;
 
   try {
-    const items = await model.find()
+    // Parse tags if they exist in the query
+    let query = {};
+    
+    if (req.query.tags) {
+      try {
+        const tags = JSON.parse(req.query.tags);
+        if (Array.isArray(tags) && tags.length > 0) {
+          query.tags = { $in: tags };
+        }
+      } catch (err) {
+        console.error("Error parsing tags parameter:", err);
+      }
+    }
+    
+    const items = await model.find(query)
       .collation({ locale: "en", strength: 2 })
       .sort({ [sortBy]: sortOrder })
       .skip(skip)
@@ -69,7 +83,8 @@ async function get(req, res) {
       return itemObject;
     });
     
-    const total = await model.countDocuments();
+    // Count should also use the same tag filtering
+    const total = await model.countDocuments(query);
     res.status(200).send({ 
       items: itemsWithCommentCount, 
       total, 
