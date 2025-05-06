@@ -259,10 +259,10 @@ function generateComments(equipmentIds, userIds) {
   return comments;
 }
 
-// Add user ID to equipment
+// Add user to equipment
 function assignUsersToEquipment(equipment, userIds) {
   return equipment.map((item, index) => {
-    item.userId = userIds[index % userIds.length];
+    item.user = userIds[index % userIds.length];
     return item;
   });
 }

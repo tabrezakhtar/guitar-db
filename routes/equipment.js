@@ -74,7 +74,11 @@ async function get(req, res) {
       .sort({ [sortBy]: sortOrder })
       .skip(skip)
       .limit(limit)
-      .populate("tags");
+      .populate("tags")
+      .populate({
+        path: "user",
+        select: "_id username avatarUrl"
+      });
     
     const itemsWithCommentCount = items.map(item => {
       const itemObject = item.toObject();
@@ -128,7 +132,11 @@ async function getById(req, res) {
         path: "comments",
         options: { sort: { date: -1 } }
       })
-      .populate("tags");
+      .populate("tags")
+      .populate({
+        path: "user",
+        select: "_id username avatarUrl"
+      });
 
     if (!item) {
       return res.status(404).json({ 
@@ -166,7 +174,12 @@ async function filter(req, res) {
   }
 
   try {
-    const items = await model.find(filter).populate("tags"); // Populate tags
+    const items = await model.find(filter)
+      .populate("tags")
+      .populate({
+        path: "user",
+        select: "_id username avatarUrl"
+      });
     res.status(200).send({ items });
   } catch (err) {
     res.status(500).json({ 
@@ -189,7 +202,12 @@ async function add(req, res) {
   const newEquipment = new model(req.body);
   try {
     const savedEquipment = await newEquipment.save();
-    await savedEquipment.populate("tags");
+    await savedEquipment
+      .populate("tags")
+      .populate({
+        path: "user",
+        select: "_id username avatarUrl"
+      });
     console.log("Saved equipment: ", savedEquipment);
     res.status(201).json(savedEquipment);
   } catch (err) {
@@ -211,7 +229,14 @@ async function update(req, res) {
   }
 
   try {
-    const updatedEquipment = await model.findByIdAndUpdate(req.params.id, req.body, { new: true }).populate("tags");
+    const updatedEquipment = await model.findByIdAndUpdate(req.params.id, req.body, { new: true })
+      .populate("tags")
+      .populate("comments")
+      .populate({
+        path: "user",
+        select: "_id username avatarUrl"
+      });
+
     if (!updatedEquipment) {
       return res.status(404).json({ 
         message: `${type} not found`,
