@@ -157,6 +157,71 @@ async function getById(req, res) {
   }
 }
 
+async function getByUser(req, res) {
+  try {
+    const userId = req.params.userId;
+    
+    if (!userId) {
+      return res.status(400).json({ 
+        message: "Missing user ID", 
+        errors: "User ID is required"
+      });
+    }
+
+    const sortBy = req.query.sortBy || "date";
+    const sortOrder = req.query.sortOrder === "desc" ? -1 : 1;
+
+    let query = { user: userId };
+    
+    // Filter by equipment type if specified
+    if (req.query.type) {
+      const type = req.query.type.toLowerCase();
+      if (["guitar", "amp", "pedal"].includes(type)) {
+        query.__t = type.charAt(0).toUpperCase() + type.slice(1);
+      }
+    }
+    
+    // Filter by tags if specified
+    if (req.query.tags) {
+      try {
+        const tags = JSON.parse(req.query.tags);
+        if (Array.isArray(tags) && tags.length > 0) {
+          query.tags = { $in: tags };
+        }
+      } catch (err) {
+        console.error("Error parsing tags parameter:", err);
+      }
+    }
+
+    const items = await Equipment.find(query)
+      .collation({ locale: "en", strength: 2 })
+      .sort({ [sortBy]: sortOrder })
+      .populate("tags")
+      .populate({
+        path: "user",
+        select: "_id username avatarUrl"
+      });
+    
+    const itemsWithCommentCount = items.map(item => {
+      const itemObject = item.toObject();
+      itemObject.commentCount = item.comments ? item.comments.length : 0;
+      delete itemObject.comments;
+      return itemObject;
+    });
+    
+    const total = await Equipment.countDocuments(query);
+    res.status(200).send({ 
+      items: itemsWithCommentCount, 
+      total, 
+    });
+  } catch (err) {
+    res.status(500).json({ 
+      message: err.message,
+      errors: "Failed to retrieve user's equipment"
+    });
+  }
+}
+
 async function filter(req, res) {
   const type = (req.query.type || "guitar").toLowerCase();
   const model = getModelByType(type);
@@ -367,7 +432,8 @@ async function getAllTags(req, res) {
 
 module.exports = { 
   get, 
-  getById, 
+  getById,
+  getByUser, 
   filter, 
   update, 
   remove, 

@@ -13,6 +13,7 @@ router.delete("/equipment/deleteImage/:id", equipmentRoutes.deleteImage);
 router.get("/equipment/settings", equipmentRoutes.settings);
 router.post("/equipment/addComment", equipmentRoutes.addComment);
 router.get("/equipment/tags", equipmentRoutes.getAllTags);
+router.get("/equipment/user/:userId", equipmentRoutes.getByUser);
 
 router.post("/users/login", login);
 router.post("/users/register", register);
