@@ -264,17 +264,25 @@ async function add(req, res) {
     });
   }
 
-  const newEquipment = new model(req.body);
+  // Associate equipment with the authenticated user
+  const newEquipment = new model({
+    ...req.body,
+    user: req.userId // Set the user ID from the authenticated token
+  });
+
   try {
     const savedEquipment = await newEquipment.save();
-    await savedEquipment
+    
+    // Fix: Use execPopulate or individual populate calls
+    const populatedEquipment = await model.findById(savedEquipment._id)
       .populate("tags")
       .populate({
         path: "user",
         select: "_id username avatarUrl"
       });
-    console.log("Saved equipment: ", savedEquipment);
-    res.status(201).json(savedEquipment);
+    
+    console.log("Saved equipment: ", populatedEquipment);
+    res.status(201).json(populatedEquipment);
   } catch (err) {
     res.status(400).json({ 
       message: err.message,
@@ -378,12 +386,12 @@ async function deleteImage(req, res) {
 
 async function addComment(req, res) {
   try {
-    const { equipmentId, username, text } = req.body;
+    const { equipmentId, text } = req.body;
     
-    if (!equipmentId || !username || !text) {
+    if (!equipmentId || !text) {
       return res.status(400).json({ 
         message: "Missing required fields",
-        errors: "Missing required fields - Equipment Id, Username, Comment text"
+        errors: "Missing required fields - Equipment Id, Comment text"
       });
     }
 
@@ -395,9 +403,19 @@ async function addComment(req, res) {
       });
     }
 
+    // Get the user from the database to ensure we have the latest username
+    const user = await require("../models/user").findById(req.userId);
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+        errors: "Your user account could not be found"
+      });
+    }
+
     const newComment = new Comments({
       equipmentId,
-      username,
+      username: user.username,
+      userId: req.userId,
       text,
       date: new Date(new Date().toISOString())
     });

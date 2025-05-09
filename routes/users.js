@@ -353,4 +353,66 @@ async function deleteUserAvatar(req, res) {
   }
 }
 
-module.exports = { login, register, getUserProfile, createUserProfile, updateUserProfile, verifyMagicLink, deleteUserAvatar };
+async function refreshToken(req, res) {
+  const token = req.header("Authorization")?.replace("Bearer ", "") || req.header("x-auth-token");
+
+  if (!token) {
+    return res.status(400).json({
+      message: "No token provided",
+      errors: "Token is required"
+    });
+  }
+  
+  const jwtSecret = process.env.JWT_SECRET;
+
+  try {
+    // Verify the existing token
+    const decoded = jwt.verify(token, jwtSecret, { ignoreExpiration: true });
+    
+    // Find user based on id in token
+    const user = await User.findById(decoded.id);
+    
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+        errors: "No user found with this ID"
+      });
+    }
+    
+    // Check if token is within a reasonable refresh window (e.g., expired within last 7 days)
+    const currentTime = Math.floor(Date.now() / 1000);
+    const tokenExpiry = decoded.exp;
+    const refreshWindowSeconds = 7 * 24 * 60 * 60; // 7 days in seconds
+    
+    if (currentTime - tokenExpiry > refreshWindowSeconds) {
+      return res.status(401).json({
+        message: "Token expired beyond refresh window",
+        errors: "Please log in again"
+      });
+    }
+    
+    // Generate a new token
+    const newToken = jwt.sign(
+      { id: user._id },
+      jwtSecret,
+      { expiresIn: "15m" }
+    );
+    
+    // Return the new token
+    res.json({ token: newToken });
+  } catch (error) {
+    console.log(error);
+    if (error.name === "JsonWebTokenError") {
+      return res.status(401).json({
+        message: "Invalid token",
+        errors: "Invalid token"
+      });
+    }
+    res.status(500).json({
+      message: "Server error",
+      errors: "An internal server error occurred"
+    });
+  }
+}
+
+module.exports = { login, register, getUserProfile, createUserProfile, updateUserProfile, verifyMagicLink, deleteUserAvatar, refreshToken };
