@@ -11,6 +11,7 @@ router.post("/equipment/add", verifyToken, equipmentRoutes.add);
 router.put("/equipment/update/:id", verifyToken, checkEquipmentOwnership, equipmentRoutes.update);
 router.delete("/equipment/remove/:id", verifyToken, checkEquipmentOwnership, equipmentRoutes.remove);
 router.delete("/equipment/deleteImage/:id", verifyToken, checkEquipmentOwnership, equipmentRoutes.deleteImage);
+router.post("/equipment/toggleLike/:id", verifyToken, equipmentRoutes.toggleLike);
 router.get("/equipment/settings", equipmentRoutes.settings);
 router.post("/equipment/addComment", verifyToken, equipmentRoutes.addComment);
 router.get("/equipment/tags", equipmentRoutes.getAllTags);

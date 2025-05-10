@@ -84,6 +84,8 @@ async function get(req, res) {
       const itemObject = item.toObject();
       itemObject.commentCount = item.comments ? item.comments.length : 0;
       delete itemObject.comments;
+      itemObject.likesCount = item.likes ? item.likes.length : 0;
+      delete itemObject.likes;
       return itemObject;
     });
     
@@ -147,6 +149,8 @@ async function getById(req, res) {
 
     const itemWithCommentCount = item.toObject();
     itemWithCommentCount.commentCount = item.comments ? item.comments.length : 0;
+    itemWithCommentCount.likesCount = item.likes ? item.likes.length : 0;
+    delete itemWithCommentCount.likes;
     
     res.status(200).json({ item: itemWithCommentCount, settings: {} });
   } catch (err) {
@@ -206,6 +210,8 @@ async function getByUser(req, res) {
       const itemObject = item.toObject();
       itemObject.commentCount = item.comments ? item.comments.length : 0;
       delete itemObject.comments;
+      itemObject.likesCount = item.likes ? item.likes.length : 0;
+      delete itemObject.likes;
       return itemObject;
     });
     
@@ -434,6 +440,56 @@ async function addComment(req, res) {
   }
 }
 
+async function toggleLike(req, res) {
+  try {
+    const equipmentId = req.params.id;
+    const userId = req.userId; // From auth middleware
+
+    const equipment = await Equipment.findById(equipmentId);
+    
+    if (!equipment) {
+      return res.status(404).json({ 
+        message: "Equipment not found", 
+        errors: "The equipment you're trying to like could not be found"
+      });
+    }
+    
+    // Check if user is trying to like their own equipment
+    if (equipment.user.toString() === userId) {
+      return res.status(400).json({
+        message: "Cannot like your own equipment",
+        errors: "You cannot like your own equipment"
+      });
+    }
+    
+    // Check if user has already liked this equipment
+    const likeIndex = equipment.likes.findIndex(
+      like => like.toString() === userId
+    );
+    
+    if (likeIndex === -1) {
+      // User hasn't liked it yet, so add the like
+      equipment.likes.push(userId);
+    } else {
+      // User has already liked it, so remove the like
+      equipment.likes.splice(likeIndex, 1);
+    }
+    
+    await equipment.save();
+    
+    res.status(200).json({ 
+      message: likeIndex === -1 ? "Equipment liked" : "Equipment unliked",
+      likes: equipment.likes.length
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: err.message,
+      errors: "Failed to update like status"
+    });
+  }
+}
+
 async function getAllTags(req, res) {
   try {
     const tags = await Tag.find()
@@ -459,5 +515,6 @@ module.exports = {
   settings, 
   add, 
   addComment,
-  getAllTags
+  getAllTags,
+  toggleLike
 };
