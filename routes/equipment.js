@@ -16,6 +16,31 @@ function getModelByType(type) {
   }
 }
 
+function processEquipmentItems(items, keepData = false) {
+  if (Array.isArray(items)) {
+    return items.map(item => processEquipmentItem(item, keepData));
+  }
+  return processEquipmentItem(items, keepData);
+}
+
+function processEquipmentItem(item, keepData = false) {
+  if (!item) return null;
+  
+  const itemObject = item.toObject ? item.toObject() : { ...item };
+  
+  // Add counts
+  itemObject.commentCount = item.comments ? item.comments.length : 0;
+  itemObject.likesCount = item.likes ? item.likes.length : 0;
+  
+  // Remove data if not needed
+  if (!keepData) {
+    // delete itemObject.comments;
+    delete itemObject.likes;
+  }
+  
+  return itemObject;
+}
+
 async function getSettings(type) {
   const model = getModelByType(type);
   if (!model) {
@@ -80,19 +105,12 @@ async function get(req, res) {
         select: "_id username avatarUrl"
       });
     
-    const itemsWithCommentCount = items.map(item => {
-      const itemObject = item.toObject();
-      itemObject.commentCount = item.comments ? item.comments.length : 0;
-      delete itemObject.comments;
-      itemObject.likesCount = item.likes ? item.likes.length : 0;
-      delete itemObject.likes;
-      return itemObject;
-    });
+    const processedItems = processEquipmentItems(items);
     
     // Count should also use the same tag filtering
     const total = await model.countDocuments(query);
     res.status(200).send({ 
-      items: itemsWithCommentCount, 
+      items: processedItems, 
       total, 
       page, 
       pages: Math.ceil(total / limit) 
@@ -147,12 +165,9 @@ async function getById(req, res) {
       });
     }
 
-    const itemWithCommentCount = item.toObject();
-    itemWithCommentCount.commentCount = item.comments ? item.comments.length : 0;
-    itemWithCommentCount.likesCount = item.likes ? item.likes.length : 0;
-    delete itemWithCommentCount.likes;
+    const processedItem = processEquipmentItem(item, true); // Keep comments data
     
-    res.status(200).json({ item: itemWithCommentCount, settings: {} });
+    res.status(200).json({ item: processedItem, settings: {} });
   } catch (err) {
     res.status(500).json({ 
       message: err.message,
@@ -206,14 +221,7 @@ async function getByUser(req, res) {
         select: "_id username avatarUrl"
       });
     
-    const itemsWithCommentCount = items.map(item => {
-      const itemObject = item.toObject();
-      itemObject.commentCount = item.comments ? item.comments.length : 0;
-      delete itemObject.comments;
-      itemObject.likesCount = item.likes ? item.likes.length : 0;
-      delete itemObject.likes;
-      return itemObject;
-    });
+    const itemsWithCommentCount = processEquipmentItems(items);
     
     const total = await Equipment.countDocuments(query);
     res.status(200).send({ 
@@ -251,7 +259,9 @@ async function filter(req, res) {
         path: "user",
         select: "_id username avatarUrl"
       });
-    res.status(200).send({ items });
+      
+    const processedItems = processEquipmentItems(items);
+    res.status(200).send({ items: processedItems });
   } catch (err) {
     res.status(500).json({ 
       message: err.message,
@@ -287,8 +297,10 @@ async function add(req, res) {
         select: "_id username avatarUrl"
       });
     
-    console.log("Saved equipment: ", populatedEquipment);
-    res.status(201).json(populatedEquipment);
+    const processedItem = processEquipmentItem(populatedEquipment);
+    
+    console.log("Saved equipment: ", processedItem);
+    res.status(201).json(processedItem);
   } catch (err) {
     res.status(400).json({ 
       message: err.message,
@@ -323,8 +335,7 @@ async function update(req, res) {
       });
     }
 
-    const itemObject = updatedEquipment.toObject();
-    itemObject.commentCount = itemObject.comments ? itemObject.comments.length : 0;
+    const itemObject = processEquipmentItem(updatedEquipment, true);
 
     res.status(200).json(itemObject);
   } catch (err) {    
