@@ -34,7 +34,6 @@ function processEquipmentItem(item, keepData = false) {
   
   // Remove data if not needed
   if (!keepData) {
-    // delete itemObject.comments;
     delete itemObject.likes;
   }
   
@@ -150,7 +149,11 @@ async function getById(req, res) {
     const item = await model.findById(req.query.id)
       .populate({
         path: "comments",
-        options: { sort: { date: -1 } }
+        options: { sort: { date: -1 } },
+        populate: {
+          path: "user",
+          select: "_id username avatarUrl"
+        }
       })
       .populate("tags")
       .populate({
@@ -165,7 +168,7 @@ async function getById(req, res) {
       });
     }
 
-    const processedItem = processEquipmentItem(item, true); // Keep comments data
+    const processedItem = processEquipmentItem(item, true);
     
     res.status(200).json({ item: processedItem, settings: {} });
   } catch (err) {
@@ -403,7 +406,7 @@ async function deleteImage(req, res) {
 
 async function addComment(req, res) {
   try {
-    const { equipmentId, avatarUrl, text } = req.body;
+    const { equipmentId, text } = req.body;
     
     if (!equipmentId || !text) {
       return res.status(400).json({ 
@@ -420,20 +423,9 @@ async function addComment(req, res) {
       });
     }
 
-    // Get the user from the database to ensure we have the latest username
-    const user = await require("../models/user").findById(req.userId);
-    if (!user) {
-      return res.status(404).json({
-        message: "User not found",
-        errors: "Your user account could not be found"
-      });
-    }
-
     const newComment = new Comments({
       equipmentId,
-      username: user.username,
-      avatarUrl,
-      userId: req.userId,
+      user: req.userId,
       text,
       date: new Date(new Date().toISOString())
     });
@@ -443,7 +435,13 @@ async function addComment(req, res) {
     equipment.comments.push(savedComment._id);
     await equipment.save();
 
-    res.status(201).json(savedComment);
+    const populatedComment = await Comments.findById(savedComment._id)
+      .populate({
+      path: "user",
+      select: "_id username avatarUrl"
+      });
+
+    res.status(201).json(populatedComment);
   } catch (err) {
     res.status(500).json({ 
       message: err.message,
