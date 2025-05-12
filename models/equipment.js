@@ -46,6 +46,7 @@ const Pedal = Equipment.discriminator("Pedal", PedalSchema);
 const CommentSchema = new Schema({
   equipmentId: { type: Schema.Types.ObjectId, ref: "Equipment" },
   username: String,
+  avatarUrl: String,
   text: String,
   date: { 
     type: Date, 

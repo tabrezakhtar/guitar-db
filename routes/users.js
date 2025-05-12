@@ -118,7 +118,7 @@ async function createUserProfile(req, res) {
     });
   }
 
-  const { username, bio, location, website, avatarUrl } = req.body;
+  const { username, bio, location, website, avatarUrl, email } = req.body;
   const jwtSecret = process.env.JWT_SECRET;
 
   if (!username) {
@@ -137,12 +137,16 @@ async function createUserProfile(req, res) {
       });
     }
 
+    const salt = await bcrypt.genSalt(10);
+    const hashedEmail = await bcrypt.hash(email, salt);
+
     const user = new User({
       username,
       bio,
       location,
       website,
-      avatarUrl
+      avatarUrl,
+      email: hashedEmail
     });
 
     await user.save();
@@ -225,7 +229,6 @@ async function updateUserProfile(req, res) {
       user: {
         _id: user._id,
         username: user.username,
-        email: user.email,
         bio: user.bio,
         location: user.location,
         website: user.website,

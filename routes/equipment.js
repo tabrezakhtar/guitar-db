@@ -403,7 +403,7 @@ async function deleteImage(req, res) {
 
 async function addComment(req, res) {
   try {
-    const { equipmentId, text } = req.body;
+    const { equipmentId, avatarUrl, text } = req.body;
     
     if (!equipmentId || !text) {
       return res.status(400).json({ 
@@ -432,6 +432,7 @@ async function addComment(req, res) {
     const newComment = new Comments({
       equipmentId,
       username: user.username,
+      avatarUrl,
       userId: req.userId,
       text,
       date: new Date(new Date().toISOString())
