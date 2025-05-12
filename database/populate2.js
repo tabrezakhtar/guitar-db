@@ -208,6 +208,7 @@ function generateComments(equipmentIds, userIds) {
     for (let i = 0; i < commentCount; i++) {
       // Select a random user to be the commenter
       const randomUserIndex = Math.floor(Math.random() * userIds.length);
+      const userId = userIds[randomUserIndex];
       const user = users[randomUserIndex];
       const username = user.username;
       
@@ -249,7 +250,7 @@ function generateComments(equipmentIds, userIds) {
       
       comments.push({
         equipmentId: equipment._id,
-        username: username,  // Using username string directly instead of userId
+        user: userId,  // Using user ObjectId reference instead of username
         text: commentText,
         date: new Date(pastDate.toISOString())
       });
