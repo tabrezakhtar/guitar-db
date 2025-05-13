@@ -21,6 +21,7 @@ const EquipmentSchema = new Schema({
   colour: String,
   rating: { type: Number, default: 0 },
   tags: [{ type: Schema.Types.ObjectId, ref: "Tag" }],
+  url: { type: String, validate: { validator: v => /^https?:\/\/[^\s$.?#].[^\s]*$/.test(v), message: props => `${props.value} is not a valid URL` } }
 });
 
 const GuitarSchema = new Schema({
