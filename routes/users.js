@@ -3,7 +3,9 @@ const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { deleteCloudinaryImages } = require("../helpers/cloudinary");
+const { Resend } = require("resend");
 
+// unused
 async function login(req, res) {
   if (!req.body) {
     return res.status(400).send({
@@ -43,6 +45,7 @@ async function login(req, res) {
   }
 }
 
+// unused
 async function register(req, res) {
   if (!req.body) {
     return res.status(400).send({
@@ -146,7 +149,8 @@ async function createUserProfile(req, res) {
       location,
       website,
       avatarUrl,
-      email: hashedEmail
+      email: hashedEmail,
+      verified: false,
     });
 
     await user.save();
@@ -159,6 +163,34 @@ async function createUserProfile(req, res) {
     
     const baseUrl = process.env.FRONTEND_URL || "http://localhost:3000";
     const magicLink = `${baseUrl}/login/magic?token=${magicToken}`;
+
+    // Send magic link email
+    try {
+      const resend = new Resend(process.env.EMAIL);
+      const { data, error } = await resend.emails.send({
+        from: "Acme <onboarding@resend.dev>",
+        to: ["delivered@resend.dev"],
+        subject: "Welcome to Guitar DB - Verify Your Account",
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h1>Welcome to Guitar DB!</h1>
+            <p>Thank you for registering, ${username}!</p>
+            <p>Click the link below to verify your account:</p>
+            <p><a href="${magicLink}" style="display: inline-block; background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;">Verify Account</a></p>
+            <p>Or copy and paste this link:</p>
+            <p>${magicLink}</p>
+            <p>This link will expire in 7 days.</p>
+            <p style="font-size: 12px; color: #666;">If you did not request this email, please delete it or ignore it. Someone may have entered your email address by mistake.</p>
+          </div>
+        `,
+      });
+
+      if (error) {
+        console.error("Error sending email:", error);
+      }
+    } catch (emailError) {
+      console.error("Failed to send magic link email:", emailError);
+    }
 
     res.status(201).json({ 
       message: "Profile created successfully",
@@ -262,7 +294,7 @@ async function verifyMagicLink(req, res) {
     
     // Find user based on id in token
     const user = await User.findById(decoded.id);
-    
+
     if (!user) {
       return res.status(404).json({ 
         message: "User not found",
@@ -276,6 +308,9 @@ async function verifyMagicLink(req, res) {
       jwtSecret,
       { expiresIn: "1h" }
     );
+
+    user.verified = true;
+    await user.save();
     
     // Return session token and user info
     res.json({
