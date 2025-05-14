@@ -1,6 +1,7 @@
 require("dotenv").config();
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
+const { Comments } = require("../models/equipment.js");
 const jwt = require("jsonwebtoken");
 const { deleteCloudinaryImages } = require("../helpers/cloudinary");
 const { Resend } = require("resend");
@@ -102,8 +103,22 @@ async function getUserProfile(req, res) {
         errors: "No user found with this ID"
       });
     }
-    
-    res.json(user);
+
+    // Get user's 10 most recent comments
+    const recentComments = await Comments.find({ user: userId })
+      .sort({ date: -1 })
+      .limit(10)
+      .select("_id text equipmentId date")
+      .populate({
+        path: "user",
+        select: "_id username avatarUrl"
+      })
+      .populate({
+        path: "equipmentId",
+        select: "_id name brand",
+      })
+
+    res.json({ user, comments: recentComments });
   } catch (error) {
     console.log(error);
     res.status(500).json({ 
