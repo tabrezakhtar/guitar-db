@@ -1,7 +1,7 @@
 require("dotenv").config();
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
-const { Comments } = require("../models/equipment.js");
+const { Comments, Equipment } = require("../models/equipment.js");
 const jwt = require("jsonwebtoken");
 const { deleteCloudinaryImages } = require("../helpers/cloudinary");
 const { Resend } = require("resend");
@@ -116,9 +116,13 @@ async function getUserProfile(req, res) {
       .populate({
         path: "equipmentId",
         select: "_id name brand",
-      })
+      });
 
-    res.json({ user, comments: recentComments });
+    // Find equipment that has this user's ID in the likes array
+    const likedEquipment = await Equipment.find({ likes: userId })
+      .select("_id name brand");
+
+    res.json({ user, comments: recentComments, likedEquipment });
   } catch (error) {
     console.log(error);
     res.status(500).json({ 
@@ -183,8 +187,8 @@ async function createUserProfile(req, res) {
     try {
       const resend = new Resend(process.env.EMAIL);
       const { data, error } = await resend.emails.send({
-        from: "Acme <onboarding@resend.dev>",
-        to: ["delivered@resend.dev"],
+        from: "Guitar DB <guitardb@resend.dev>",
+        to: ["tabrez.akhtar@hotmail.co.uk"],
         subject: "Welcome to Guitar DB - Verify Your Account",
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
