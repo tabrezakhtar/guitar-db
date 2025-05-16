@@ -187,8 +187,8 @@ async function createUserProfile(req, res) {
     try {
       const resend = new Resend(process.env.EMAIL);
       const { data, error } = await resend.emails.send({
-        from: "Guitar DB <guitardb@resend.dev>",
-        to: ["tabrez.akhtar@hotmail.co.uk"],
+        from: "Guitar DB <onboarding@resend.dev>",
+        to: ["delivered@resend.dev"],
         subject: "Welcome to Guitar DB - Verify Your Account",
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
