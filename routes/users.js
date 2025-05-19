@@ -120,7 +120,7 @@ async function getUserProfile(req, res) {
 
     // Find equipment that has this user's ID in the likes array
     const likedEquipment = await Equipment.find({ likes: userId })
-      .select("_id name brand");
+      .select("_id name brand images");
 
     res.json({ user, comments: recentComments, likedEquipment });
   } catch (error) {
