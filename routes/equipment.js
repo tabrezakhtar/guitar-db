@@ -11,6 +11,10 @@ function getModelByType(type) {
       return Amp;
     case "pedal":
       return Pedal;
+    case "":
+    case null:
+    case undefined:
+      return Equipment;
     default:
       return null;
   }
@@ -63,7 +67,7 @@ async function getSettings(type) {
 }
 
 async function get(req, res) {
-  const type = (req.query.type || "guitar").toLowerCase();
+  const type = req.query.type ? req.query.type.toLowerCase() : "";
   const model = getModelByType(type);
   if (!model) {
     return res.status(400).send({ 
@@ -123,7 +127,7 @@ async function get(req, res) {
 }
 
 async function settings(req, res) {
-  const type = (req.query.type || "guitar").toLowerCase();
+  const type = req.query.type ? req.query.type.toLowerCase() : "";
   try {
     const settings = await getSettings(type);
     res.status(200).send({ settings });
@@ -136,7 +140,7 @@ async function settings(req, res) {
 }
 
 async function getById(req, res) {
-  const type = (req.query.type || "guitar").toLowerCase();
+  const type = req.query.type ? req.query.type.toLowerCase() : "";
   const model = getModelByType(type);
   if (!model) {
     return res.status(400).send({ 
@@ -240,7 +244,7 @@ async function getByUser(req, res) {
 }
 
 async function filter(req, res) {
-  const type = (req.query.type || "guitar").toLowerCase();
+  const type = req.query.type ? req.query.type.toLowerCase() : "";
   const model = getModelByType(type);
   if (!model) {
     return res.status(400).send({ 
@@ -274,7 +278,7 @@ async function filter(req, res) {
 }
 
 async function add(req, res) {
-  const type = (req.query.type || "guitar").toLowerCase();
+  const type = req.query.type ? req.query.type.toLowerCase() : "";
   const model = getModelByType(type);
   if (!model) {
     return res.status(400).send({ 
@@ -313,7 +317,7 @@ async function add(req, res) {
 }
 
 async function update(req, res) {
-  const type = (req.query.type || "guitar").toLowerCase();
+  const type = req.query.type ? req.query.type.toLowerCase() : "";
   const model = getModelByType(type);
   if (!model) {
     return res.status(400).send({ 
