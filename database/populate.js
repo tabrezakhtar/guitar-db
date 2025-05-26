@@ -1,770 +1,502 @@
-const { MongoClient } = require("mongodb");
+const mongoose = require("mongoose");
+const fs = require("fs");
+const path = require("path");
+const { Guitar, Amp, Pedal, Bass, Accessory, Comments } = require("../models/equipment");
+const User = require("../models/user");
+const Tag = require("../models/tag");
 
-const uri = "mongodb://localhost:27017";
-const dbName = "guitar-db";
-const collectionName = "guitars";
+const uri = "mongodb://localhost:27017/guitar-db";
 
-const fender = [
-  {
-    "brand": "Fender",
-    "shape": "Stratocaster",
-    "name": "American Professional II",
-    "series": "Professional",
-    "pickups": "Single-Coil",
-    "tremolo": "2-Point Synchronized Tremolo",
-    "frets": 22,
-    "tuners": "Standard Cast/Sealed",
-    "colour": "Yellow",
-    "fretboard": "Maple",
-    "description": "A versatile guitar with a classic design.",
-    "detailedDescription": "The Fender American Professional II Stratocaster features a timeless design with a modern twist. Its single-coil pickups deliver crisp tones, while the 2-point synchronized tremolo ensures smooth playability. With 22 frets and a maple fretboard, this guitar is perfect for professionals seeking versatility and reliability across various genres.",
-    "price": 1500,
-    "images": []
-  },
-  {
-    "brand": "Fender",
-    "shape": "Telecaster",
-    "name": "American Ultra",
-    "series": "Ultra",
-    "pickups": "Single-Coil",
-    "tremolo": "Fixed Bridge",
-    "frets": 22,
-    "tuners": "Deluxe Cast/Sealed",
-    "colour": "Butterscotch Blonde",
-    "fretboard": "Rosewood",
-    "description": "A modern take on a classic Telecaster.",
-    "detailedDescription": "The Fender American Ultra Telecaster offers cutting-edge performance with a classic design. Its single-coil pickups provide a dynamic range of tones, while the fixed bridge ensures stability. With 22 frets and a rosewood fretboard, this guitar is ideal for players seeking modern features in a timeless instrument.",
-    "price": 1800,
-    "images": []
-  },
-  {
-    "brand": "Fender",
-    "shape": "Jazzmaster",
-    "name": "American Performer",
-    "series": "Performer",
-    "pickups": "Single-Coil",
-    "tremolo": "Floating Tremolo",
-    "frets": 22,
-    "tuners": "Standard Cast/Sealed",
-    "colour": "Sonic Blue",
-    "fretboard": "Maple",
-    "description": "A guitar for the modern performer.",
-    "detailedDescription": "The Fender American Performer Jazzmaster is designed for the modern musician. Its single-coil pickups deliver a wide range of tones, while the floating tremolo adds expressive capabilities. With 22 frets and a maple fretboard, this guitar is perfect for players seeking versatility and style.",
-    "price": 1400,
-    "images": []
-  },
-  {
-    "brand": "Fender",
-    "shape": "Jaguar",
-    "name": "American Original '60s",
-    "series": "Original",
-    "pickups": "Single-Coil",
-    "tremolo": "Floating Tremolo",
-    "frets": 22,
-    "tuners": "Vintage-Style",
-    "colour": "Fiesta Red",
-    "fretboard": "Rosewood",
-    "description": "A vintage-inspired Jaguar with modern playability.",
-    "detailedDescription": "The Fender American Original '60s Jaguar combines vintage aesthetics with modern playability. Its single-coil pickups provide authentic tones, while the floating tremolo offers expressive control. With 22 frets and a rosewood fretboard, this guitar is perfect for players seeking a retro vibe.",
-    "price": 2000,
-    "images": []
-  },
-  {
-    "brand": "Fender",
-    "shape": "Mustang",
-    "name": "Player Series",
-    "series": "Player",
-    "pickups": "Single-Coil",
-    "tremolo": "Dynamic Vibrato",
-    "frets": 22,
-    "tuners": "Standard Cast/Sealed",
-    "colour": "Seafoam Green",
-    "fretboard": "Maple",
-    "description": "A compact guitar with a unique sound.",
-    "detailedDescription": "The Fender Player Series Mustang is a compact guitar with a unique sound. Its single-coil pickups deliver bright tones, while the dynamic vibrato adds expressive capabilities. With 22 frets and a maple fretboard, this guitar is ideal for players seeking a smaller, versatile instrument.",
-    "price": 1200,
-    "images": []
+// Load data from JSON files
+function loadJsonFile(filename) {
+  const filePath = path.join(__dirname, "data", filename);
+  const fileContent = fs.readFileSync(filePath, "utf8");
+  return JSON.parse(fileContent);
+}
+
+const users = loadJsonFile("users.json");
+const guitars = loadJsonFile("guitars.json");
+const amps = loadJsonFile("amps.json").map(amp => {
+  // Convert "N/A" power values to null to avoid schema validation errors
+  if (amp.power === "N/A") {
+    amp.power = null;
   }
-];
+  return amp;
+});
+const pedals = loadJsonFile("pedals.json");
+const bass = loadJsonFile("bass.json");
+const accessories = loadJsonFile("accessories.json");
+const tags = loadJsonFile("tags.json");
 
-const gibson = [
-  {
-    "brand": "Gibson",
-    "shape": "Les Paul",
-    "name": "Les Paul Standard '50s",
-    "series": "Original Collection",
-    "pickups": "Humbucker",
-    "tremolo": "Tune-O-Matic Bridge",
-    "frets": 22,
-    "tuners": "Vintage Deluxe",
-    "colour": "Heritage Cherry Sunburst",
-    "fretboard": "Rosewood",
-    "description": "A classic guitar with rich, warm tones.",
-    "detailedDescription": "The Gibson Les Paul Standard '50s pays homage to the original design with humbucker pickups for thick, powerful sound. Featuring a Tune-O-Matic bridge and 22 frets on a rosewood fretboard, it’s a favorite for rock and blues players seeking vintage vibe and modern reliability.",
-    "price": 2500,
-    "images": [],
-  },
-  {
-    "brand": "Gibson",
-    "shape": "SG",
-    "name": "SG Standard",
-    "series": "Original Collection",
-    "pickups": "Humbucker",
-    "tremolo": "Tune-O-Matic Bridge",
-    "frets": 22,
-    "tuners": "Vintage Keystone",
-    "colour": "Ebony",
-    "fretboard": "Rosewood",
-    "description": "A lightweight guitar with a biting tone.",
-    "detailedDescription": "The Gibson SG Standard offers a sleek double-cutaway body and dual humbuckers for aggressive, versatile tones. With a Tune-O-Matic bridge and 22 frets, this guitar is a rock icon known for its playability and distinctive edge.",
-    "price": 1800,
-    "images": [],
-  },
-  {
-    "brand": "Gibson",
-    "shape": "ES-335",
-    "name": "ES-335 Traditional",
-    "series": "Historic Collection",
-    "pickups": "Humbucker",
-    "tremolo": "Tune-O-Matic Bridge",
-    "frets": 22,
-    "tuners": "Kluson Deluxe",
-    "colour": "Vintage Burst",
-    "fretboard": "Rosewood",
-    "description": "A semi-hollow guitar with a versatile sound.",
-    "detailedDescription": "The Gibson ES-335 Traditional blends hollowbody warmth with solidbody sustain, thanks to its humbucker pickups. Featuring a Tune-O-Matic bridge and rosewood fretboard with 22 frets, it’s ideal for jazz, blues, and rock players alike.",
-    "price": 3000,
-    "images": [],
-  },
-  {
-    "brand": "Gibson",
-    "shape": "Les Paul",
-    "name": "Les Paul Custom",
-    "series": "Custom Shop",
-    "pickups": "Humbucker",
-    "tremolo": "Tune-O-Matic Bridge",
-    "frets": 22,
-    "tuners": "Gold Grover",
-    "colour": "Ebony",
-    "fretboard": "Ebony",
-    "description": "A luxurious guitar with premium features.",
-    "detailedDescription": "The Gibson Les Paul Custom exudes elegance with its gold hardware and humbucker pickups delivering rich tones. Equipped with a Tune-O-Matic bridge and an ebony fretboard with 22 frets, it’s a top-tier choice for discerning players.",
-    "price": 4500,
-    "images": [],
-  },
-  {
-    "brand": "Gibson",
-    "shape": "Explorer",
-    "name": "Explorer Standard",
-    "series": "Original Collection",
-    "pickups": "Humbucker",
-    "tremolo": "Tune-O-Matic Bridge",
-    "frets": 22,
-    "tuners": "Grover Mini",
-    "colour": "Antique Natural",
-    "fretboard": "Rosewood",
-    "description": "A bold guitar with a unique design.",
-    "detailedDescription": "The Gibson Explorer Standard features an angular body and humbucker pickups for a heavy, aggressive sound. With a Tune-O-Matic bridge and 22 frets on a rosewood fretboard, it’s perfect for players who want to stand out.",
-    "price": 2000,
-    "images": [],
-  },
-  {
-    "brand": "Gibson",
-    "shape": "Firebird",
-    "name": "Firebird V",
-    "series": "Original Collection",
-    "pickups": "Humbucker",
-    "tremolo": "Tune-O-Matic Bridge",
-    "frets": 22,
-    "tuners": "Banjo-Style",
-    "colour": "Vintage Sunburst",
-    "fretboard": "Rosewood",
-    "description": "A striking guitar with a distinctive tone.",
-    "detailedDescription": "The Gibson Firebird V boasts a reverse body and humbucker pickups for a unique, bright sound. Its Tune-O-Matic bridge and 22-fret rosewood fretboard make it a standout choice for adventurous musicians.",
-    "price": 2200,
-    "images": [],
-  },
-  {
-    "brand": "Gibson",
-    "shape": "Les Paul",
-    "name": "Les Paul Modern",
-    "series": "Modern Collection",
-    "pickups": "Humbucker",
-    "tremolo": "Tune-O-Matic Bridge",
-    "frets": 22,
-    "tuners": "Grover Locking",
-    "colour": "Graphite Black",
-    "fretboard": "Ebony",
-    "description": "A contemporary take on a classic design.",
-    "detailedDescription": "The Gibson Les Paul Modern updates the iconic design with humbucker pickups and modern features like a Tune-O-Matic bridge and locking tuners. With 22 frets on an ebony fretboard, it’s built for today’s players.",
-    "price": 2800,
-    "images": [],
-  },
-  {
-    "brand": "Gibson",
-    "shape": "SG",
-    "name": "SG Modern",
-    "series": "Modern Collection",
-    "pickups": "Humbucker",
-    "tremolo": "Tune-O-Matic Bridge",
-    "frets": 24,
-    "tuners": "Grover Locking",
-    "colour": "Blueberry Fade",
-    "fretboard": "Ebony",
-    "description": "A modernized SG with extended range.",
-    "detailedDescription": "The Gibson SG Modern enhances the classic SG with humbuckers and 24 frets for extended playability. Featuring a Tune-O-Matic bridge and locking tuners, it’s a versatile choice for contemporary guitarists.",
-    "price": 2300,
-    "images": [],
-  },
-  {
-    "brand": "Gibson",
-    "shape": "ES-339",
-    "name": "ES-339 Custom",
-    "series": "Custom Shop",
-    "pickups": "Humbucker",
-    "tremolo": "Tune-O-Matic Bridge",
-    "frets": 22,
-    "tuners": "Kluson Deluxe",
-    "colour": "Cherry",
-    "fretboard": "Rosewood",
-    "description": "A compact semi-hollow with big tone.",
-    "detailedDescription": "The Gibson ES-339 Custom offers a smaller semi-hollow body with humbucker pickups for a rich, resonant sound. With a Tune-O-Matic bridge and 22 frets on a rosewood fretboard, it’s perfect for players seeking comfort and versatility.",
-    "price": 3200,
-    "images": [],
-  },
-  {
-    "brand": "Gibson",
-    "shape": "Les Paul",
-    "name": "Les Paul Studio",
-    "series": "Modern Collection",
-    "pickups": "Humbucker",
-    "tremolo": "Tune-O-Matic Bridge",
-    "frets": 22,
-    "tuners": "Grover Rotomatic",
-    "colour": "Wine Red",
-    "fretboard": "Rosewood",
-    "description": "A streamlined guitar for pure performance.",
-    "detailedDescription": "The Gibson Les Paul Studio delivers the classic Les Paul tone with humbucker pickups in a no-frills package. Featuring a Tune-O-Matic bridge and 22 frets on a rosewood fretboard, it’s a workhorse for gigging musicians.",
-    "price": 1600,
-    "images": [],
-  }
-];
+// Generate realistic comments
+function generateComments(equipmentIds, userIds) {
+  const comments = [];
+  
+  // Comment templates by user persona
+  const commentTemplates = {
+    "GuitarHero42": [
+      "This thing absolutely shreds! Best purchase I've made all year.",
+      "The tone is killer but the price is a bit steep. Worth it though!",
+      "Plays like butter. My new go-to for recording sessions.",
+      "Not as good as my custom shop model, but great value for money.",
+      "Used this on my latest studio session and the producer loved the tone."
+    ],
+    "RiffMaster": [
+      "Perfect for chunky metal riffs. The sustain is insane!",
+      "Been using this for about 6 months now. Holds up well on tour.",
+      "Solid build quality. Stays in tune even after heavy playing.",
+      "A bit heavy for my taste, but the sound makes up for it.",
+      "This thing is a beast for drop tunings. No need for a 7-string anymore!"
+    ],
+    "ToneSeeker": [
+      "The clarity in the high end is phenomenal. Very articulate.",
+      "I've tried dozens of similar models and this one has the sweetest mid-range.",
+      "Pairs perfectly with my tube amp setup. So responsive to dynamics!",
+      "Subtle differences from the previous version, but definitely an upgrade in terms of tone.",
+      "The harmonic content and overtones are exactly what I've been searching for."
+    ],
+    "ShredQueen": [
+      "Fast neck, low action, what more could you ask for? Shredding machine!",
+      "The fretwork is immaculate. No buzzing anywhere on the neck.",
+      "Handles alternate tunings like a dream. No intonation issues.",
+      "Love how it cuts through the mix during solos. My band is jealous!",
+      "From lightning-fast runs to complex chords, this thing handles it all."
+    ],
+    "BluesPicker": [
+      "Soulful warm tone that really sings. Perfect for those expressive bends.",
+      "Has that vintage mojo you just can't find in most modern gear.",
+      "Smooth as whiskey. The neck pickup is to die for.",
+      "Responds beautifully to picking dynamics. You can whisper or scream with this thing.",
+      "Takes pedals incredibly well. My Tube Screamer sounds better than ever through this."
+    ],
+    "JazzCat": [
+      "Beautiful clean tones with just the right amount of warmth.",
+      "The neck profile is perfect for complex chord voicings.",
+      "Incredibly versatile for a jazz-focused instrument. Handles fusion equally well.",
+      "The build quality justifies the price. This will last a lifetime.",
+      "Surprisingly good unplugged tone - great for practice without an amp."
+    ],
+    "AcousticDreamer": [
+      "Rich sustain and balanced EQ across all strings. No dead spots.",
+      "The craftsmanship is outstanding. Every detail feels premium.",
+      "Records beautifully - both with a mic and direct in.",
+      "Perfect for fingerstyle and flatpicking alike.",
+      "Great projection without being overly boomy. Works well in a band context."
+    ],
+    "PedalJunkie": [
+      "Incredibly transparent. Lets all my effects shine through.",
+      "Amazing platform for building tones. Takes everything I throw at it.",
+      "The built-in effects loop is super clean with no signal loss.",
+      "I'm getting sounds I never thought possible with my pedalboard now.",
+      "Finally something that doesn't color my carefully crafted tone stack."
+    ],
+    "VintageVibes": [
+      "They don't make 'em like this anymore. A true tribute to the golden era.",
+      "The aging work looks authentic, not like a reliced parody.",
+      "Period-correct specs but with modern reliability. Perfect combination.",
+      "Worth every penny for serious collectors and players alike.",
+      "Compares favorably to my original from the 50s at a fraction of the cost."
+    ],
+    "MetalMaster666": [
+      "Brutal! The low end is crushing for heavy downtuned riffs.",
+      "Screams for days with incredible upper fret access.",
+      "Finally a stock guitar that comes properly set up for metal out of the box.",
+      "The active pickups give me all the gain I need without noise issues.",
+      "Plays fast and sounds huge. What more could you want for extreme styles?"
+    ]
+  };
+  
+  // Define appropriate comment templates for different equipment types
+  const equipmentTypeComments = {
+    "guitar": {
+      "generic": [
+        "The playability is excellent, very comfortable neck profile.",
+        "Great tone across all pickup positions.",
+        "The finish is flawless and looks even better in person.",
+        "Incredible value for the money, punches above its price point.",
+        "The fretwork is impeccable with no sharp edges."
+      ],
+      "specific": {
+        "Fender": [
+          "Classic Fender chime and sparkle. Unmistakable tone.",
+          "The comfort contours make this so nice to play for hours.",
+          "That single-coil quack is exactly what I was looking for."
+        ],
+        "Gibson": [
+          "Thick, creamy humbucker tone that cuts through any mix.",
+          "Incredible sustain thanks to the mahogany body.",
+          "The weight feels substantial but not too heavy."
+        ],
+        "Ibanez": [
+          "The wizard neck is incredibly fast for lead playing.",
+          "Stays in tune perfectly even with heavy tremolo use.",
+          "Versatile enough for everything from jazz to metal."
+        ],
+        "PRS": [
+          "The coil-splitting option adds incredible versatility.",
+          "Craftsmanship is second to none, not a single flaw.",
+          "Perfectly balanced tone between Gibson warmth and Fender clarity."
+        ]
+      }
+    },
+    "amp": {
+      "generic": [
+        "Great headroom for clean tones before breaking up.",
+        "Takes pedals extremely well with the effects loop.",
+        "Compact but still delivers huge sound.",
+        "The build quality is tank-like, will last forever.",
+        "Perfect for small to medium venues without being too loud."
+      ],
+      "specific": {
+        "Fender": [
+          "That classic Fender clean tone is unmistakable.",
+          "The spring reverb is lush and deep.",
+          "Perfect platform for pedals."
+        ],
+        "Marshall": [
+          "The British crunch is exactly what I was after.",
+          "Cuts through the mix perfectly in a band setting.",
+          "The EQ section is incredibly responsive."
+        ],
+        "Mesa/Boogie": [
+          "The gain saturation is incredible while remaining articulate.",
+          "So many tonal options with just one amp.",
+          "The rectifier options change the feel completely."
+        ],
+        "Vox": [
+          "That chime and jangle is perfect for indie and classic rock.",
+          "The break-up is musical at every stage.",
+          "Surprisingly versatile for styles beyond the typical British sound."
+        ]
+      }
+    },
+    "pedal": {
+      "generic": [
+        "Built like a tank, will survive any pedalboard.",
+        "Very low noise floor, perfect for recording.",
+        "Intuitive controls that are easy to dial in.",
+        "Works great at both 9V and 18V power.",
+        "Flexible enough to work with both guitar and bass."
+      ],
+      "specific": {
+        "Overdrive": [
+          "Pushes my amp into sweet spot territory.",
+          "Retains note definition even with complex chords.",
+          "Doesn't color my tone when turned off."
+        ],
+        "Delay": [
+          "The repeats have a wonderful warm character.",
+          "Tap tempo works perfectly for live situations.",
+          "Self-oscillation creates amazing ambient textures."
+        ],
+        "Reverb": [
+          "Creates everything from subtle ambience to massive washy soundscapes.",
+          "The decay is natural and never sounds digital or forced.",
+          "Doesn't muddy up the mix even with long settings."
+        ],
+        "Fuzz": [
+          "Sputtery, velcro-like tones at extreme settings.",
+          "Cleans up nicely with guitar volume control.",
+          "Thick sustain for days on solo notes."
+        ]
+      }
+    },
+    "bass": {
+      "generic": [
+        "Solid low-end foundation that sits perfectly in the mix.",
+        "Great string-to-string balance across all four strings.",
+        "The neck is fast and comfortable for both fingerstyle and pick playing.",
+        "Excellent build quality with attention to detail.",
+        "Versatile enough for multiple musical styles."
+      ],
+      "specific": {
+        "Fender": [
+          "That classic Fender bass thump is unmistakable.",
+          "The P-Bass growl cuts through without being muddy.",
+          "Perfect for everything from rock to jazz."
+        ],
+        "Music Man": [
+          "The active EQ gives incredible tonal flexibility.",
+          "Punchy and aggressive tone that sits perfectly in rock mixes.",
+          "The build quality is absolutely top-notch."
+        ],
+        "Gibson": [
+          "Rich, woody tone with incredible sustain.",
+          "The through-neck design provides amazing resonance.",
+          "Perfect for classic rock and blues applications."
+        ],
+        "Ibanez": [
+          "Modern design with excellent ergonomics.",
+          "The electronics are quiet and versatile.",
+          "Great value for a professional-level instrument."
+        ],
+        "Hofner": [
+          "That distinctive hollow-body thump is magical.",
+          "Lightweight and comfortable for long playing sessions.",
+          "Perfect for Beatles-style melodic bass lines."
+        ],
+        "Rickenbacker": [
+          "The jangly, articulate tone is perfect for prog rock.",
+          "Rick-O-Sound opens up incredible stereo possibilities.",
+          "Beautiful craftsmanship and attention to detail."
+        ]
+      }
+    },
+    "accessory": {
+      "generic": [
+        "Essential addition to any guitarist's setup.",
+        "Great build quality that will last for years.",
+        "Excellent value for money.",
+        "Works exactly as advertised.",
+        "Would definitely recommend to other players."
+      ],
+      "specific": {
+        "Strings": [
+          "Perfect tension and great tone right out of the package.",
+          "Long-lasting with excellent tuning stability.",
+          "Bright tone that records beautifully."
+        ],
+        "Picks": [
+          "Great grip and control for precise playing.",
+          "Perfect thickness for my playing style.",
+          "Durable material that doesn't wear down quickly."
+        ],
+        "Tuner": [
+          "Fast and accurate tuning every time.",
+          "Easy to read display even in low light.",
+          "Rock-solid construction for stage use."
+        ],
+        "Strap": [
+          "Comfortable for long playing sessions.",
+          "Secure connection that gives confidence on stage.",
+          "Looks great with any guitar."
+        ],
+        "Case/Bag": [
+          "Excellent protection for transport.",
+          "Well-designed storage compartments.",
+          "Quality construction that will protect my investment."
+        ],
+        "Cable": [
+          "Crystal clear signal with no noise.",
+          "Robust construction for stage reliability.",
+          "Great length for studio and live use."
+        ],
+        "Stand": [
+          "Stable and secure for any guitar.",
+          "Easy setup and breakdown.",
+          "Takes up minimal space when not in use."
+        ],
+        "Microphone": [
+          "Captures amp tone beautifully.",
+          "Industry standard for a reason.",
+          "Built like a tank and sounds amazing."
+        ],
+        "Effects Pedal": [
+          "Adds exactly the sound I was looking for.",
+          "High-quality construction with true bypass.",
+          "Integrates perfectly with my existing pedalboard."
+        ]
+      }
+    }
+  };
+  
+  equipmentIds.forEach(equipment => {
+    // Add 1-3 comments for each equipment
+    const commentCount = Math.floor(Math.random() * 3) + 1;
+    
+    for (let i = 0; i < commentCount; i++) {
+      // Select a random user to be the commenter
+      const randomUserIndex = Math.floor(Math.random() * userIds.length);
+      const userId = userIds[randomUserIndex];
+      const user = users[randomUserIndex];
+      const username = user.username;
+      
+      // Get appropriate comment templates for this user
+      let commentText = "";
+      const userTemplates = commentTemplates[username] || commentTemplates["ToneSeeker"];
+      
+      // 50% chance to use a user-specific comment
+      if (Math.random() > 0.5) {
+        const randomTemplateIndex = Math.floor(Math.random() * userTemplates.length);
+        commentText = userTemplates[randomTemplateIndex];
+      } else {
+        // Otherwise use equipment-specific comment based on type and brand
+        const equipmentType = equipment.type;
+        const equipmentBrand = equipment.brand;
+        
+        // Get generic comments for this type of equipment
+        const genericComments = equipmentTypeComments[equipmentType]?.generic || [];
+        
+        // Try to get brand-specific or effect-specific comments
+        let specificComments = [];
+        if (equipmentType === "guitar" || equipmentType === "amp" || equipmentType === "bass") {
+          specificComments = equipmentTypeComments[equipmentType]?.specific?.[equipmentBrand] || [];
+        } else if (equipmentType === "pedal") {
+          specificComments = equipmentTypeComments[equipmentType]?.specific?.[equipment.effectType] || [];
+        } else if (equipmentType === "accessory") {
+          specificComments = equipmentTypeComments[equipmentType]?.specific?.[equipment.accessoryType] || [];
+        }
+        
+        // Combine generic and specific comments
+        const availableComments = [...genericComments, ...specificComments];
+        
+        // Select a random comment
+        const randomIndex = Math.floor(Math.random() * availableComments.length);
+        commentText = availableComments[randomIndex];
+      }
+      
+      // Generate a random date within the past year
+      const now = new Date();
+      const pastDate = new Date(now.setDate(now.getDate() - Math.floor(Math.random() * 365)));
+      
+      comments.push({
+        equipmentId: equipment._id,
+        user: userId,  // Using user ObjectId reference instead of username
+        text: commentText,
+        date: new Date(pastDate.toISOString())
+      });
+    }
+  });
+  
+  return comments;
+}
 
-const ibanez = [
-  {
-    "brand": "Ibanez",
-    "shape": "RG",
-    "name": "RG421",
-    "series": "Standard",
-    "pickups": "Humbucker",
-    "tremolo": "Fixed Bridge",
-    "frets": 24,
-    "tuners": "Standard",
-    "colour": "Black Pearl",
-    "fretboard": "Rosewood",
-    "description": "A reliable guitar for modern players.",
-    "detailedDescription": "The Ibanez RG421 offers a sleek RG shape with dual humbucker pickups for powerful tones. Its fixed bridge ensures tuning stability, and with 24 frets on a rosewood fretboard, it’s ideal for shredders and rock enthusiasts on a budget.",
-    "price": 300,
-    "images": [],
-  },
-  {
-    "brand": "Ibanez",
-    "shape": "RG",
-    "name": "RG Genesis RG550",
-    "series": "Genesis Collection",
-    "pickups": "Humbucker-Single-Humbucker",
-    "tremolo": "Edge Tremolo",
-    "frets": 24,
-    "tuners": "Gotoh Machine Heads",
-    "colour": "Desert Sun Yellow",
-    "fretboard": "Maple",
-    "description": "A throwback guitar with modern playability.",
-    "detailedDescription": "The Ibanez RG Genesis RG550 revives the ‘80s classic with HSH pickups for versatile tones. Featuring an Edge tremolo and 24 frets on a maple fretboard, it’s a vibrant choice for players who love dive bombs and high-speed runs.",
-    "price": 1000,
-    "images": [],
-  },
-  {
-    "brand": "Ibanez",
-    "shape": "S",
-    "name": "S670QM",
-    "series": "Standard",
-    "pickups": "Humbucker-Single-Humbucker",
-    "tremolo": "Edge-Zero II Tremolo",
-    "frets": 24,
-    "tuners": "Standard",
-    "colour": "Sapphire Blue",
-    "fretboard": "Jatoba",
-    "description": "A sleek guitar with a lightweight feel.",
-    "detailedDescription": "The Ibanez S670QM features a contoured S-shape body and HSH pickups for a wide tonal range. With an Edge-Zero II tremolo and 24 frets on a jatoba fretboard, it’s built for speed and comfort in a striking finish.",
-    "price": 600,
-    "images": [],
-  },
-  {
-    "brand": "Ibanez",
-    "shape": "AZ",
-    "name": "AZ242BC",
-    "series": "Premium",
-    "pickups": "Humbucker-Humbucker",
-    "tremolo": "Gotoh T1502 Tremolo",
-    "frets": 24,
-    "tuners": "Gotoh MG-T Locking",
-    "colour": "Deep Espresso Brown",
-    "fretboard": "Maple",
-    "description": "A premium guitar for versatile players.",
-    "detailedDescription": "The Ibanez AZ242BC from the Premium series offers dual humbuckers and a Gotoh T1502 tremolo for smooth playability. With 24 frets on a roasted maple fretboard, it’s designed for precision and comfort across genres.",
-    "price": 1300,
-    "images": [],
-  },
-  {
-    "brand": "Ibanez",
-    "shape": "RG",
-    "name": "RG652AHMFX",
-    "series": "Prestige",
-    "pickups": "Humbucker-Humbucker",
-    "tremolo": "Edge Tremolo",
-    "frets": 24,
-    "tuners": "Gotoh MG-T Locking",
-    "colour": "Nebula Green Burst",
-    "fretboard": "Birdseye Maple",
-    "description": "A high-end guitar with stunning looks.",
-    "detailedDescription": "The Ibanez RG652AHMFX Prestige boasts dual humbuckers and an Edge tremolo for top-tier performance. With 24 frets on a birdseye maple fretboard, its eye-catching finish matches its exceptional playability.",
-    "price": 1500,
-    "images": [],
-  },
-  {
-    "brand": "Ibanez",
-    "shape": "JEM",
-    "name": "JEM7V",
-    "series": "Signature",
-    "pickups": "Humbucker-Single-Humbucker",
-    "tremolo": "Edge Tremolo",
-    "frets": 24,
-    "tuners": "Gotoh Machine Heads",
-    "colour": "White",
-    "fretboard": "Ebony",
-    "description": "Steve Vai’s iconic signature guitar.",
-    "detailedDescription": "The Ibanez JEM7V, designed with Steve Vai, features HSH pickups and an Edge tremolo for wild tonal possibilities. With 24 frets on an ebony fretboard and a monkey grip handle, it’s a legend in the shred world.",
-    "price": 3000,
-    "images": [],
-  },
-  {
-    "brand": "Ibanez",
-    "shape": "FR",
-    "name": "FR800",
-    "series": "Standard",
-    "pickups": "Humbucker-Humbucker",
-    "tremolo": "Fixed Bridge",
-    "frets": 24,
-    "tuners": "Gotoh Machine Heads",
-    "colour": "Black Haze",
-    "fretboard": "Rosewood",
-    "description": "A minimalist guitar with bold tone.",
-    "detailedDescription": "The Ibanez FR800 offers a streamlined FR shape with dual humbuckers and a fixed bridge for rock-solid tuning stability. With 24 frets on a rosewood fretboard, it’s perfect for heavy riffing and sleek design lovers.",
-    "price": 900,
-    "images": [],
-  },
-  {
-    "brand": "Ibanez",
-    "shape": "SA",
-    "name": "SA460QM",
-    "series": "Standard",
-    "pickups": "Humbucker-Single-Single",
-    "tremolo": "T102 Tremolo",
-    "frets": 22,
-    "tuners": "Standard",
-    "colour": "Autumn Blaze Maple",
-    "fretboard": "Jatoba",
-    "description": "A versatile guitar with a warm tone.",
-    "detailedDescription": "The Ibanez SA460QM blends HSS pickups with a T102 tremolo for a mix of classic and modern sounds. With 22 frets on a jatoba fretboard, it’s a great all-rounder for players exploring multiple styles.",
-    "price": 500,
-    "images": [],
-  },
-  {
-    "brand": "Ibanez",
-    "shape": "RGA",
-    "name": "RGA42FM",
-    "series": "Standard",
-    "pickups": "Humbucker-Humbucker",
-    "tremolo": "Fixed Bridge",
-    "frets": 24,
-    "tuners": "Standard",
-    "colour": "Dragon Eye Burst",
-    "fretboard": "Jatoba",
-    "description": "A striking guitar for heavy tones.",
-    "detailedDescription": "The Ibanez RGA42FM features a sculpted RG body with dual humbuckers and a fixed bridge for aggressive, stable sound. With 24 frets on a jatoba fretboard, it’s built for metal and hard rock enthusiasts.",
-    "price": 400,
-    "images": [],
-  },
-  {
-    "brand": "Ibanez",
-    "shape": "PGM",
-    "name": "PGM50",
-    "series": "Signature",
-    "pickups": "Humbucker-Humbucker",
-    "tremolo": "Fixed Bridge",
-    "frets": 24,
-    "tuners": "Gotoh Machine Heads",
-    "colour": "Black",
-    "fretboard": "Rosewood",
-    "description": "Paul Gilbert’s signature shred machine.",
-    "detailedDescription": "The Ibanez PGM50, crafted with Paul Gilbert, delivers dual humbuckers and a fixed bridge for precise, high-speed playing. With 24 frets on a rosewood fretboard, it’s a dream for technical guitarists.",
-    "price": 1400,
-    "images": [],
-  }
-];
+// Add user to equipment
+function assignUsersToEquipment(equipment, userIds) {
+  return equipment.map((item, index) => {
+    item.user = userIds[index % userIds.length];
+    return item;
+  });
+}
 
-const jackson = [
-  {
-    "brand": "Jackson",
-    "shape": "Soloist",
-    "name": "SL3X DX",
-    "series": "X Series",
-    "pickups": "Humbucker-Humbucker-Humbucker",
-    "tremolo": "Floyd Rose Double-Locking Tremolo",
-    "frets": 24,
-    "tuners": "Jackson Sealed Die-Cast",
-    "colour": "Rocket Red",
-    "fretboard": "Laurel",
-    "description": "A shredder’s dream with bold tones.",
-    "detailedDescription": "The Jackson SL3X DX Soloist features a triple-humbucker setup for crushing tones, paired with a Floyd Rose double-locking tremolo for extreme stability. With 24 frets on a laurel fretboard, it’s built for speed and aggression.",
-    "price": 700,
-    "images": [],
-  },
-  {
-    "brand": "Jackson",
-    "shape": "Dinky",
-    "name": "JS32 DKA",
-    "series": "JS Series",
-    "pickups": "Humbucker-Humbucker",
-    "tremolo": "Floyd Rose Double-Locking Tremolo",
-    "frets": 24,
-    "tuners": "Jackson Sealed Die-Cast",
-    "colour": "Gloss Black",
-    "fretboard": "Amaranth",
-    "description": "A budget-friendly guitar for heavy riffs.",
-    "detailedDescription": "The Jackson JS32 DKA Dinky offers dual humbuckers and a Floyd Rose tremolo for dive-bombing fun. With 24 frets on an amaranth fretboard, it’s a solid entry-level choice for metal players.",
-    "price": 350,
-    "images": [],
-  },
-  {
-    "brand": "Jackson",
-    "shape": "Kelly",
-    "name": "KE2 Kelly",
-    "series": "USA Series",
-    "pickups": "Humbucker-Humbucker",
-    "tremolo": "Floyd Rose Original Tremolo",
-    "frets": 24,
-    "tuners": "Schaller",
-    "colour": "Snow White",
-    "fretboard": "Ebony",
-    "description": "A premium guitar with a sharp edge.",
-    "detailedDescription": "The Jackson KE2 Kelly from the USA Series features dual humbuckers and a Floyd Rose Original tremolo for top-tier performance. With 24 frets on an ebony fretboard, its angular design screams attitude.",
-    "price": 4000,
-    "images": [],
-  },
-  {
-    "brand": "Jackson",
-    "shape": "King V",
-    "name": "KVXMG",
-    "series": "X Series",
-    "pickups": "Humbucker-Humbucker",
-    "tremolo": "Floyd Rose Special Tremolo",
-    "frets": 24,
-    "tuners": "Jackson Sealed Die-Cast",
-    "colour": "Slime Green",
-    "fretboard": "Laurel",
-    "description": "A bold guitar for aggressive players.",
-    "detailedDescription": "The Jackson KVXMG King V delivers dual humbuckers and a Floyd Rose Special tremolo for wild, stable playability. With 24 frets on a laurel fretboard, its V-shaped body is a metal icon.",
-    "price": 800,
-    "images": [],
-  },
-  {
-    "brand": "Jackson",
-    "shape": "Rhoads",
-    "name": "RRX24",
-    "series": "X Series",
-    "pickups": "Humbucker-Humbucker",
-    "tremolo": "Floyd Rose Special Tremolo",
-    "frets": 24,
-    "tuners": "Jackson Sealed Die-Cast",
-    "colour": "Matte Gray",
-    "fretboard": "Laurel",
-    "description": "A tribute to Randy Rhoads’ legacy.",
-    "detailedDescription": "The Jackson RRX24 Rhoads features dual humbuckers and a Floyd Rose Special tremolo, honoring its namesake’s style. With 24 frets on a laurel fretboard, it’s perfect for technical, high-energy playing.",
-    "price": 750,
-    "images": [],
-  },
-  {
-    "brand": "Jackson",
-    "shape": "Soloist",
-    "name": "SL2 Pro Series",
-    "series": "Pro Series",
-    "pickups": "Humbucker-Humbucker",
-    "tremolo": "Floyd Rose 1000 Series Tremolo",
-    "frets": 24,
-    "tuners": "Jackson Sealed Die-Cast",
-    "colour": "Deep Black",
-    "fretboard": "Ebony",
-    "description": "A professional-grade shred machine.",
-    "detailedDescription": "The Jackson SL2 Pro Series Soloist offers dual humbuckers and a Floyd Rose 1000 Series tremolo for precise, aggressive tones. With 24 frets on an ebony fretboard, it’s built for speed and durability.",
-    "price": 1000,
-    "images": [],
-  },
-  {
-    "brand": "Jackson",
-    "shape": "Dinky",
-    "name": "DK2MQ Pro",
-    "series": "Pro Series",
-    "pickups": "Humbucker-Humbucker",
-    "tremolo": "Floyd Rose 1000 Series Tremolo",
-    "frets": 24,
-    "tuners": "Planet Waves Auto-Trim",
-    "colour": "Chlorine Burst",
-    "fretboard": "Maple",
-    "description": "A vibrant guitar with modern flair.",
-    "detailedDescription": "The Jackson DK2MQ Pro Dinky features dual humbuckers and a Floyd Rose 1000 Series tremolo for dynamic performance. With 24 frets on a maple fretboard and a quilted maple top, it’s as stunning as it is playable.",
-    "price": 1100,
-    "images": [],
-  },
-  {
-    "brand": "Jackson",
-    "shape": "Warrior",
-    "name": "WRX24M",
-    "series": "X Series",
-    "pickups": "Humbucker-Humbucker",
-    "tremolo": "Fixed Bridge",
-    "frets": 24,
-    "tuners": "Jackson Sealed Die-Cast",
-    "colour": "Ferrari Red",
-    "fretboard": "Maple",
-    "description": "An extreme guitar for heavy tones.",
-    "detailedDescription": "The Jackson WRX24M Warrior offers dual humbuckers and a fixed bridge for rock-solid stability. With 24 frets on a maple fretboard, its radical shape delivers both style and substance.",
-    "price": 650,
-    "images": [],
-  },
-  {
-    "brand": "Jackson",
-    "shape": "San Dimas",
-    "name": "SDX",
-    "series": "X Series",
-    "pickups": "Humbucker-Humbucker",
-    "tremolo": "Floyd Rose Special Tremolo",
-    "frets": 24,
-    "tuners": "Jackson Sealed Die-Cast",
-    "colour": "Neon Yellow",
-    "fretboard": "Laurel",
-    "description": "A high-octane guitar with retro roots.",
-    "detailedDescription": "The Jackson SDX San Dimas blends ‘80s vibe with modern specs, featuring dual humbuckers and a Floyd Rose Special tremolo. With 24 frets on a laurel fretboard, it’s a standout for bold players.",
-    "price": 700,
-    "images": [],
-  },
-  {
-    "brand": "Jackson",
-    "shape": "Soloist",
-    "name": "SL1 USA Select",
-    "series": "USA Select",
-    "pickups": "Humbucker-Single-Humbucker",
-    "tremolo": "Floyd Rose Original Tremolo",
-    "frets": 24,
-    "tuners": "Schaller",
-    "colour": "Satin Transparent Blue",
-    "fretboard": "Ebony",
-    "description": "A flagship guitar for elite performers.",
-    "detailedDescription": "The Jackson SL1 USA Select Soloist features an HSH pickup configuration and a Floyd Rose Original tremolo for unmatched versatility. With 24 frets on an ebony fretboard, it’s a premium choice for serious shredders.",
-    "price": 4500,
-    "images": [],
-  }
-];
+// Assign random tags to equipment
+function assignTagsToEquipment(equipment, tagIds) {
+  return equipment.map(item => {
+    // Determine how many tags to assign (1-4 tags per item)
+    const tagCount = Math.floor(Math.random() * 4) + 1;
+    
+    // Create a copy of the tag IDs array to shuffle
+    const availableTags = [...tagIds];
+    
+    // Simple shuffle algorithm to randomize tags
+    for (let i = availableTags.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [availableTags[i], availableTags[j]] = [availableTags[j], availableTags[i]];
+    }
+    
+    // Assign randomly selected tags
+    item.tags = availableTags.slice(0, tagCount);
+    
+    return item;
+  });
+}
 
-const gretch = [
-  {
-    "brand": "Gretsch",
-    "shape": "Streamliner",
-    "name": "G2622 Streamliner",
-    "series": "Streamliner Collection",
-    "pickups": "Humbucker-Humbucker",
-    "tremolo": "Bigsby B50 Vibrato",
-    "frets": 22,
-    "tuners": "Die-Cast",
-    "colour": "Phantom Metallic",
-    "fretboard": "Laurel",
-    "description": "A versatile semi-hollow with classic twang.",
-    "detailedDescription": "The Gretsch G2622 Streamliner offers dual humbuckers and a Bigsby B50 vibrato for that signature Gretsch shimmer. With 22 frets on a laurel fretboard, it’s perfect for players seeking vintage tone with modern playability.",
-    "price": 500,
-    "images": [],
-  },
-  {
-    "brand": "Gretsch",
-    "shape": "Falcon",
-    "name": "G6136T White Falcon",
-    "series": "Professional Collection",
-    "pickups": "Filter’Tron",
-    "tremolo": "Bigsby B6 Vibrato",
-    "frets": 22,
-    "tuners": "Grover Imperial",
-    "colour": "White",
-    "fretboard": "Ebony",
-    "description": "A luxurious hollow-body icon.",
-    "detailedDescription": "The Gretsch G6136T White Falcon features Filter’Tron pickups and a Bigsby B6 vibrato for rich, sparkling tones. With 22 frets on an ebony fretboard, its ornate design makes it a standout for stage and studio.",
-    "price": 3500,
-    "images": [],
-  },
-  {
-    "brand": "Gretsch",
-    "shape": "Jet",
-    "name": "G6228 Players Edition Jet",
-    "series": "Players Edition",
-    "pickups": "Filter’Tron",
-    "tremolo": "Bigsby B7 Vibrato",
-    "frets": 22,
-    "tuners": "Gotoh Locking",
-    "colour": "Black",
-    "fretboard": "Rosewood",
-    "description": "A semi-hollow with modern punch.",
-    "detailedDescription": "The Gretsch G6228 Players Edition Jet delivers Filter’Tron pickups and a Bigsby B7 vibrato for a blend of twang and power. With 22 frets on a rosewood fretboard, it’s built for performance and style.",
-    "price": 2200,
-    "images": [],
-  },
-  {
-    "brand": "Gretsch",
-    "shape": "Penguin",
-    "name": "G6134T-58 Vintage Select Penguin",
-    "series": "Vintage Select",
-    "pickups": "Filter’Tron",
-    "tremolo": "Bigsby B3C Vibrato",
-    "frets": 22,
-    "tuners": "Grover Sta-Tite",
-    "colour": "Vintage White",
-    "fretboard": "Ebony",
-    "description": "A retro guitar with bold tone.",
-    "detailedDescription": "The Gretsch G6134T-58 Vintage Select Penguin offers Filter’Tron pickups and a Bigsby B3C vibrato for classic Gretsch jangle. With 22 frets on an ebony fretboard, it’s a nod to ‘50s elegance with modern playability.",
-    "price": 2500,
-    "images": [],
-  },
-  {
-    "brand": "Gretsch",
-    "shape": "Electromatic",
-    "name": "G5420T Electromatic",
-    "series": "Electromatic Collection",
-    "pickups": "Filter’Tron",
-    "tremolo": "Bigsby B60 Vibrato",
-    "frets": 22,
-    "tuners": "Vintage-Style Open-Back",
-    "colour": "Orange Stain",
-    "fretboard": "Rosewood",
-    "description": "A hollow-body with timeless appeal.",
-    "detailedDescription": "The Gretsch G5420T Electromatic features Filter’Tron pickups and a Bigsby B60 vibrato for that quintessential Gretsch sound. With 22 frets on a rosewood fretboard, it’s an affordable entry into hollow-body heaven.",
-    "price": 900,
-    "images": [],
-  },
-  {
-    "brand": "Gretsch",
-    "shape": "Double Jet",
-    "name": "G5230T Electromatic Jet",
-    "series": "Electromatic Collection",
-    "pickups": "Filter’Tron",
-    "tremolo": "Bigsby B50 Vibrato",
-    "frets": 22,
-    "tuners": "Die-Cast",
-    "colour": "Cadillac Green",
-    "fretboard": "Laurel",
-    "description": "A compact guitar with big tone.",
-    "detailedDescription": "The Gretsch G5230T Electromatic Jet offers Filter’Tron pickups and a Bigsby B50 vibrato in a chambered double-cut body. With 22 frets on a laurel fretboard, it’s perfect for rockabilly and beyond.",
-    "price": 600,
-    "images": [],
-  },
-  {
-    "brand": "Gretsch",
-    "shape": "Falcon",
-    "name": "G6655TG Players Edition Falcon Jr.",
-    "series": "Players Edition",
-    "pickups": "Filter’Tron",
-    "tremolo": "Bigsby B7GP Vibrato",
-    "frets": 22,
-    "tuners": "Gotoh Locking",
-    "colour": "Azure Metallic",
-    "fretboard": "Ebony",
-    "description": "A smaller Falcon with pro features.",
-    "detailedDescription": "The Gretsch G6655TG Players Edition Falcon Jr. features Filter’Tron pickups and a Bigsby B7GP vibrato in a compact semi-hollow body. With 22 frets on an ebony fretboard, it’s a pro-grade axe with flair.",
-    "price": 2800,
-    "images": [],
-  },
-  {
-    "brand": "Gretsch",
-    "shape": "Anniversary",
-    "name": "G6118T-60 Vintage Select Anniversary",
-    "series": "Vintage Select",
-    "pickups": "Filter’Tron",
-    "tremolo": "Bigsby B6 Vibrato",
-    "frets": 22,
-    "tuners": "Grover Sta-Tite",
-    "colour": "Two-Tone Smoke Green",
-    "fretboard": "Rosewood",
-    "description": "A vintage-inspired hollow-body gem.",
-    "detailedDescription": "The Gretsch G6118T-60 Vintage Select Anniversary boasts Filter’Tron pickups and a Bigsby B6 vibrato for authentic ‘60s tone. With 22 frets on a rosewood fretboard, it’s a tribute to Gretsch’s golden era.",
-    "price": 2300,
-    "images": [],
-  },
-  {
-    "brand": "Gretsch",
-    "shape": "Broadkaster",
-    "name": "G6609 Broadkaster",
-    "series": "Professional Collection",
-    "pickups": "Filter’Tron",
-    "tremolo": "Bigsby B7 Vibrato",
-    "frets": 22,
-    "tuners": "Gotoh Locking",
-    "colour": "Dark Cherry Stain",
-    "fretboard": "Rosewood",
-    "description": "A full-bodied guitar with rich resonance.",
-    "detailedDescription": "The Gretsch G6609 Broadkaster features Filter’Tron pickups and a Bigsby B7 vibrato for deep, resonant tones. With 22 frets on a rosewood fretboard, its hollow-body design shines in any setting.",
-    "price": 2600,
-    "images": [],
-  },
-  {
-    "brand": "Gretsch",
-    "shape": "Center Block",
-    "name": "G2655T Streamliner Center Block Jr.",
-    "series": "Streamliner Collection",
-    "pickups": "Humbucker-Humbucker",
-    "tremolo": "Bigsby B50 Vibrato",
-    "frets": 22,
-    "tuners": "Die-Cast",
-    "colour": "Imperial Stain",
-    "fretboard": "Laurel",
-    "description": "A compact semi-hollow with punchy tone.",
-    "detailedDescription": "The Gretsch G2655T Streamliner Center Block Jr. offers dual humbuckers and a Bigsby B50 vibrato in a smaller body with a center block for feedback resistance. With 22 frets on a laurel fretboard, it’s a versatile performer.",
-    "price": 550,
-    "images": [],
-  }
-];
-
-async function main() {
-  const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-
+async function populateDatabase() {
   try {
-    await client.connect();
+    await mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     console.log("Connected to database");
 
-    const db = client.db(dbName);
-
-    // Check if the collection exists and delete it if it does
-    const collections = await db.listCollections({ name: collectionName }).toArray();
-    if (collections.length > 0) {
-      await db.collection(collectionName).drop();
-      console.log(`Collection "${collectionName}" dropped`);
+    // Drop the collections if they exist
+    const collectionNames = ["equipment", "users", "comments", "tags"];
+    for (const name of collectionNames) {
+      const collections = await mongoose.connection.db.listCollections({ name }).toArray();
+      if (collections.length > 0) {
+        await mongoose.connection.db.dropCollection(name);
+        console.log(`Collection '${name}' dropped`);
+      }
     }
 
-    // Create the collection and insert the data
-    const collection = db.collection(collectionName);
-    await collection.insertMany([...fender, ...gibson, ...ibanez, ...jackson, ...gretch]);
-    console.log("Data inserted into collection");
+    // Insert users first to get their IDs
+    const insertedUsers = await User.insertMany(users);
+    console.log("Inserted users");
+    const userIds = insertedUsers.map(user => user._id);
+
+    // Insert tags to get their IDs
+    const insertedTags = await Tag.insertMany(tags);
+    console.log(`Inserted ${insertedTags.length} tags`);
+    const tagIds = insertedTags.map(tag => tag._id);
+
+    // Assign users to equipment
+    const guitarsWithUsers = assignUsersToEquipment(guitars, userIds);
+    const ampsWithUsers = assignUsersToEquipment(amps, userIds);
+    const pedalsWithUsers = assignUsersToEquipment(pedals, userIds);
+    const bassWithUsers = assignUsersToEquipment(bass, userIds);
+    const accessoriesWithUsers = assignUsersToEquipment(accessories, userIds);
+
+    // Assign tags to equipment
+    const guitarsWithTags = assignTagsToEquipment(guitarsWithUsers, tagIds);
+    const ampsWithTags = assignTagsToEquipment(ampsWithUsers, tagIds);
+    const pedalsWithTags = assignTagsToEquipment(pedalsWithUsers, tagIds);
+    const bassWithTags = assignTagsToEquipment(bassWithUsers, tagIds);
+    const accessoriesWithTags = assignTagsToEquipment(accessoriesWithUsers, tagIds);
+
+    // Insert equipment
+    const insertedGuitars = await Guitar.insertMany(guitarsWithTags);
+    console.log(`Inserted ${insertedGuitars.length} guitars`);
+
+    const insertedAmps = await Amp.insertMany(ampsWithTags);
+    console.log(`Inserted ${insertedAmps.length} amps`);
+
+    const insertedPedals = await Pedal.insertMany(pedalsWithTags);
+    console.log(`Inserted ${insertedPedals.length} pedals`);
+
+    const insertedBass = await Bass.insertMany(bassWithTags);
+    console.log(`Inserted ${insertedBass.length} bass guitars`);
+
+    const insertedAccessories = await Accessory.insertMany(accessoriesWithTags);
+    console.log(`Inserted ${insertedAccessories.length} accessories`);
+
+    // Combine all equipment
+    const allEquipment = [
+      ...insertedGuitars,
+      ...insertedAmps,
+      ...insertedPedals,
+      ...insertedBass,
+      ...insertedAccessories
+    ];
+
+    // Generate and insert comments
+    const comments = generateComments(allEquipment, userIds);
+    const insertedComments = await Comments.insertMany(comments);
+    console.log(`Inserted ${insertedComments.length} comments`);
+
+    // Update equipment documents with comment references
+    const commentsByEquipment = {};
+    insertedComments.forEach(comment => {
+      const equipmentId = comment.equipmentId.toString();
+      if (!commentsByEquipment[equipmentId]) {
+        commentsByEquipment[equipmentId] = [];
+      }
+      commentsByEquipment[equipmentId].push(comment._id);
+    });
+
+    // Update each equipment with its comments
+    let updatedCount = 0;
+    for (const equipmentId in commentsByEquipment) {
+      await mongoose.model("Equipment").findByIdAndUpdate(
+        equipmentId,
+        { $set: { comments: commentsByEquipment[equipmentId] } }
+      );
+      updatedCount++;
+    }
+    console.log(`Updated ${updatedCount} equipment items with comments`);
+
+    console.log("Database populated successfully");
+    console.log(`Summary:
+    - ${insertedUsers.length} users
+    - ${insertedGuitars.length} guitars
+    - ${insertedAmps.length} amps
+    - ${insertedPedals.length} pedals
+    - ${insertedBass.length} bass guitars
+    - ${insertedAccessories.length} accessories
+    - ${insertedComments.length} comments
+    - ${insertedTags.length} tags`);
   } catch (err) {
-    console.error(err);
+    console.error("Error populating database:", err);
   } finally {
-    await client.close();
-    console.log("Connection closed");
+    await mongoose.disconnect();
+    console.log("Disconnected from database");
   }
 }
 
-main().catch(console.error);
+populateDatabase();

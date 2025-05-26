@@ -30,6 +30,12 @@ const GuitarSchema = new Schema({
   pickups: String,
 });
 
+const BassSchema = new Schema({
+  strings: Number,
+  shape: String,
+  pickups: String,
+});
+
 const AmpSchema = new Schema({
   power: Number,
   ampType: String,
@@ -39,9 +45,15 @@ const PedalSchema = new Schema({
   effectType: String,
 });
 
+const AccessorySchema = new Schema({
+  accessoryType: String,
+});
+
 const Equipment = mongoose.model("Equipment", EquipmentSchema);
-const Guitar = Equipment.discriminator("Guitar", GuitarSchema);
+const Accessory = Equipment.discriminator("Accessory", AccessorySchema);
 const Amp = Equipment.discriminator("Amp", AmpSchema);
+const Bass = Equipment.discriminator("Bass", BassSchema);
+const Guitar = Equipment.discriminator("Guitar", GuitarSchema);
 const Pedal = Equipment.discriminator("Pedal", PedalSchema);
 
 const CommentSchema = new Schema({
@@ -56,4 +68,4 @@ const CommentSchema = new Schema({
 
 const Comments = mongoose.model("Comment", CommentSchema);
 
-module.exports = { Equipment, Guitar, Amp, Pedal, Comments };
+module.exports = { Equipment, Guitar, Amp, Pedal, Accessory, Bass, Comments };

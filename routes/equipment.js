@@ -1,4 +1,4 @@
-const { Guitar, Amp, Pedal, Equipment, Comments } = require("../models/equipment.js");
+const { Guitar, Amp, Pedal, Bass, Accessory, Equipment, Comments } = require("../models/equipment.js");
 const { queryBuilder } = require("../query-builder.js");
 const { deleteCloudinaryImages } = require("../helpers/cloudinary");
 const Tag = require("../models/tag");
@@ -11,6 +11,10 @@ function getModelByType(type) {
       return Amp;
     case "pedal":
       return Pedal;
+    case "bass":
+      return Bass;
+    case "accessory":
+      return Accessory;
     case "":
     case null:
     case undefined:
@@ -202,7 +206,7 @@ async function getByUser(req, res) {
     // Filter by equipment type if specified
     if (req.query.type) {
       const type = req.query.type.toLowerCase();
-      if (["guitar", "amp", "pedal"].includes(type)) {
+      if (["guitar", "amp", "pedal", "bass", "accessory"].includes(type)) {
         query.__t = type.charAt(0).toUpperCase() + type.slice(1);
       }
     }
