@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const fs = require("fs");
 const path = require("path");
-const { Guitar, Amp, Pedal, Bass, Accessory, Comments } = require("../models/equipment");
+const { Guitar, Amp, Pedal, Bass, Acoustic, Accessory, Comments } = require("../models/equipment");
 const User = require("../models/user");
 const Tag = require("../models/tag");
 
@@ -16,6 +16,7 @@ function loadJsonFile(filename) {
 
 const users = loadJsonFile("users.json");
 const guitars = loadJsonFile("guitars.json");
+const acoustic = loadJsonFile("acoustic.json");
 const amps = loadJsonFile("amps.json").map(amp => {
   // Convert "N/A" power values to null to avoid schema validation errors
   if (amp.power === "N/A") {
@@ -136,6 +137,42 @@ function generateComments(equipmentIds, userIds) {
           "The coil-splitting option adds incredible versatility.",
           "Craftsmanship is second to none, not a single flaw.",
           "Perfectly balanced tone between Gibson warmth and Fender clarity."
+        ]
+      }
+    },
+    "acoustic": {
+      "generic": [
+        "Beautiful natural tone with excellent projection.",
+        "The craftsmanship and attention to detail is outstanding.",
+        "Perfect balance between bass and treble frequencies.",
+        "Comfortable neck profile for both fingerpicking and strumming.",
+        "Records beautifully with both microphones and direct input."
+      ],
+      "specific": {
+        "Martin": [
+          "That classic Martin boom and sustain is unmistakable.",
+          "The vintage Martin tone with modern playability.",
+          "Incredible dynamics from whisper quiet to thunderous projection."
+        ],
+        "Taylor": [
+          "Crystal clear highs with balanced mids and tight bass.",
+          "The electronics sound incredibly natural when amplified.",
+          "Modern innovation meets traditional acoustic guitar building."
+        ],
+        "Gibson": [
+          "Warm, woody tone that's perfect for singer-songwriters.",
+          "The square shoulder design gives such powerful projection.",
+          "Classic American acoustic guitar sound at its finest."
+        ],
+        "Yamaha": [
+          "Incredible value with professional-level tone and playability.",
+          "Consistent quality and reliability that you can depend on.",
+          "Great for beginners but sounds good enough for recording."
+        ],
+        "Takamine": [
+          "The electronics integration is seamless and natural sounding.",
+          "Excellent stage guitar with reliable pickup system.",
+          "Comfortable neck that's easy to play for hours."
         ]
       }
     },
@@ -418,6 +455,7 @@ async function populateDatabase() {
 
     // Assign users to equipment
     const guitarsWithUsers = assignUsersToEquipment(guitars, userIds);
+    const acousticWithUsers = assignUsersToEquipment(acoustic, userIds);
     const ampsWithUsers = assignUsersToEquipment(amps, userIds);
     const pedalsWithUsers = assignUsersToEquipment(pedals, userIds);
     const bassWithUsers = assignUsersToEquipment(bass, userIds);
@@ -425,6 +463,7 @@ async function populateDatabase() {
 
     // Assign tags to equipment
     const guitarsWithTags = assignTagsToEquipment(guitarsWithUsers, tagIds);
+    const acousticWithTags = assignTagsToEquipment(acousticWithUsers, tagIds);
     const ampsWithTags = assignTagsToEquipment(ampsWithUsers, tagIds);
     const pedalsWithTags = assignTagsToEquipment(pedalsWithUsers, tagIds);
     const bassWithTags = assignTagsToEquipment(bassWithUsers, tagIds);
@@ -433,6 +472,9 @@ async function populateDatabase() {
     // Insert equipment
     const insertedGuitars = await Guitar.insertMany(guitarsWithTags);
     console.log(`Inserted ${insertedGuitars.length} guitars`);
+
+    const insertedAcoustic = await Acoustic.insertMany(acousticWithTags);
+    console.log(`Inserted ${insertedAcoustic.length} acoustic guitars`);
 
     const insertedAmps = await Amp.insertMany(ampsWithTags);
     console.log(`Inserted ${insertedAmps.length} amps`);
@@ -449,6 +491,7 @@ async function populateDatabase() {
     // Combine all equipment
     const allEquipment = [
       ...insertedGuitars,
+      ...insertedAcoustic,
       ...insertedAmps,
       ...insertedPedals,
       ...insertedBass,
@@ -485,6 +528,7 @@ async function populateDatabase() {
     console.log(`Summary:
     - ${insertedUsers.length} users
     - ${insertedGuitars.length} guitars
+    - ${insertedAcoustic.length} acoustic guitars
     - ${insertedAmps.length} amps
     - ${insertedPedals.length} pedals
     - ${insertedBass.length} bass guitars

@@ -36,6 +36,14 @@ const BassSchema = new Schema({
   pickups: String,
 });
 
+const AcousticSchema = new Schema({
+  strings: Number,
+  shape: String,
+  topWood: String,
+  backSides: String,
+  cutaway: Boolean,
+});
+
 const AmpSchema = new Schema({
   power: Number,
   ampType: String,
@@ -51,6 +59,7 @@ const AccessorySchema = new Schema({
 
 const Equipment = mongoose.model("Equipment", EquipmentSchema);
 const Accessory = Equipment.discriminator("Accessory", AccessorySchema);
+const Acoustic = Equipment.discriminator("Acoustic", AcousticSchema);
 const Amp = Equipment.discriminator("Amp", AmpSchema);
 const Bass = Equipment.discriminator("Bass", BassSchema);
 const Guitar = Equipment.discriminator("Guitar", GuitarSchema);
@@ -68,4 +77,4 @@ const CommentSchema = new Schema({
 
 const Comments = mongoose.model("Comment", CommentSchema);
 
-module.exports = { Equipment, Guitar, Amp, Pedal, Accessory, Bass, Comments };
+module.exports = { Equipment, Guitar, Amp, Pedal, Accessory, Acoustic, Bass, Comments };
