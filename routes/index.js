@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const equipmentRoutes = require("./equipment");
-const { login, register, getUserProfile, createUserProfile, updateUserProfile, verifyMagicLink, deleteUserAvatar, refreshToken } = require("./users");
+const { login, register, createUserProfile, sendMagicLink, verifyMagicLink, refreshToken } = require("./auth");
+const { getUserProfile, updateUserProfile, deleteUserAvatar } = require("./users");
 const { verifyToken, checkEquipmentOwnership, checkUserOwnership } = require("../middleware/auth");
 
 router.get("/equipmentList/", equipmentRoutes.get);
@@ -17,13 +18,14 @@ router.post("/equipment/addComment", verifyToken, equipmentRoutes.addComment);
 router.get("/equipment/tags", equipmentRoutes.getAllTags);
 router.get("/equipment/user/:userId", equipmentRoutes.getByUser);
 
-router.post("/users/login", login);
-router.post("/users/register", register);
+router.post("/auth/login", login);
+router.post("/auth/register", register);
+router.post("/auth/createProfile", createUserProfile);
+router.post("/auth/sendMagicLink", sendMagicLink);
+router.post("/auth/refreshToken", refreshToken);
+router.post("/auth/verifyMagicLink", verifyMagicLink);
 router.get("/users/profile", getUserProfile);
-router.post("/users/createProfile", createUserProfile);
 router.put("/users/updateProfile", verifyToken, checkUserOwnership, updateUserProfile);
-router.post("/users/refreshToken", refreshToken);
-router.post("/users/verifyMagicLink", verifyMagicLink);
 router.delete("/users/deleteAvatar", verifyToken, checkUserOwnership, deleteUserAvatar);
 
 module.exports = router;
