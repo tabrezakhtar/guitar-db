@@ -116,7 +116,6 @@ async function get(req, res) {
     
     const processedItems = processEquipmentItems(items);
     
-    // Count should also use the same tag filtering
     const total = await model.countDocuments(query);
     res.status(200).send({ 
       items: processedItems, 
@@ -128,6 +127,39 @@ async function get(req, res) {
     res.status(500).json({ 
       message: err.message,
       errors: "Failed to retrieve equipment data"
+    });
+  }
+}
+
+async function searchByText(req, res) {
+  const text = req.query.text ? req.query.text.trim() : "";
+  if (!text) {
+    return res.status(400).json({
+      message: "Search text is required",
+      errors: "No search text provided"
+    });
+  }
+
+  try {
+    const regex = new RegExp(text, "i");
+    const items = await Equipment.find({
+      $or: [
+        { name: { $regex: regex } },
+        { brand: { $regex: regex } }
+      ]
+    })
+      .populate("tags")
+      .populate({
+        path: "user",
+        select: "_id username avatarUrl"
+      });
+
+    const processedItems = processEquipmentItems(items);
+    res.status(200).json({ items: processedItems });
+  } catch (err) {
+    res.status(500).json({
+      message: err.message,
+      errors: "Failed to search equipment"
     });
   }
 }
@@ -205,7 +237,6 @@ async function getByUser(req, res) {
 
     let query = { user: userId };
     
-    // Filter by equipment type if specified
     if (req.query.type) {
       const type = req.query.type.toLowerCase();
       if (["guitar", "acoustic", "amp", "pedal", "bass", "accessory"].includes(type)) {
@@ -213,7 +244,6 @@ async function getByUser(req, res) {
       }
     }
     
-    // Filter by tags if specified
     if (req.query.tags) {
       try {
         const tags = JSON.parse(req.query.tags);
@@ -293,16 +323,14 @@ async function add(req, res) {
     });
   }
 
-  // Associate equipment with the authenticated user
   const newEquipment = new model({
     ...req.body,
-    user: req.userId // Set the user ID from the authenticated token
+    user: req.userId
   });
 
   try {
     const savedEquipment = await newEquipment.save();
-    
-    // Fix: Use execPopulate or individual populate calls
+ 
     const populatedEquipment = await model.findById(savedEquipment._id)
       .populate("tags")
       .populate({
@@ -536,5 +564,6 @@ module.exports = {
   add, 
   addComment,
   getAllTags,
-  toggleLike
+  toggleLike,
+  searchByText
 };

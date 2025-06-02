@@ -17,6 +17,7 @@ router.get("/equipment/settings", equipmentRoutes.settings);
 router.post("/equipment/addComment", verifyToken, equipmentRoutes.addComment);
 router.get("/equipment/tags", equipmentRoutes.getAllTags);
 router.get("/equipment/user/:userId", equipmentRoutes.getByUser);
+router.get("/equipment/searchByText", equipmentRoutes.searchByText);
 
 router.post("/auth/login", login);
 router.post("/auth/register", register);
