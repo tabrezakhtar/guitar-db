@@ -111,7 +111,7 @@ async function get(req, res) {
       .populate("tags")
       .populate({
         path: "user",
-        select: "_id username avatarUrl"
+        select: "username avatarUrl -_id"
       });
     
     const processedItems = processEquipmentItems(items);
@@ -132,7 +132,9 @@ async function get(req, res) {
 }
 
 async function searchByText(req, res) {
-  const text = req.query.text ? req.query.text.trim() : "";
+  const text = req.query.q ? req.query.q.trim() : "";
+  const sortBy = req.query.sortBy || "date";
+  const sortOrder = req.query.sortOrder === "desc" ? -1 : 1;
   if (!text) {
     return res.status(400).json({
       message: "Search text is required",
@@ -148,10 +150,11 @@ async function searchByText(req, res) {
         { brand: { $regex: regex } }
       ]
     })
+      .sort({ [sortBy]: sortOrder })
       .populate("tags")
       .populate({
         path: "user",
-        select: "_id username avatarUrl"
+        select: "username avatarUrl -_id"
       });
 
     const processedItems = processEquipmentItems(items);
