@@ -5,8 +5,8 @@ const { login, register, createUserProfile, sendMagicLink, verifyMagicLink, refr
 const { getUserProfile, updateUserProfile, deleteUserAvatar } = require("./users");
 const { verifyToken, checkEquipmentOwnership, checkUserOwnership } = require("../middleware/auth");
 
-router.get("/equipmentList/", equipmentRoutes.get);
-router.get("/equipmentById/", equipmentRoutes.getById);
+router.get("/equipment/list/", equipmentRoutes.get);
+router.get("/equipment/byid/", equipmentRoutes.getById);
 router.get("/equipment/filterBy", equipmentRoutes.filter);
 router.post("/equipment/add", verifyToken, equipmentRoutes.add);
 router.put("/equipment/update/:id", verifyToken, checkEquipmentOwnership, equipmentRoutes.update);
