@@ -4,6 +4,7 @@ const compression = require("compression");
 const port = process.env.PORT || 5000;
 const mongoose = require("mongoose");
 const cors = require("cors");
+const path = require("path");
 require('dotenv').config();
 
 console.log("process.env.NODE_ENV", process.env.NODE_ENV);
@@ -16,6 +17,10 @@ db.once("open", () => console.log("Connected to database."));
 
 app.use(express.json());
 
+// Set up EJS as the view engine
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "ejs");
+
 const apiRoutes = require("./routes");
 
 const corsOptions = {
@@ -26,6 +31,10 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use("/api/", apiRoutes);
 app.use(compression());
+
+app.get("/login", (req, res) => {
+  res.render("login", { title: "Login - Guitar DB" });
+});
 
 app.listen(port, () => {
   console.log(`App started on port: ${port}`);
