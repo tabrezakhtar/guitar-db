@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const equipmentRoutes = require("./equipment");
-const { login, register, createUserProfile, sendMagicLink, verifyMagicLink, refreshToken } = require("./auth");
+const { login, register, createUserProfile, sendMagicLink, verifyMagicLink, refreshToken, testEndpoint } = require("./auth");
 const { getUserProfile, updateUserProfile, deleteUserAvatar } = require("./users");
 const { verifyToken, checkEquipmentOwnership, checkUserOwnership } = require("../middleware/auth");
 
@@ -28,5 +28,6 @@ router.post("/auth/verifyMagicLink", verifyMagicLink);
 router.get("/users/profile", getUserProfile);
 router.put("/users/updateProfile", verifyToken, checkUserOwnership, updateUserProfile);
 router.delete("/users/deleteAvatar", verifyToken, checkUserOwnership, deleteUserAvatar);
+router.post("/auth/testEndpoint", testEndpoint);
 
 module.exports = router;

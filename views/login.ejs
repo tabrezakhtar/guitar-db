@@ -53,16 +53,41 @@
       margin-top: 20px;
       text-align: center;
     }
+    .form-errors {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+      border-radius: 4px;
+      padding: 10px 15px;
+      margin-bottom: 15px;
+    }
+    .form-errors ul {
+      margin: 0;
+      padding-left: 20px;
+    }
   </style>
 </head>
 <body>
   <div class="login-container">
     <h1>Login to Guitar DB</h1>
     <p>Enter your email address to receive a magic link for login</p>
-    <form action="/api/auth/sendMagicLink" method="POST" class="login-form">
+    <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
+      <div class="form-errors">
+        <ul>
+          <% errors.forEach(function(error) { %>
+            <li><%= error %></li>
+          <% }) %>
+        </ul>
+      </div>
+    <% } %>
+    <form action="/api/auth/testEndpoint" method="POST" class="login-form">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" placeholder="your username"<% if (typeof missing !== 'undefined' && missing.includes('username')) { %> style="border:2px solid #e53935"<% } %> value="<%= typeof username !== 'undefined' ? username : '' %>">
+      </div>
       <div class="form-group">
         <label for="email">Email address</label>
-        <input type="email" id="email" name="email" required placeholder="your@email.com">
+        <input type="email" id="email" name="email" placeholder="your@email.com"<% if (typeof missing !== 'undefined' && missing.includes('email')) { %> style="border:2px solid #e53935"<% } %> value="<%= typeof email !== 'undefined' ? email : '' %>">
       </div>
       <button type="submit" class="btn btn-primary">Send Magic Link</button>
     </form>

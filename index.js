@@ -5,6 +5,8 @@ const port = process.env.PORT || 5000;
 const mongoose = require("mongoose");
 const cors = require("cors");
 const path = require("path");
+const session = require("express-session");
+const flash = require("connect-flash");
 require('dotenv').config();
 
 console.log("process.env.NODE_ENV", process.env.NODE_ENV);
@@ -16,6 +18,16 @@ db.on("error", (error) => console.error(error));
 db.once("open", () => console.log("Connected to database."));
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
+// Set up session and flash
+app.use(session({
+  secret: process.env.SESSION_SECRET || "guitardbsecret",
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: process.env.NODE_ENV === "production" }
+}));
+app.use(flash());
 
 // Set up EJS as the view engine
 app.set("views", path.join(__dirname, "views"));
@@ -33,7 +45,13 @@ app.use("/api/", apiRoutes);
 app.use(compression());
 
 app.get("/login", (req, res) => {
-  res.render("login", { title: "Login - Guitar DB" });
+  res.render("login", { 
+    title: "Login - Guitar DB",
+    errors: req.flash("errors") || [],
+    missing: req.flash("missing") || [],
+    username: req.flash("username")[0] || "",
+    email: req.flash("email")[0] || ""
+  });
 });
 
 app.listen(port, () => {
