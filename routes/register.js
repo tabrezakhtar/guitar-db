@@ -1,24 +1,13 @@
 require("dotenv").config();
 const User = require("../models/user");
-const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { Resend } = require("resend");
 
 async function findUserByEmail(email) {
   try {
-    const users = await User.find({});
-    for (const user of users) {
-      try {
-        const isMatch = await bcrypt.compare(email, user.email);
-        if (isMatch) {
-          return user;
-        }
-      } catch (err) {
-        // Skip any users with invalid email hash format
-        continue;
-      }
-    }
-    return null;
+    // With emails stored as plaintext, we can directly query by email
+    const user = await User.findOne({ email: email });
+    return user;
   } catch (err) {
     console.error("Error finding user by email:", err);
     return null;
@@ -72,13 +61,12 @@ async function registerUser(req, res) {
     
     // All validation passed, create user
     const jwtSecret = process.env.JWT_SECRET;
-    const hashedEmail = await bcrypt.hash(email, 10);
     
     const user = new User({
       username,
       bio,
       location,
-      email: hashedEmail,
+      email: email, // Store email in plaintext
       verified: false,
     });
 
@@ -236,7 +224,7 @@ async function resendMagicLink(req, res) {
   }
   
   try {
-    // Find user by email
+    // Find user by email - now a direct lookup with plaintext email
     const existingUser = await findUserByEmail(email);
     
     if (!existingUser) {
@@ -258,7 +246,7 @@ async function resendMagicLink(req, res) {
       
       const { error } = await resend.emails.send({
         from: "Guitar DB <onboarding@resend.dev>",
-        to: ["delivered@resend.dev"], // In production, use: to: [email]
+        to: ["delivered@resend.dev"],
         subject: "Guitar DB - Login Link",
         html: emailHtml,
       });

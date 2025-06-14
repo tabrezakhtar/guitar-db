@@ -32,3 +32,13 @@
   </div>
 </body>
 </html>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var form = document.querySelector(".login-form");
+    var button = form.querySelector("button[type='submit']");
+    form.addEventListener("submit", function() {
+      button.disabled = true;
+    });
+  });
+</script>

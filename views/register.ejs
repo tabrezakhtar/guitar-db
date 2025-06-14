@@ -49,6 +49,19 @@
     <p class="register-link">
       Already have an account? <a href="/login">Login</a>
     </p>
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+      var form = document.querySelector(".login-form");
+      if (form) {
+        form.addEventListener("submit", function() {
+        var buttons = form.querySelectorAll("button");
+        buttons.forEach(function(btn) {
+          btn.disabled = true;
+        });
+        });
+      }
+      });
+    </script>
   </div>
 </body>
 </html>
