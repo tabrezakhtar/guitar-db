@@ -20,6 +20,9 @@ db.once("open", () => console.log("Connected to database."));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Serve static files
+app.use(express.static(path.join(__dirname, 'public')));
+
 // Set up session and flash
 app.use(session({
   secret: process.env.SESSION_SECRET || "guitardbsecret",
@@ -44,15 +47,27 @@ app.use(cors(corsOptions));
 app.use("/api/", apiRoutes);
 app.use(compression());
 
-app.get("/login", (req, res) => {
-  res.render("login", { 
-    title: "Login - Guitar DB",
-    errors: req.flash("errors") || [],
-    missing: req.flash("missing") || [],
-    username: req.flash("username")[0] || "",
-    email: req.flash("email")[0] || ""
-  });
-});
+const renderWithFlash = (template, additionalFields = []) => {
+  return (req, res) => {
+    const data = {
+      title: template === "login" ? "Login - Guitar DB" : "Sign Up - Guitar DB",
+      errors: req.flash("errors") || [],
+      missing: req.flash("missing") || [],
+      username: req.flash("username")[0] || "",
+      email: req.flash("email")[0] || ""
+    };
+    
+    additionalFields.forEach(field => {
+      data[field] = req.flash(field)[0] || "";
+    });
+    
+    res.render(template, data);
+  };
+};
+
+app.get("/login", renderWithFlash("login"));
+app.get("/register", renderWithFlash("register", ["bio", "location"]));
+
 
 app.listen(port, () => {
   console.log(`App started on port: ${port}`);

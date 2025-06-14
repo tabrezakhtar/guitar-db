@@ -4,68 +4,7 @@
   <title>Login - Guitar DB</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      line-height: 1.6;
-      color: #333;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    .login-container {
-      max-width: 400px;
-      margin: 0 auto;
-      padding: 20px;
-      background-color: #fff;
-      border-radius: 5px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-    .login-form {
-      margin-top: 20px;
-    }
-    .form-group {
-      margin-bottom: 15px;
-    }
-    label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-    input {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 16px;
-    }
-    .btn-primary {
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      cursor: pointer;
-      width: 100%;
-      font-size: 16px;
-      padding: 10px 0;
-      border-radius: 4px;
-    }
-    .register-link {
-      margin-top: 20px;
-      text-align: center;
-    }
-    .form-errors {
-      background: #f8d7da;
-      color: #721c24;
-      border: 1px solid #f5c6cb;
-      border-radius: 4px;
-      padding: 10px 15px;
-      margin-bottom: 15px;
-    }
-    .form-errors ul {
-      margin: 0;
-      padding-left: 20px;
-    }
-  </style>
+  <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
   <div class="login-container">
@@ -80,14 +19,10 @@
         </ul>
       </div>
     <% } %>
-    <form action="/api/auth/testEndpoint" method="POST" class="login-form">
-      <div class="form-group">
-        <label for="username">Username</label>
-        <input type="text" id="username" name="username" placeholder="your username"<% if (typeof missing !== 'undefined' && missing.includes('username')) { %> style="border:2px solid #e53935"<% } %> value="<%= typeof username !== 'undefined' ? username : '' %>">
-      </div>
+    <form action="/api/auth/sendMagicLink" method="POST" class="login-form">
       <div class="form-group">
         <label for="email">Email address</label>
-        <input type="email" id="email" name="email" placeholder="your@email.com"<% if (typeof missing !== 'undefined' && missing.includes('email')) { %> style="border:2px solid #e53935"<% } %> value="<%= typeof email !== 'undefined' ? email : '' %>">
+        <input type="email" id="email" name="email" placeholder="your@email.com" class="<% if (typeof missing !== 'undefined' && missing.includes('email')) { %>input-error<% } %>" value="<%= typeof email !== 'undefined' ? email : '' %>">
       </div>
       <button type="submit" class="btn btn-primary">Send Magic Link</button>
     </form>

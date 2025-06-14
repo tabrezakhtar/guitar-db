@@ -170,8 +170,8 @@ function generateMagicLink(userId, jwtSecret) {
     { expiresIn: "7d" }
   );
   
-  const baseUrl = process.env.FRONTEND_URL || "http://localhost:3000";
-  return `${baseUrl}/login/magic?token=${magicToken}`;
+  const baseUrl = process.env.BACKEND_URL || "http://localhost:5000";
+  return `${baseUrl}/verifymagiclink?token=${magicToken}`;
 }
 
 // Helper function to generate email templates
