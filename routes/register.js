@@ -161,7 +161,7 @@ function generateEmailTemplate(type, data) {
 async function verifyMagicLink(req, res) {
   const { token } = req.query;
   const jwtSecret = process.env.JWT_SECRET;
-  console.log("Token received:", token);
+
   if (!token) {
     return res.status(400).json({ 
       message: "No token provided",
