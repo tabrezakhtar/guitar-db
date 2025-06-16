@@ -24,18 +24,7 @@
       <div class="verify-actions">
         <a href="/register" class="btn btn-primary">Back to Registration</a>
       </div>
-    <% } else { %>
-      <!-- Success state - only visible briefly -->
-      <div class="verify-icon">✓</div>
-      <h1>Account Verified!</h1>
-      <p class="verify-message">Redirecting to Guitar DB...</p>
-      <p class="verify-welcome">Welcome, <%= user.username %>!</p>
-      
-      <div class="loading-indicator">
-        <span class="loading-spinner"></span>
-        <span>Redirecting...</span>
-      </div>
-    <% } %>
+    <% }
 
     <input type="hidden" id="token" value="<%= token %>">
     <input type="hidden" id="user" value="<%= JSON.stringify(user) %>">
