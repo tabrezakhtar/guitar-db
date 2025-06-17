@@ -543,4 +543,10 @@ async function populateDatabase() {
   }
 }
 
+if (!uri.includes("localhost")) {
+  console.log("Not on localhost, skipping database population.");
+  process.exit(0);
+}
+  // Only populate if connected to a MongoDB URI
+
 populateDatabase();
