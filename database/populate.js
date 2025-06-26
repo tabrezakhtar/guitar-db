@@ -413,6 +413,11 @@ function getPicsumImages(count = 5) {
     const seed = Math.floor(Math.random() * 1000000) + Date.now() + i;
     images.push(`https://picsum.photos/seed/${seed}/${w}/${h}`);
   }
+  // Shuffle the images array
+  for (let i = images.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [images[i], images[j]] = [images[j], images[i]];
+  }
   return images;
 }
 
