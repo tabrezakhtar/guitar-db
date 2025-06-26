@@ -398,24 +398,29 @@ function generateComments(equipmentIds, userIds) {
   return comments;
 }
 
-const EQUIPMENT_IMAGES = [
-  "https://res.cloudinary.com/dx8d5hlk1/image/upload/v1750960573/white_yizbdn.jpg",
-  "https://res.cloudinary.com/dx8d5hlk1/image/upload/v1750960552/epiphone2_cuwtpq.jpg",
-  "https://res.cloudinary.com/dx8d5hlk1/image/upload/v1750960552/epiphone1_dbrppo.jpg",
-  "https://res.cloudinary.com/dx8d5hlk1/image/upload/v1750960514/1_djxnvj.jpg",
-  "https://res.cloudinary.com/dx8d5hlk1/image/upload/v1750960502/squier_-_Copy_2_w6iu9k.jpg"
-];
-
-function getRandomImage() {
-  const idx = Math.floor(Math.random() * EQUIPMENT_IMAGES.length);
-  return EQUIPMENT_IMAGES[idx];
+function getPicsumImages(count = 5) {
+  const resolutions = [
+    [1024, 768],
+    [800, 600],
+    [640, 480],
+    [1280, 960],
+    [1200, 900]
+  ];
+  const images = [];
+  for (let i = 0; i < count; i++) {
+    const [w, h] = resolutions[i % resolutions.length];
+    // Use a random seed for each image to ensure uniqueness
+    const seed = Math.floor(Math.random() * 1000000) + Date.now() + i;
+    images.push(`https://picsum.photos/seed/${seed}/${w}/${h}`);
+  }
+  return images;
 }
 
-// Add user to equipment and assign a random image as an array
+// Add user to equipment and assign 5 unique Picsum images as an array
 function assignUsersToEquipment(equipment, userIds) {
   return equipment.map((item, index) => {
     item.user = userIds[index % userIds.length];
-    item.images = [getRandomImage()]; // Assign as array
+    item.images = getPicsumImages(5);
     return item;
   });
 }
