@@ -88,8 +88,13 @@ async function get(req, res) {
   const sortBy = req.query.sortBy || "date";
   const sortOrder = req.query.sortOrder === "desc" ? -1 : 1;
 
+  const sort = {};
+  sort[sortBy] = sortOrder;
+  if (sortBy !== "_id") {
+    sort["_id"] = sortOrder;
+  }
+
   try {
-    // Parse tags if they exist in the query
     let query = {};
     
     if (req.query.tags) {
@@ -105,7 +110,7 @@ async function get(req, res) {
     
     const items = await model.find(query)
       .collation({ locale: "en", strength: 2 })
-      .sort({ [sortBy]: sortOrder })
+      .sort(sort)
       .skip(skip)
       .limit(limit)
       .populate("tags")
