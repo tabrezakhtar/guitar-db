@@ -1,89 +1,69 @@
-[
-  {
+[  {
     "username": "GuitarHero42",
     "email": "guitarHero42@example.com",
-    "password": "password1",
     "bio": "Professional guitarist with 15+ years of experience. Session player and guitar teacher.",
     "location": "Nashville, TN",
     "website": "www.guitarhero42.com",
     "joinDate": "2023-06-15T00:00:00.000Z"
-  },
-  {
+  },  {
     "username": "RiffMaster",
     "email": "riffmaster@example.com",
-    "password": "password2",
     "bio": "Metal guitarist and producer. Collector of high-gain amps and pointy guitars.",
     "location": "Los Angeles, CA",
     "website": "www.riffmaster.net",
     "joinDate": "2023-07-22T00:00:00.000Z"
-  },
-  {
+  },  {
     "username": "ToneSeeker",
     "email": "toneseeker@example.com",
-    "password": "password3",
     "bio": "Boutique gear enthusiast. Always searching for the perfect clean tone.",
     "location": "Portland, OR",
     "website": "toneseeker.blogspot.com",
     "joinDate": "2023-05-10T00:00:00.000Z"
-  },
-  {
+  },  {
     "username": "ShredQueen",
     "email": "shredqueen@example.com",
-    "password": "password4",
     "bio": "Fast and technical player. Lead guitarist for The Shredders.",
     "location": "Austin, TX",
     "website": "www.shredqueenguitar.com",
     "joinDate": "2023-09-03T00:00:00.000Z"
-  },
-  {
+  },  {
     "username": "BluesPicker",
     "email": "bluespicker@example.com",
-    "password": "password5",
     "bio": "Vintage gear collector specializing in pre-CBS Fenders and PAF-era Gibsons.",
     "location": "Chicago, IL",
     "website": "bluespicker.wordpress.com",
     "joinDate": "2023-04-18T00:00:00.000Z"
-  },
-  {
+  },  {
     "username": "JazzCat",
     "email": "jazzcat@example.com",
-    "password": "password6",
     "bio": "Jazz guitarist and instructor. Love hollow-body guitars and tube amps.",
     "location": "New York, NY",
     "website": "www.jazzcat-guitar.com",
     "joinDate": "2023-08-05T00:00:00.000Z"
-  },
-  {
+  },  {
     "username": "AcousticDreamer",
     "email": "acousticdreamer@example.com",
-    "password": "password7",
     "bio": "Singer-songwriter focusing on fingerstyle acoustic guitar.",
     "location": "Seattle, WA",
     "website": "acousticdreamer.bandcamp.com",
     "joinDate": "2023-10-12T00:00:00.000Z"
-  },
-  {
+  },  {
     "username": "PedalJunkie",
     "email": "pedaljunkie@example.com",
-    "password": "password8",
     "bio": "Experimental guitarist with over 50 pedals in my collection.",
     "location": "Denver, CO",
     "website": "www.pedalboardoftheday.com",
     "joinDate": "2023-07-30T00:00:00.000Z"
-  },
-  {
+  },  {
     "username": "VintageVibes",
     "email": "vintagevibes@example.com",
-    "password": "password9",
     "bio": "Guitar tech specializing in vintage instrument restoration.",
     "location": "New Orleans, LA",
     "website": "www.vintageguitarrestoration.com",
     "joinDate": "2023-05-28T00:00:00.000Z"
-  },
-  {
+  },  {
     "username": "MetalMaster666",
     "email": "metalmaster666@example.com",
-    "password": "password10",
     "bio": "Downtuned and distorted. 8-string enthusiast and djent player.",
     "location": "Tampa, FL",
     "website": "metalmaster666.bandcamp.com",

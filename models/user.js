@@ -14,9 +14,6 @@ const userSchema = new mongoose.Schema({
     trim: true,
     lowercase: true,
   },
-  password: {
-    type: String,
-  },
   bio: {
     type: String,
     default: ""
