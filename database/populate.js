@@ -400,11 +400,16 @@ function generateComments(equipmentIds, userIds) {
 
 function getPicsumImages(count = 5) {
   const resolutions = [
-    [1024, 768],
-    [800, 600],
-    [640, 480],
-    [1280, 960],
-    [1200, 900]
+    [1000, 600],
+    [800, 400],
+    [600, 300],
+    [1300, 800],
+    [1200, 800],
+    [768, 1224],
+    [400, 800],
+    [380, 640],
+    [900, 1400],
+    [900, 1600]
   ];
   const images = [];
   for (let i = 0; i < count; i++) {
@@ -425,7 +430,7 @@ function getPicsumImages(count = 5) {
 function assignUsersToEquipment(equipment, userIds) {
   return equipment.map((item, index) => {
     item.user = userIds[index % userIds.length];
-    item.images = getPicsumImages(5);
+    item.images = getPicsumImages(10);
     return item;
   });
 }
