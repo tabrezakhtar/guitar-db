@@ -418,26 +418,4 @@ async function refreshToken(req, res) {
   }
 }
 
-async function testEndpoint(req, res) {
-  const { username, email } = req.body;
-  const errors = [];
-  const missing = [];
-  if (!username) {
-    missing.push("username");
-    errors.push("Username is required");
-  }
-  if (!email) {
-    missing.push("email");
-    errors.push("Email is required");
-  }
-  if (missing.length > 0) {
-    req.flash("errors", errors);
-    req.flash("missing", missing);
-    if (username) req.flash("username", username);
-    if (email) req.flash("email", email);
-    return res.redirect("/login");
-  }
-  return res.render("success");
-}
-
-module.exports = { login, register, createUserProfile, sendMagicLink, verifyMagicLink, refreshToken, testEndpoint };
+module.exports = { login, register, createUserProfile, sendMagicLink, verifyMagicLink, refreshToken };

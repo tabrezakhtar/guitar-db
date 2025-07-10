@@ -131,20 +131,6 @@ async function deleteUserAvatar(req, res) {
 
   try {
     const user = await User.findById(userId);
-    
-    // if (!user) {
-    //   return res.status(404).json({
-    //     message: "User not found",
-    //     errors: "No user found with this ID"
-    //   });
-    // }
-
-    // if (!user.avatarUrl) {
-    //   return res.status(400).json({
-    //     message: "No avatar to delete",
-    //     errors: "This user does not have an avatar"
-    //   });
-    // }
 
     await deleteCloudinaryImages([avatarUrl]);
     
@@ -171,5 +157,79 @@ async function deleteUserAvatar(req, res) {
     });
   }
 }
+async function deleteUserProfile(req, res) {
+  if (!req.body || !req.body.userId) {
+    return res.status(400).json({
+      message: "User ID is required",
+      errors: "User ID is required"
+    });
+  }
 
-module.exports = { getUserProfile, updateUserProfile, deleteUserAvatar };
+  const { userId } = req.body;
+
+  try {
+    const user = await User.findById(userId);
+    
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+        errors: "No user found with this ID"
+      });
+    }
+
+    // Collect all image URLs that need to be deleted from Cloudinary
+    const imagesToDelete = [];
+    
+    // Add user's avatar if it exists
+    if (user.avatarUrl) {
+      imagesToDelete.push(user.avatarUrl);
+    }
+
+    // Find all equipment owned by this user and collect their images
+    const userEquipment = await Equipment.find({ user: userId });
+    userEquipment.forEach(equipment => {
+      if (equipment.images && equipment.images.length > 0) {
+        imagesToDelete.push(...equipment.images);
+      }
+    });
+
+    // Delete all images from Cloudinary
+    if (imagesToDelete.length > 0) {
+      try {
+        await deleteCloudinaryImages(imagesToDelete);
+      } catch (cloudinaryError) {
+        console.error("Error deleting images from Cloudinary:", cloudinaryError);
+        // Continue with user deletion even if Cloudinary deletion fails
+      }
+    }
+
+    // Delete all equipment owned by the user
+    await Equipment.deleteMany({ user: userId });
+
+    // Delete all comments made by the user
+    await Comments.deleteMany({ user: userId });
+
+    // Remove user from likes on other equipment
+    await Equipment.updateMany(
+      { likes: userId },
+      { $pull: { likes: userId } }
+    );
+
+    // Finally, delete the user
+    await User.findByIdAndDelete(userId);
+
+    res.status(200).json({
+      message: "User profile deleted successfully",
+      deletedImages: imagesToDelete.length,
+      deletedEquipment: userEquipment.length
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Server error",
+      errors: "An internal server error occurred"
+    });
+  }
+}
+
+module.exports = { getUserProfile, updateUserProfile, deleteUserAvatar, deleteUserProfile };
