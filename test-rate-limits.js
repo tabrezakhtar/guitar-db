@@ -15,7 +15,7 @@ const testData = {
     email: "test@example.com"
   },
   refreshToken: {
-    token: ""
+    token: "some token"
   }
 };
 

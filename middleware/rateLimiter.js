@@ -12,9 +12,6 @@ const authLimiter = rateLimit({
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
   skipSuccessfulRequests: false, // Don't skip successful requests
   skipFailedRequests: false, // Don't skip failed requests
-  onLimitReached: (req) => {
-    console.log(`🚫 AUTH RATE LIMIT REACHED for IP: ${req.ip}`);
-  },
   skip: (req) => {
     console.log(`🔍 AUTH LIMITER: Checking IP ${req.ip} for ${req.method} ${req.path}`);
     return false; // Don't skip any requests
@@ -33,9 +30,6 @@ const magicLinkLimiter = rateLimit({
   legacyHeaders: false,
   skipSuccessfulRequests: false,
   skipFailedRequests: false,
-  onLimitReached: (req) => {
-    console.log(`🚫 MAGIC LINK RATE LIMIT REACHED for IP: ${req.ip}`);
-  },
   skip: (req) => {
     console.log(`🔍 MAGIC LINK LIMITER: Checking IP ${req.ip} for ${req.method} ${req.path}`);
     return false;
@@ -54,9 +48,6 @@ const refreshTokenLimiter = rateLimit({
   legacyHeaders: false,
   skipSuccessfulRequests: false, // Count all requests, including successful ones
   skipFailedRequests: false,
-  onLimitReached: (req) => {
-    console.log(`🚫 REFRESH TOKEN RATE LIMIT REACHED for IP: ${req.ip}`);
-  },
   skip: (req) => {
     console.log(`🔍 REFRESH TOKEN LIMITER: Checking IP ${req.ip} for ${req.method} ${req.path}`);
     return false;
@@ -75,9 +66,6 @@ const createProfileLimiter = rateLimit({
   legacyHeaders: false,
   skipSuccessfulRequests: false,
   skipFailedRequests: false,
-  onLimitReached: (req) => {
-    console.log(`🚫 CREATE PROFILE RATE LIMIT REACHED for IP: ${req.ip}`);
-  },
   skip: (req) => {
     console.log(`🔍 CREATE PROFILE LIMITER: Checking IP ${req.ip} for ${req.method} ${req.path}`);
     return false;
@@ -96,9 +84,6 @@ const testMagicLinkLimiter = rateLimit({
   legacyHeaders: false,
   skipSuccessfulRequests: false,
   skipFailedRequests: false,
-  onLimitReached: (req) => {
-    console.log(`🚫 TEST MAGIC LINK RATE LIMIT REACHED for IP: ${req.ip}`);
-  },
   skip: (req) => {
     console.log(`🔍 TEST MAGIC LINK LIMITER: Checking IP ${req.ip} for ${req.method} ${req.path}`);
     return false;
@@ -116,9 +101,6 @@ const testRefreshLimiter = rateLimit({
   legacyHeaders: false,
   skipSuccessfulRequests: false,
   skipFailedRequests: false,
-  onLimitReached: (req) => {
-    console.log(`🚫 TEST REFRESH RATE LIMIT REACHED for IP: ${req.ip}`);
-  },
   skip: (req) => {
     console.log(`🔍 TEST REFRESH LIMITER: Checking IP ${req.ip} for ${req.method} ${req.path}`);
     return false;
