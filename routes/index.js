@@ -5,7 +5,7 @@ const { login, createUserProfile, refreshToken } = require("./auth");
 const { registerUser, verifyMagicLink, resendMagicLink } = require("./register");
 const { getUserProfile, updateUserProfile, deleteUserAvatar, deleteUserProfile } = require("./users");
 const { verifyToken, checkEquipmentOwnership, checkUserOwnership } = require("../middleware/auth");
-const { authLimiter, magicLinkLimiter, refreshTokenLimiter, createProfileLimiter } = require("../middleware/rateLimiter");
+const { authLimiter, magicLinkLimiter, refreshTokenLimiter, createProfileLimiter, testMagicLinkLimiter, testRefreshLimiter } = require("../middleware/rateLimiter");
 
 router.get("/equipment/list/", equipmentRoutes.get);
 router.get("/equipment/byid/", equipmentRoutes.getById);
@@ -22,7 +22,7 @@ router.get("/equipment/user/:userId", equipmentRoutes.getByUser);
 router.get("/equipment/searchByText", equipmentRoutes.searchByText);
 
 // router.post("/auth/login", login);
-// router.post("/auth/register", registerUser);
+router.post("/auth/register", registerUser);
 router.post("/auth/createProfile", createProfileLimiter, createUserProfile);
 router.post("/auth/sendMagicLink", magicLinkLimiter, resendMagicLink);
 router.post("/auth/refreshToken", refreshTokenLimiter, refreshToken);
@@ -31,5 +31,14 @@ router.get("/users/profile", getUserProfile);
 router.put("/users/updateProfile", verifyToken, checkUserOwnership, updateUserProfile);
 router.delete("/users/deleteAvatar", verifyToken, checkUserOwnership, deleteUserAvatar);
 router.delete("/users/deleteProfile", verifyToken, checkUserOwnership, deleteUserProfile);
+
+// Test routes for rate limiting
+router.post("/test/magic-link", testMagicLinkLimiter, (req, res) => {
+  res.json({ message: "Test magic link endpoint", timestamp: new Date().toISOString() });
+});
+
+router.post("/test/refresh", testRefreshLimiter, (req, res) => {
+  res.json({ message: "Test refresh endpoint", timestamp: new Date().toISOString() });
+});
 
 module.exports = router;

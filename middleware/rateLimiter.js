@@ -12,6 +12,13 @@ const authLimiter = rateLimit({
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
   skipSuccessfulRequests: false, // Don't skip successful requests
   skipFailedRequests: false, // Don't skip failed requests
+  onLimitReached: (req) => {
+    console.log(`🚫 AUTH RATE LIMIT REACHED for IP: ${req.ip}`);
+  },
+  skip: (req) => {
+    console.log(`🔍 AUTH LIMITER: Checking IP ${req.ip} for ${req.method} ${req.path}`);
+    return false; // Don't skip any requests
+  }
 });
 
 // Stricter rate limiter for magic link requests to prevent spam
@@ -26,6 +33,13 @@ const magicLinkLimiter = rateLimit({
   legacyHeaders: false,
   skipSuccessfulRequests: false,
   skipFailedRequests: false,
+  onLimitReached: (req) => {
+    console.log(`🚫 MAGIC LINK RATE LIMIT REACHED for IP: ${req.ip}`);
+  },
+  skip: (req) => {
+    console.log(`🔍 MAGIC LINK LIMITER: Checking IP ${req.ip} for ${req.method} ${req.path}`);
+    return false;
+  }
 });
 
 // More permissive rate limiter for token refresh
@@ -38,8 +52,15 @@ const refreshTokenLimiter = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
-  skipSuccessfulRequests: true, // Skip successful requests
+  skipSuccessfulRequests: false, // Count all requests, including successful ones
   skipFailedRequests: false,
+  onLimitReached: (req) => {
+    console.log(`🚫 REFRESH TOKEN RATE LIMIT REACHED for IP: ${req.ip}`);
+  },
+  skip: (req) => {
+    console.log(`🔍 REFRESH TOKEN LIMITER: Checking IP ${req.ip} for ${req.method} ${req.path}`);
+    return false;
+  }
 });
 
 // Very strict rate limiter for profile creation
@@ -54,11 +75,62 @@ const createProfileLimiter = rateLimit({
   legacyHeaders: false,
   skipSuccessfulRequests: false,
   skipFailedRequests: false,
+  onLimitReached: (req) => {
+    console.log(`🚫 CREATE PROFILE RATE LIMIT REACHED for IP: ${req.ip}`);
+  },
+  skip: (req) => {
+    console.log(`🔍 CREATE PROFILE LIMITER: Checking IP ${req.ip} for ${req.method} ${req.path}`);
+    return false;
+  }
+});
+
+// Test rate limiters with lower limits for easier testing
+const testMagicLinkLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute for testing
+  max: 2, // Very low limit for testing
+  message: {
+    message: "Too many magic link requests (TEST MODE)",
+    errors: "Too many magic link requests from this IP, please try again after 1 minute."
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skipSuccessfulRequests: false,
+  skipFailedRequests: false,
+  onLimitReached: (req) => {
+    console.log(`🚫 TEST MAGIC LINK RATE LIMIT REACHED for IP: ${req.ip}`);
+  },
+  skip: (req) => {
+    console.log(`🔍 TEST MAGIC LINK LIMITER: Checking IP ${req.ip} for ${req.method} ${req.path}`);
+    return false;
+  }
+});
+
+const testRefreshLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute for testing
+  max: 3, // Very low limit for testing
+  message: {
+    message: "Too many token refresh requests (TEST MODE)",
+    errors: "Too many token refresh requests from this IP, please try again after 1 minute."
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skipSuccessfulRequests: false,
+  skipFailedRequests: false,
+  onLimitReached: (req) => {
+    console.log(`🚫 TEST REFRESH RATE LIMIT REACHED for IP: ${req.ip}`);
+  },
+  skip: (req) => {
+    console.log(`🔍 TEST REFRESH LIMITER: Checking IP ${req.ip} for ${req.method} ${req.path}`);
+    return false;
+  }
 });
 
 module.exports = {
   authLimiter,
   magicLinkLimiter,
   refreshTokenLimiter,
-  createProfileLimiter
+  createProfileLimiter,
+  // Test versions with lower limits
+  testMagicLinkLimiter,
+  testRefreshLimiter
 };
