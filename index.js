@@ -68,6 +68,9 @@ const renderWithFlash = (template, additionalFields = []) => {
 app.get("/login", renderWithFlash("login"));
 app.get("/register", renderWithFlash("register", ["bio", "location"]));
 
+app.get("/ping", (req, res) => {
+  res.json({ message: "pong", timestamp: new Date().toISOString() });
+});
 
 app.listen(port, () => {
   console.log(`App started on port: ${port}`);
