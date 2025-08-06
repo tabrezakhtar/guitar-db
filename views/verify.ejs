@@ -4,7 +4,141 @@
   <title>Account Verified - Guitar DB</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: "Roboto Mono", monospace;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      background: #ffffff;
+      color: #374151;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: #122634;
+        color: #d1d5db;
+      }
+    }
+    
+    .verify-container {
+      font-family: "Roboto Mono", monospace;
+      background: #f9fafb;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 450px;
+      margin: 1rem;
+      text-align: center;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      .verify-container {
+        background: #374151;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+      }
+    }
+    
+    .verify-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+    
+    .verify-icon.error {
+      color: #dc2626;
+    }
+    
+    h1 {
+      font-family: "Roboto Mono", monospace;
+      color: #000000;
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin: 0 0 1.5rem 0;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      h1 {
+        color: #ffffff;
+      }
+    }
+    
+    .form-errors {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 6px;
+      padding: 0.75rem;
+      margin-bottom: 1.5rem;
+      text-align: left;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      .form-errors {
+        background: rgba(220, 38, 38, 0.3);
+        border-color: #dc2626;
+      }
+    }
+    
+    .form-errors ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    
+    .form-errors li {
+      color: #b91c1c;
+      font-size: 0.875rem;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      .form-errors li {
+        color: #fca5a5;
+      }
+    }
+    
+    .verify-actions {
+      margin-top: 1.5rem;
+    }
+    
+    .verify-actions a {
+      font-family: "Roboto Mono", monospace;
+      display: inline-block;
+      background: #3b82f6;
+      color: #ffffff;
+      text-decoration: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: background-color 0.2s ease;
+    }
+    
+    .verify-actions a:hover {
+      background: #2563eb;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      .verify-actions a {
+        background: #2563eb;
+      }
+      
+      .verify-actions a:hover {
+        background: #1d4ed8;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="verify-container">
