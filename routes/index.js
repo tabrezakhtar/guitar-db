@@ -31,7 +31,9 @@ router.get("/users/profile", getUserProfile);
 router.put("/users/updateProfile", verifyToken, checkUserOwnership, updateUserProfile);
 router.delete("/users/deleteAvatar", verifyToken, checkUserOwnership, deleteUserAvatar);
 router.delete("/users/deleteProfile", verifyToken, checkUserOwnership, deleteUserProfile);
-
+router.get("/test/success", (req, res) => {
+  res.render("success", { status: "success", message: "Template test successful" });
+});
 // Test routes for rate limiting
 router.post("/test/magic-link", testMagicLinkLimiter, (req, res) => {
   res.json({ message: "Test magic link endpoint", timestamp: new Date().toISOString() });
