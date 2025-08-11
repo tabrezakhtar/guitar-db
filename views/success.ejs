@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Success - Guitar DB</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap"
+    rel="stylesheet">
+  <script src="/js/parallax-bg.js"></script>
   <link rel="stylesheet" href="/css/styles.css">
   <style>
     * {
       box-sizing: border-box;
     }
-    
+
     body {
       font-family: "Roboto Mono", monospace;
       margin: 0;
@@ -25,14 +28,14 @@
       justify-content: center;
       padding-top: 6vh;
     }
-    
+
     @media (prefers-color-scheme: dark) {
       body {
         background: #122634;
         color: #d1d5db;
       }
     }
-    
+
     .success-container {
       font-family: "Roboto Mono", monospace;
       background: #f9fafb;
@@ -44,14 +47,14 @@
       margin: 1rem;
       text-align: center;
     }
-    
+
     @media (prefers-color-scheme: dark) {
       .success-container {
         background: #374151;
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
       }
     }
-    
+
     h1 {
       font-family: "Roboto Mono", monospace;
       color: #000000;
@@ -59,13 +62,13 @@
       font-weight: 600;
       margin: 0 0 1.5rem 0;
     }
-    
+
     @media (prefers-color-scheme: dark) {
       h1 {
         color: #ffffff;
       }
     }
-    
+
     .success-message {
       background: #e5e7eb;
       border: 1px solid #cbd5e1;
@@ -73,12 +76,14 @@
       padding: 1.5rem;
       margin-bottom: 2rem;
     }
+
     @media (prefers-color-scheme: dark) {
       .success-message {
         background: #334155;
         border-color: #475569;
       }
     }
+
     .success-message p {
       font-family: "Roboto Mono", monospace;
       color: #2563eb;
@@ -86,39 +91,44 @@
       font-size: 0.95rem;
       line-height: 1.5;
     }
+
     .success-message p:last-child {
       margin-bottom: 0;
     }
+
     @media (prefers-color-scheme: dark) {
       .success-message p {
         color: #60a5fa;
       }
     }
+
     .success-message p:first-child {
       font-size: 1.125rem;
       font-weight: 600;
       margin-bottom: 1rem;
     }
+
     .success-message strong {
       font-weight: 600;
       color: #2563eb;
     }
+
     @media (prefers-color-scheme: dark) {
       .success-message strong {
         color: #60a5fa;
       }
     }
-    
+
     .note {
       font-size: 0.8rem !important;
       opacity: 0.9;
       font-style: italic;
     }
-    
+
     .return-link {
       margin-top: 1.5rem;
     }
-    
+
     .return-link a {
       font-family: "Roboto Mono", monospace;
       display: inline-block;
@@ -131,38 +141,52 @@
       font-weight: 500;
       transition: background-color 0.2s ease;
     }
-    
+
     .return-link a:hover {
       background: #2563eb;
     }
-    
+
     @media (prefers-color-scheme: dark) {
       .return-link a {
         background: #2563eb;
       }
-      
+
       .return-link a:hover {
         background: #1d4ed8;
       }
     }
   </style>
 </head>
+
 <body>
   <div class="success-container">
     <h1>Registration Successful!</h1>
     <div class="success-message">
       <p>🎸 Thanks for joining Guitar DB!</p>
-      <% if (typeof email !== 'undefined') { %>
-        <p>We've sent a magic link to <strong><%= email %></strong></p>
-      <% } else { %>
-        <p>We've sent a magic link to your email.</p>
-      <% } %>
-      <p>Click the link in your email to log in and start your guitar journey.</p>
-      <p class="note">📧 If you don't see the email within a few minutes, please check your spam or junk folder.</p>
+      <% if (typeof email !=='undefined' ) { %>
+        <p>We've sent a magic link to <strong>
+            <%= email %>
+          </strong></p>
+        <% } else { %>
+          <p>We've sent a magic link to your email.</p>
+          <% } %>
+            <p>Click the link in your email to log in and start your guitar journey.</p>
+            <p class="note">📧 If you don't see the email within a few minutes, please check your spam or junk folder.
+            </p>
     </div>
     <div class="return-link">
       <a href="/login">Return to login page</a>
     </div>
   </div>
+
+  <script>
+    ParallaxBackground.init({
+      zIndex: -1,
+      imagePath: 'images/',
+      imageCount: 24,
+      speeds: [50, 70, 42, 20]
+    });
+  </script>
 </body>
+
 </html>

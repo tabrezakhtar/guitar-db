@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Account Verified - Guitar DB</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap"
+    rel="stylesheet">
+  <script src="/js/parallax-bg.js"></script>
   <link rel="stylesheet" href="/css/styles.css">
   <style>
     * {
       box-sizing: border-box;
     }
-    
+
     body {
       font-family: "Roboto Mono", monospace;
       margin: 0;
@@ -25,14 +28,14 @@
       justify-content: center;
       padding-top: 6vh;
     }
-    
+
     @media (prefers-color-scheme: dark) {
       body {
         background: #122634;
         color: #d1d5db;
       }
     }
-    
+
     .verify-container {
       font-family: "Roboto Mono", monospace;
       background: #f9fafb;
@@ -44,24 +47,24 @@
       margin: 1rem;
       text-align: center;
     }
-    
+
     @media (prefers-color-scheme: dark) {
       .verify-container {
         background: #374151;
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
       }
     }
-    
+
     .verify-icon {
       font-size: 3rem;
       margin-bottom: 1rem;
       display: block;
     }
-    
+
     .verify-icon.error {
       color: #dc2626;
     }
-    
+
     h1 {
       font-family: "Roboto Mono", monospace;
       color: #000000;
@@ -69,13 +72,13 @@
       font-weight: 600;
       margin: 0 0 1.5rem 0;
     }
-    
+
     @media (prefers-color-scheme: dark) {
       h1 {
         color: #ffffff;
       }
     }
-    
+
     .form-errors {
       background: #fef2f2;
       border: 1px solid #fecaca;
@@ -84,35 +87,35 @@
       margin-bottom: 1.5rem;
       text-align: left;
     }
-    
+
     @media (prefers-color-scheme: dark) {
       .form-errors {
         background: rgba(220, 38, 38, 0.3);
         border-color: #dc2626;
       }
     }
-    
+
     .form-errors ul {
       margin: 0;
       padding: 0;
       list-style: none;
     }
-    
+
     .form-errors li {
       color: #b91c1c;
       font-size: 0.875rem;
     }
-    
+
     @media (prefers-color-scheme: dark) {
       .form-errors li {
         color: #fca5a5;
       }
     }
-    
+
     .verify-actions {
       margin-top: 1.5rem;
     }
-    
+
     .verify-actions a {
       font-family: "Roboto Mono", monospace;
       display: inline-block;
@@ -125,58 +128,71 @@
       font-weight: 500;
       transition: background-color 0.2s ease;
     }
-    
+
     .verify-actions a:hover {
       background: #2563eb;
     }
-    
+
     @media (prefers-color-scheme: dark) {
       .verify-actions a {
         background: #2563eb;
       }
-      
+
       .verify-actions a:hover {
         background: #1d4ed8;
       }
     }
   </style>
 </head>
+
 <body>
   <div class="verify-container">
-    <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
+    <% if (typeof errors !=='undefined' && errors.length> 0) { %>
       <!-- Show error page if there are errors -->
       <div class="verify-icon error">✕</div>
       <h1>Verification Failed</h1>
-      
+
       <div class="form-errors">
         <ul>
           <% errors.forEach(function(error) { %>
-            <li><%= error %></li>
-          <% }) %>
+            <li>
+              <%= error %>
+            </li>
+            <% }) %>
         </ul>
       </div>
-      
+
       <div class="verify-actions">
         <a href="/register" class="btn btn-primary">Back to Registration</a>
       </div>
-    <% } %>
+      <% } %>
 
-    <input type="hidden" id="token" value="<%= token %>">
-    <input type="hidden" id="user" value="<%= JSON.stringify(user) %>">
-    
-    <% if (typeof errors === 'undefined' || errors.length === 0) { %>
-      <script>
-        // Immediately redirect to frontend if there are no errors
-        document.addEventListener("DOMContentLoaded", function() {
-          const token = document.getElementById("token").value;
-          const user = document.getElementById("user").value;
-          
-          // Redirect to frontend with token and user ID as query params
-          const frontendUrl = "http://localhost:5173"; // Change this to match your frontend URL
-          window.location.href = `${frontendUrl}/auth?token=${encodeURIComponent(token)}&user=${encodeURIComponent(user)}`;
-        });
-      </script>
-    <% } %>
+        <input type="hidden" id="token" value="<%= token %>">
+        <input type="hidden" id="user" value="<%= JSON.stringify(user) %>">
+
+        <% if (typeof errors==='undefined' || errors.length===0) { %>
+          <script>
+            // Immediately redirect to frontend if there are no errors
+            document.addEventListener("DOMContentLoaded", function () {
+              const token = document.getElementById("token").value;
+              const user = document.getElementById("user").value;
+
+              // Redirect to frontend with token and user ID as query params
+              const frontendUrl = "http://localhost:5173"; // Change this to match your frontend URL
+              window.location.href = `${frontendUrl}/auth?token=${encodeURIComponent(token)}&user=${encodeURIComponent(user)}`;
+            });
+          </script>
+          <% } %>
   </div>
+
+  <script>
+    ParallaxBackground.init({
+      zIndex: -1,
+      imagePath: 'images/',
+      imageCount: 24,
+      speeds: [50, 70, 42, 20]
+    });
+  </script>
 </body>
+
 </html>

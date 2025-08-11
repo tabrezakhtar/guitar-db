@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Sign Up - Guitar DB</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap"
+    rel="stylesheet">
+  <script src="/js/parallax-bg.js"></script>
   <link rel="stylesheet" href="/css/styles.css">
   <style>
     * {
       box-sizing: border-box;
     }
-    
+
     body {
       font-family: "Roboto Mono", monospace;
       margin: 0;
@@ -25,14 +28,14 @@
       justify-content: center;
       padding-top: 6vh;
     }
-    
+
     @media (prefers-color-scheme: dark) {
       body {
         background: #122634;
         color: #d1d5db;
       }
     }
-    
+
     .login-container {
       font-family: "Roboto Mono", monospace;
       background: #f9fafb;
@@ -43,14 +46,14 @@
       max-width: 450px;
       margin: 1rem;
     }
-    
+
     @media (prefers-color-scheme: dark) {
       .login-container {
         background: #374151;
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
       }
     }
-    
+
     h1 {
       font-family: "Roboto Mono", monospace;
       color: #000000;
@@ -59,13 +62,13 @@
       text-align: center;
       margin: 0 0 0.5rem 0;
     }
-    
+
     @media (prefers-color-scheme: dark) {
       h1 {
         color: #ffffff;
       }
     }
-    
+
     p {
       font-family: "Roboto Mono", monospace;
       color: #6b7280;
@@ -73,13 +76,13 @@
       margin: 0 0 1.5rem 0;
       font-size: 0.875rem;
     }
-    
+
     @media (prefers-color-scheme: dark) {
       p {
         color: #9ca3af;
       }
     }
-    
+
     .form-errors {
       background: #fef2f2;
       border: 1px solid #fecaca;
@@ -87,35 +90,35 @@
       padding: 0.75rem;
       margin-bottom: 1rem;
     }
-    
+
     @media (prefers-color-scheme: dark) {
       .form-errors {
         background: rgba(220, 38, 38, 0.3);
         border-color: #dc2626;
       }
     }
-    
+
     .form-errors ul {
       margin: 0;
       padding: 0;
       list-style: none;
     }
-    
+
     .form-errors li {
       color: #b91c1c;
       font-size: 0.875rem;
     }
-    
+
     @media (prefers-color-scheme: dark) {
       .form-errors li {
         color: #fca5a5;
       }
     }
-    
+
     .form-group {
       margin-bottom: 1.5rem;
     }
-    
+
     label {
       font-family: "Roboto Mono", monospace;
       display: block;
@@ -124,14 +127,16 @@
       font-weight: 500;
       margin-bottom: 0.5rem;
     }
-    
+
     @media (prefers-color-scheme: dark) {
       label {
         color: #d1d5db;
       }
     }
-    
-    input[type="text"], input[type="email"], textarea {
+
+    input[type="text"],
+    input[type="email"],
+    textarea {
       font-family: "Roboto Mono", monospace;
       width: 100%;
       padding: 0.75rem 1rem;
@@ -142,44 +147,55 @@
       font-size: 0.875rem;
       transition: all 0.2s ease;
     }
-    
-    input[type="text"]::placeholder, input[type="email"]::placeholder, textarea::placeholder {
+
+    input[type="text"]::placeholder,
+    input[type="email"]::placeholder,
+    textarea::placeholder {
       color: #9ca3af;
     }
-    
-    input[type="text"]:focus, input[type="email"]:focus, textarea:focus {
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    textarea:focus {
       outline: none;
       border-color: #3b82f6;
       box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
     }
-    
+
     textarea {
       resize: vertical;
       min-height: 80px;
     }
-    
+
     @media (prefers-color-scheme: dark) {
-      input[type="text"], input[type="email"], textarea {
+
+      input[type="text"],
+      input[type="email"],
+      textarea {
         background: #374151;
         border-color: #4b5563;
         color: #ffffff;
       }
-      
-      input[type="text"]::placeholder, input[type="email"]::placeholder, textarea::placeholder {
+
+      input[type="text"]::placeholder,
+      input[type="email"]::placeholder,
+      textarea::placeholder {
         color: #9ca3af;
       }
-      
-      input[type="text"]:focus, input[type="email"]:focus, textarea:focus {
+
+      input[type="text"]:focus,
+      input[type="email"]:focus,
+      textarea:focus {
         border-color: #60a5fa;
         box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
       }
     }
-    
+
     .input-error {
       border-color: #dc2626 !important;
       box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1) !important;
     }
-    
+
     button {
       font-family: "Roboto Mono", monospace;
       width: 100%;
@@ -193,111 +209,129 @@
       cursor: pointer;
       transition: background-color 0.2s ease;
     }
-    
+
     button:hover:not(:disabled) {
       background: #2563eb;
     }
-    
+
     button:disabled {
       background: #9ca3af;
       cursor: not-allowed;
     }
-    
+
     @media (prefers-color-scheme: dark) {
       button {
         background: #2563eb;
       }
-      
+
       button:hover:not(:disabled) {
         background: #1d4ed8;
       }
-      
+
       button:disabled {
         background: #4b5563;
       }
     }
-    
+
     .register-link {
       text-align: center;
       margin-top: 1.5rem;
       font-size: 0.875rem;
     }
-    
+
     .register-link a {
       font-family: "Roboto Mono", monospace;
       color: #3b82f6;
       text-decoration: none;
       font-weight: 500;
     }
-    
+
     .register-link a:hover {
       color: #2563eb;
       text-decoration: underline;
     }
-    
+
     @media (prefers-color-scheme: dark) {
       .register-link a {
         color: #60a5fa;
       }
-      
+
       .register-link a:hover {
         color: #93c5fd;
       }
     }
   </style>
 </head>
+
 <body>
   <div class="login-container">
     <h1>Welcome to Guitar DB!</h1>
     <p>Create an account to start your guitar collection journey</p>
-    
-    <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
+
+    <% if (typeof errors !=='undefined' && errors.length> 0) { %>
       <div class="form-errors">
         <ul>
           <% errors.forEach(function(error) { %>
-            <li><%= error %></li>
-          <% }) %>
+            <li>
+              <%= error %>
+            </li>
+            <% }) %>
         </ul>
       </div>
-    <% } %>
-    
-    <form action="/api/auth/register" method="POST" class="login-form">
-      <div class="form-group">
-        <label for="username">Username</label>
-        <input type="text" id="username" name="username" placeholder="Choose a username" class="<% if (typeof missing !== 'undefined' && missing.includes('username')) { %>input-error<% } %>" value="<%= typeof username !== 'undefined' ? username : '' %>">
-      </div>
-      
-      <div class="form-group">
-        <label for="email">Email address</label>
-        <input type="email" id="email" name="email" placeholder="your@email.com" class="<% if (typeof missing !== 'undefined' && missing.includes('email')) { %>input-error<% } %>" value="<%= typeof email !== 'undefined' ? email : '' %>">
-      </div>
-      
-      <div class="form-group">
-        <label for="bio">About you (optional)</label>
-        <textarea id="bio" name="bio" placeholder="Tell us about your guitar interests" rows="3" class="<% if (typeof missing !== 'undefined' && missing.includes('bio')) { %>input-error<% } %>"><%= typeof bio !== 'undefined' ? bio : '' %></textarea>
-      </div>
-      
-      <div class="form-group">
-        <label for="location">Location (optional)</label>
-        <input type="text" id="location" name="location" placeholder="City, Country" class="<% if (typeof missing !== 'undefined' && missing.includes('location')) { %>input-error<% } %>" value="<%= typeof location !== 'undefined' ? location : '' %>">
-      </div>
-      
-      <button type="submit" class="btn btn-primary">Create Account</button>
-    </form>
-    
-    <p class="register-link">
-      Already have an account? <a href="/login">Login</a>
-    </p>
-  </div>
-</body>
-</html>
+      <% } %>
 
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-    var form = document.querySelector(".login-form");
-    var button = form.querySelector("button[type='submit']");
-    form.addEventListener("submit", function() {
-      button.disabled = true;
+        <form action="/api/auth/register" method="POST" class="login-form">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" placeholder="Choose a username"
+              class="<% if (typeof missing !== 'undefined' && missing.includes('username')) { %>input-error<% } %>"
+              value="<%= typeof username !== 'undefined' ? username : '' %>">
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email address</label>
+            <input type="email" id="email" name="email" placeholder="your@email.com"
+              class="<% if (typeof missing !== 'undefined' && missing.includes('email')) { %>input-error<% } %>"
+              value="<%= typeof email !== 'undefined' ? email : '' %>">
+          </div>
+
+          <div class="form-group">
+            <label for="bio">About you (optional)</label>
+            <textarea id="bio" name="bio" placeholder="Tell us about your guitar interests" rows="3"
+              class="<% if (typeof missing !== 'undefined' && missing.includes('bio')) { %>input-error<% } %>"><%= typeof bio !== 'undefined' ? bio : '' %></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="location">Location (optional)</label>
+            <input type="text" id="location" name="location" placeholder="City, Country"
+              class="<% if (typeof missing !== 'undefined' && missing.includes('location')) { %>input-error<% } %>"
+              value="<%= typeof location !== 'undefined' ? location : '' %>">
+          </div>
+
+          <button type="submit" class="btn btn-primary">Create Account</button>
+        </form>
+
+        <p class="register-link">
+          Already have an account? <a href="/login">Login</a>
+        </p>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var form = document.querySelector(".login-form");
+      var button = form.querySelector("button[type='submit']");
+      form.addEventListener("submit", function () {
+        button.disabled = true;
+      });
     });
-  });
-</script>
+
+    ParallaxBackground.init({
+      zIndex: -1,
+      imagePath: 'images/',
+      imageCount: 24,
+      speeds: [50, 70, 42, 20]
+    });
+  </script>
+</body>
+
+</html>
