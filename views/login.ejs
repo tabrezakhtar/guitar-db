@@ -249,7 +249,7 @@
   <body>
     <div class="login-container">
       <h1>Login to Guitar DB</h1>
-      <p>Enter your email address to receive a magic link for login</p>
+      <p>Enter your email address to receive a 4-digit verification code</p>
       <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
         <div class="form-errors">
           <ul>
@@ -259,12 +259,12 @@
           </ul>
         </div>
       <% } %>
-      <form action="/api/auth/sendMagicLink" method="POST" class="login-form">
+      <form action="/api/auth/sendCode" method="POST" class="login-form">
         <div class="form-group">
           <label for="email">Email address</label>
           <input type="email" id="email" name="email" placeholder="your@email.com" class="<% if (typeof missing !== 'undefined' && missing.includes('email')) { %>input-error<% } %>" value="<%= typeof email !== 'undefined' ? email : '' %>">
         </div>
-        <button type="submit" class="btn btn-primary">Send Magic Link</button>
+        <button type="submit" class="btn btn-primary">Send Verification Code</button>
       </form>
       <p class="register-link">
         Don't have an account? <a href="/register">Register</a>

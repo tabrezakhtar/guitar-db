@@ -72,14 +72,20 @@ async function registerUser(req, res) {
 
     await user.save();
 
-    const magicLink = generateMagicLink(user._id, jwtSecret);
+    const verificationCode = generateVerificationCode();
+    const codeExpires = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
 
-    // Send magic link email
+    user.verificationCode = verificationCode;
+    user.verificationCodeExpires = codeExpires;
+    user.verificationCodeAttempts = 0;
+    await user.save();
+
+    // Send verification code email
     try {
       const resend = new Resend(process.env.EMAIL);
       const emailHtml = generateEmailTemplate("welcome", {
         username,
-        magicLink
+        verificationCode
       });
       
       const { error } = await resend.emails.send({
@@ -93,12 +99,14 @@ async function registerUser(req, res) {
         console.error("Error sending email:", error);
       }
     } catch (emailError) {
-      console.error("Failed to send magic link email:", emailError);
+      console.error("Failed to send verification code email:", emailError);
     }
 
     return res.render("success", { 
       title: "Registration Successful - Guitar DB",
-      email: email.substring(0, 3) + "..." + email.substring(email.indexOf("@"))
+      email: email.substring(0, 3) + "..." + email.substring(email.indexOf("@")),
+      showVerificationForm: true,
+      userId: user._id.toString()
     });
   } catch (error) {
     console.log(error);
@@ -107,50 +115,43 @@ async function registerUser(req, res) {
   }
 }
 
-// Helper function to generate magic link
-function generateMagicLink(userId, jwtSecret) {
-  const magicToken = jwt.sign(
-    { id: userId },
-    jwtSecret,
-    { expiresIn: "7d" }
-  );
-  
-  const baseUrl = process.env.BACKEND_URL;
-  return `${baseUrl}/api/auth/verifymagiclink?token=${magicToken}`;
+// Helper function to generate 4-digit verification code
+function generateVerificationCode() {
+  return Math.floor(1000 + Math.random() * 9000).toString();
 }
 
 // Helper function to generate email templates
 function generateEmailTemplate(type, data) {
   const baseStyle = `
-    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+    <div style="font-family: 'Roboto Mono', monospace; max-width: 600px; margin: 0 auto; padding: 20px;">
   `;
   
   const footerStyle = `
-      <p style="font-size: 12px; color: #666;">If you did not request this email, please delete it or ignore it. Someone may have entered your email address by mistake.</p>
+      <p style="font-size: 12px; color: #666; margin-top: 30px;">If you did not request this email, please delete it or ignore it. Someone may have entered your email address by mistake.</p>
     </div>
   `;
 
   switch (type) {
     case "welcome":
       return `${baseStyle}
-        <h1>Welcome to Guitar DB!</h1>
-        <p>Thank you for registering, ${data.username}!</p>
-        <p>Click the link below to verify your account:</p>
-        <p><a href="${data.magicLink}" style="display: inline-block; background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;">Verify Account</a></p>
-        <p>Or copy and paste this link:</p>
-        <p>${data.magicLink}</p>
-        <p>This link will expire in 7 days.</p>
+        <h1 style="color: #3b82f6; text-align: center; margin-bottom: 30px;">Welcome to Guitar DB!</h1>
+        <p style="font-size: 16px; margin-bottom: 20px;">Thank you for registering, ${data.username}!</p>
+        <p style="font-size: 16px; margin-bottom: 30px;">Enter this 4-digit code to verify your account:</p>
+        <div style="text-align: center; margin: 30px 0;">
+          <span style="display: inline-block; background-color: #f3f4f6; color: #374151; padding: 20px 30px; font-size: 36px; font-weight: bold; letter-spacing: 8px; border-radius: 8px; border: 2px solid #d1d5db; font-family: 'Roboto Mono', monospace;">${data.verificationCode}</span>
+        </div>
+        <p style="font-size: 14px; color: #6b7280; text-align: center;">This code will expire in 15 minutes.</p>
         ${footerStyle}`;
     
     case "login":
       return `${baseStyle}
-        <h1>Login to Guitar DB</h1>
-        <p>Hello ${data.username},</p>
-        <p>Click the link below to log in to your Guitar DB account:</p>
-        <p><a href="${data.magicLink}" style="display: inline-block; background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;">Log In</a></p>
-        <p>Or copy and paste this link:</p>
-        <p>${data.magicLink}</p>
-        <p>This link will expire in 7 days.</p>
+        <h1 style="color: #3b82f6; text-align: center; margin-bottom: 30px;">Login to Guitar DB</h1>
+        <p style="font-size: 16px; margin-bottom: 20px;">Hello ${data.username},</p>
+        <p style="font-size: 16px; margin-bottom: 30px;">Enter this 4-digit code to log in to your Guitar DB account:</p>
+        <div style="text-align: center; margin: 30px 0;">
+          <span style="display: inline-block; background-color: #f3f4f6; color: #374151; padding: 20px 30px; font-size: 36px; font-weight: bold; letter-spacing: 8px; border-radius: 8px; border: 2px solid #d1d5db; font-family: 'Roboto Mono', monospace;">${data.verificationCode}</span>
+        </div>
+        <p style="font-size: 14px; color: #6b7280; text-align: center;">This code will expire in 15 minutes.</p>
         ${footerStyle}`;
         
     default:
@@ -158,62 +159,140 @@ function generateEmailTemplate(type, data) {
   }
 }
 
-async function verifyMagicLink(req, res) {
-  const { token } = req.query;
+async function verifyCode(req, res) {
+  const { code, userId } = req.body;
   const jwtSecret = process.env.JWT_SECRET;
+  const errors = [];
+  const missing = [];
 
-  if (!token) {
-    return res.status(400).json({ 
-      message: "No token provided",
-      errors: "Token is required"
+  if (!code) {
+    missing.push("code");
+    errors.push("Verification code is required");
+  }
+  if (!userId) {
+    missing.push("userId");
+    errors.push("User ID is required");
+  }
+
+  if (missing.length > 0) {
+    const emailDisplay = "***@***";
+    return res.render("success", {
+      title: "Enter Verification Code - Guitar DB",
+      email: emailDisplay,
+      showVerificationForm: true,
+      userId: userId || "",
+      errors: errors,
+      missing: missing
     });
   }
-  
+
   try {
-    // Verify the token from the magic link
-    const decoded = jwt.verify(token, jwtSecret);
-    
-    // Find user based on id in token
-    const user = await User.findById(decoded.id).select("-email");
+    const user = await User.findById(userId);
 
     if (!user) {
-      return res.status(404).json({ 
-        message: "User not found",
-        errors: "No user found with this ID"
+      return res.render("success", {
+        title: "Verification Error - Guitar DB",
+        email: "***@***",
+        showVerificationForm: false,
+        errors: ["Invalid verification request. Please try logging in again."]
       });
     }
+
+    // Check if code has expired
+    if (!user.verificationCodeExpires || new Date() > user.verificationCodeExpires) {
+      const emailDisplay = user.email.substring(0, 3) + "..." + user.email.substring(user.email.indexOf("@"));
+      return res.render("success", {
+        title: "Code Expired - Guitar DB",
+        email: emailDisplay,
+        showVerificationForm: false,
+        errors: ["Verification code has expired. Please request a new one."],
+        showResendOnly: true,
+        userId: user._id.toString()
+      });
+    }
+
+    // Check attempt limit
+    if (user.verificationCodeAttempts >= 5) {
+      const emailDisplay = user.email.substring(0, 3) + "..." + user.email.substring(user.email.indexOf("@"));
+      return res.render("success", {
+        title: "Too Many Attempts - Guitar DB",
+        email: emailDisplay,
+        showVerificationForm: false,
+        errors: ["Too many failed attempts. Please request a new code."],
+        showResendOnly: true,
+        userId: user._id.toString()
+      });
+    }
+
+    // Verify the code
+    if (user.verificationCode !== code) {
+      user.verificationCodeAttempts += 1;
+      await user.save();
+      
+      const remainingAttempts = 5 - user.verificationCodeAttempts;
+      const emailDisplay = user.email.substring(0, 3) + "..." + user.email.substring(user.email.indexOf("@"));
+      
+      if (remainingAttempts > 0) {
+        return res.render("success", {
+          title: "Invalid Code - Guitar DB",
+          email: emailDisplay,
+          showVerificationForm: true,
+          userId: user._id.toString(),
+          errors: [`Invalid code. ${remainingAttempts} attempts remaining.`],
+          attemptCount: user.verificationCodeAttempts,
+          maxAttempts: 5
+        });
+      } else {
+        return res.render("success", {
+          title: "Too Many Attempts - Guitar DB",
+          email: emailDisplay,
+          showVerificationForm: false,
+          errors: ["Too many failed attempts. Please request a new code."],
+          showResendOnly: true,
+          userId: user._id.toString()
+        });
+      }
+    }
+
+    // Code is valid - clear verification fields and mark as verified
+    user.verificationCode = null;
+    user.verificationCodeExpires = null;
+    user.verificationCodeAttempts = 0;
+    user.verified = true;
+    await user.save();
     
-    // Generate a new session token with shorter expiration
+    // Generate a new session token
     const sessionToken = jwt.sign(
       { id: user._id },
       jwtSecret,
       { expiresIn: "1h" }
     );
-
-    user.verified = true;
-    await user.save();
     
-    // Return session token and user info
     return res.render("verify", { 
       token: sessionToken,
       user
     });
   } catch (error) {
     console.log(error);
-    req.flash("errors", ["Invalid or expired token"]);
-    return res.redirect("/login");
+    return res.render("success", {
+      title: "Server Error - Guitar DB",
+      email: "***@***",
+      showVerificationForm: false,
+      errors: ["Server error. Please try again."]
+    });
   }
 }
 
-// Function to resend magic link for users with expired tokens
-async function resendMagicLink(req, res) {
-  const { email } = req.body;
+// Function to resend verification code for users with expired codes
+async function resendVerificationCode(req, res) {
+  const { email, userId } = req.body;
   const errors = [];
   const missing = [];
   
-  if (!email) {
+  // Handle both email-based and userId-based requests
+  if (!email && !userId) {
     missing.push("email");
-    errors.push("Email is required");
+    errors.push("Email or user ID is required");
   }
   
   if (missing.length > 0) {
@@ -224,47 +303,63 @@ async function resendMagicLink(req, res) {
   }
   
   try {
-    // Find user by email - now a direct lookup with plaintext email
-    const existingUser = await findUserByEmail(email);
+    let existingUser;
+    
+    if (userId) {
+      // Direct lookup by userId (for resend from verification page)
+      existingUser = await User.findById(userId);
+    } else {
+      // Find user by email - direct lookup with plaintext email
+      existingUser = await findUserByEmail(email);
+    }
     
     if (!existingUser) {
-      req.flash("errors", ["No account found with this email address"]);
+      req.flash("errors", ["No account found with this information"]);
       if (email) req.flash("email", email);
       return res.redirect("/login");
     }
     
-    const jwtSecret = process.env.JWT_SECRET;
-    const magicLink = generateMagicLink(existingUser._id, jwtSecret);
+    const verificationCode = generateVerificationCode();
+    const codeExpires = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
     
-    // Send magic link email
+    existingUser.verificationCode = verificationCode;
+    existingUser.verificationCodeExpires = codeExpires;
+    existingUser.verificationCodeAttempts = 0;
+    await existingUser.save();
+    
+    // Send verification code email
     try {
       const resend = new Resend(process.env.EMAIL);
       const emailHtml = generateEmailTemplate("login", {
         username: existingUser.username,
-        magicLink
+        verificationCode
       });
       
       const { error } = await resend.emails.send({
         from: "Guitar DB <onboarding@resend.dev>",
         to: ["delivered@resend.dev"],
-        subject: "Guitar DB - Login Link",
+        subject: "Guitar DB - New Verification Code",
         html: emailHtml,
       });
 
       if (error) {
         console.error("Error sending email:", error);
-        req.flash("errors", ["Failed to send login link. Please try again."]);
+        req.flash("errors", ["Failed to send verification code. Please try again."]);
         return res.redirect("/login");
       }
     } catch (emailError) {
-      console.error("Failed to send login email:", emailError);
-      req.flash("errors", ["Failed to send login link. Please try again."]);
+      console.error("Failed to send verification email:", emailError);
+      req.flash("errors", ["Failed to send verification code. Please try again."]);
       return res.redirect("/login");
     }
     
+    const emailDisplay = existingUser.email.substring(0, 3) + "..." + existingUser.email.substring(existingUser.email.indexOf("@"));
+    
     return res.render("success", { 
-      title: "Login Link Sent - Guitar DB",
-      email: email.substring(0, 3) + "..." + email.substring(email.indexOf("@"))
+      title: "New Code Sent - Guitar DB",
+      email: emailDisplay,
+      showVerificationForm: true,
+      userId: existingUser._id.toString()
     });
   } catch (error) {
     console.log(error);
@@ -273,4 +368,4 @@ async function resendMagicLink(req, res) {
   }
 }
 
-module.exports = { registerUser, verifyMagicLink, resendMagicLink };
+module.exports = { registerUser, verifyCode, resendVerificationCode };
