@@ -6,6 +6,7 @@ class ParallaxBackground {
       speeds: options.speeds || [943, 1001, 920, 857],
       gap: options.gap || "8px",
       imagesPerRow: options.imagesPerRow || 6,
+      animate: options.animate !== false, // Default to true, set to false to disable animation
       imageUrls: options.imageUrls || [
         "https://res.cloudinary.com/dx8d5hlk1/image/upload/w_500,c_limit,q_auto:low,f_auto,fl_progressive/v1754915725/27_vorpi1.jpg",
         "https://res.cloudinary.com/dx8d5hlk1/image/upload/w_500,c_limit,q_auto:low,f_auto,fl_progressive/v1754915725/25_ldhbut.jpg",
@@ -90,12 +91,12 @@ class ParallaxBackground {
         height: 100%;
         animation-timing-function: linear;
         animation-iteration-count: infinite;
-        animation-play-state: paused;
+        animation-play-state: ${this.options.animate ? 'paused' : 'paused'};
         will-change: transform;
       }
       
       .parallax-bg-scrolling-inner.loaded {
-        animation-play-state: running;
+        animation-play-state: ${this.options.animate ? 'running' : 'paused'};
       }
       
       .parallax-bg-scroll-right .parallax-bg-scrolling-inner {
@@ -147,6 +148,11 @@ class ParallaxBackground {
       const scrollingInner = document.createElement("div");
       scrollingInner.className = "parallax-bg-scrolling-inner";
       scrollingInner.style.animationDuration = `${speed}s`;
+      
+      // If animation is disabled, center the images
+      if (!this.options.animate) {
+        scrollingInner.style.transform = "translateX(-25%)";
+      }
 
       const startIndex = rowIndex * this.options.imagesPerRow;
       const rowImages = [];
