@@ -106,7 +106,8 @@ async function registerUser(req, res) {
       title: "Registration Successful - Guitar DB",
       email: email.substring(0, 3) + "..." + email.substring(email.indexOf("@")),
       showVerificationForm: true,
-      userId: user._id.toString()
+      userId: user._id.toString(),
+      titleColor: "white"
     });
   } catch (error) {
     console.log(error);
@@ -182,7 +183,8 @@ async function verifyCode(req, res) {
       showVerificationForm: true,
       userId: userId || "",
       errors: errors,
-      missing: missing
+      missing: missing,
+      titleColor: "white"
     });
   }
 
@@ -240,7 +242,8 @@ async function verifyCode(req, res) {
           userId: user._id.toString(),
           errors: [`Invalid code. ${remainingAttempts} attempts remaining.`],
           attemptCount: user.verificationCodeAttempts,
-          maxAttempts: 5
+          maxAttempts: 5,
+          titleColor: "white"
         });
       } else {
         return res.render("success", {
@@ -359,7 +362,8 @@ async function resendVerificationCode(req, res) {
       title: "New Code Sent - Guitar DB",
       email: emailDisplay,
       showVerificationForm: true,
-      userId: existingUser._id.toString()
+      userId: existingUser._id.toString(),
+      titleColor: "white"
     });
   } catch (error) {
     console.log(error);

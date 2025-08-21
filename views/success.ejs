@@ -119,12 +119,6 @@
       }
     }
 
-    .note {
-      font-size: 0.8rem !important;
-      opacity: 0.9;
-      font-style: italic;
-    }
-
     .attempt-info {
       font-size: 0.875rem !important;
       color: #f59e0b !important;
@@ -392,20 +386,15 @@
 
 <body>
   <div class="success-container">
-    <h1><% if (typeof showVerificationForm !== 'undefined' && showVerificationForm) { %>Enter Verification Code<% } else { %>Registration Successful!<% } %></h1>
+    <h1 <% if (typeof titleColor !== 'undefined' && titleColor === 'white') { %>style="color: white !important;"<% } %>><% if (typeof showVerificationForm !== 'undefined' && showVerificationForm) { %>Enter Verification Code<% } else { %>Registration Successful!<% } %></h1>
     
     <% if (typeof showVerificationForm !== 'undefined' && showVerificationForm) { %>
       <div class="success-message">
-        <p>🔐 Check your email for the 4-digit code</p>
-        <% if (typeof email !== 'undefined') { %>
-          <p>We've sent a verification code to <strong><%= email %></strong></p>
-        <% } else { %>
-          <p>We've sent a verification code to your email.</p>
-        <% } %>
+        <p>Check your email for the 4-digit code</p>
         <% if (typeof attemptCount !== 'undefined' && attemptCount > 0) { %>
           <p class="attempt-info">Attempt <%= attemptCount %> of <%= typeof maxAttempts !== 'undefined' ? maxAttempts : 5 %></p>
         <% } %>
-        <p class="note">📧 The code will expire in 15 minutes. Check your spam folder if you don't see it.</p>
+        <p>The code will expire in 15 minutes. Check your spam folder if you don't see it.</p>
       </div>
 
       <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
@@ -438,11 +427,6 @@
     <% } else if (typeof showResendOnly !== 'undefined' && showResendOnly) { %>
       <div class="success-message">
         <p>🔄 Request a new verification code</p>
-        <% if (typeof email !== 'undefined') { %>
-          <p>We'll send a new code to <strong><%= email %></strong></p>
-        <% } else { %>
-          <p>We'll send a new code to your email.</p>
-        <% } %>
       </div>
 
       <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
