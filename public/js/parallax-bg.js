@@ -3,7 +3,7 @@ class ParallaxBackground {
     this.options = {
       containerSelector: options.containerSelector || "body",
       zIndex: options.zIndex || -1,
-      speeds: options.speeds || [943, 1001, 920, 857],
+      speeds: options.speeds || [300, 350, 280, 240],
       gap: options.gap || "15px",
       imagesPerRow: options.imagesPerRow || 6,
       animate: options.animate !== false, // Default to true, set to false to disable animation
