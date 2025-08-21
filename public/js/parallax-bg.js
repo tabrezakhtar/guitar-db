@@ -4,7 +4,7 @@ class ParallaxBackground {
       containerSelector: options.containerSelector || "body",
       zIndex: options.zIndex || -1,
       speeds: options.speeds || [943, 1001, 920, 857],
-      gap: options.gap || "8px",
+      gap: options.gap || "15px",
       imagesPerRow: options.imagesPerRow || 6,
       animate: options.animate !== false, // Default to true, set to false to disable animation
       imageUrls: options.imageUrls || [
@@ -82,6 +82,7 @@ class ParallaxBackground {
         width: 100%;
         height: 100%;
         display: block;
+        border-radius: 15px;
       }
       
       .parallax-bg-scrolling-inner {
