@@ -124,7 +124,7 @@ function generateVerificationCode() {
 // Helper function to generate email templates
 function generateEmailTemplate(type, data) {
   const baseStyle = `
-    <div style="font-family: 'Roboto Mono', monospace; max-width: 600px; margin: 0 auto; padding: 20px;">
+    <div style="font-family: 'Varela Round', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
   `;
   
   const footerStyle = `
@@ -139,7 +139,7 @@ function generateEmailTemplate(type, data) {
         <p style="font-size: 16px; margin-bottom: 20px;">Thank you for registering, ${data.username}!</p>
         <p style="font-size: 16px; margin-bottom: 30px;">Enter this 4-digit code to verify your account:</p>
         <div style="text-align: center; margin: 30px 0;">
-          <span style="display: inline-block; background-color: #f3f4f6; color: #374151; padding: 20px 30px; font-size: 36px; font-weight: bold; letter-spacing: 8px; border-radius: 8px; border: 2px solid #d1d5db; font-family: 'Roboto Mono', monospace;">${data.verificationCode}</span>
+          <span style="display: inline-block; background-color: #f3f4f6; color: #374151; padding: 20px 30px; font-size: 36px; font-weight: bold; letter-spacing: 8px; border-radius: 8px; border: 2px solid #d1d5db; font-family: 'Varela Round', sans-serif;">${data.verificationCode}</span>
         </div>
         <p style="font-size: 14px; color: #6b7280; text-align: center;">This code will expire in 15 minutes.</p>
         ${footerStyle}`;
@@ -150,7 +150,7 @@ function generateEmailTemplate(type, data) {
         <p style="font-size: 16px; margin-bottom: 20px;">Hello ${data.username},</p>
         <p style="font-size: 16px; margin-bottom: 30px;">Enter this 4-digit code to log in to your Guitar DB account:</p>
         <div style="text-align: center; margin: 30px 0;">
-          <span style="display: inline-block; background-color: #f3f4f6; color: #374151; padding: 20px 30px; font-size: 36px; font-weight: bold; letter-spacing: 8px; border-radius: 8px; border: 2px solid #d1d5db; font-family: 'Roboto Mono', monospace;">${data.verificationCode}</span>
+          <span style="display: inline-block; background-color: #f3f4f6; color: #374151; padding: 20px 30px; font-size: 36px; font-weight: bold; letter-spacing: 8px; border-radius: 8px; border: 2px solid #d1d5db; font-family: 'Varela Round', sans-serif;">${data.verificationCode}</span>
         </div>
         <p style="font-size: 14px; color: #6b7280; text-align: center;">This code will expire in 15 minutes.</p>
         ${footerStyle}`;
