@@ -28,3 +28,4 @@ Open `localhost:3000` to run the app.
 https://guitar-db.vercel.app/api/guitars/filterBy?filter={"brand":"fender"}
 https://guitar-db.vercel.app/api/guitars/filterBy?filter={"brand":"fender", "colour":"red"}
 https://guitar-db.vercel.app/api/guitars/filterBy?filter={"brand":"ibanez"}
+test
