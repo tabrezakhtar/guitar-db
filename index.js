@@ -50,7 +50,7 @@ app.use(compression());
 const renderWithFlash = (template, additionalFields = []) => {
   return (req, res) => {
     const data = {
-      title: template === "login" ? "Login - Guitar DB" : "Sign Up - Guitar DB",
+      title: template === "login" ? "Login - riffbook" : "Sign Up - riffbook",
       errors: req.flash("errors") || [],
       missing: req.flash("missing") || [],
       username: req.flash("username")[0] || "",

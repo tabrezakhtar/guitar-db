@@ -89,9 +89,9 @@ async function registerUser(req, res) {
       });
       
       const { error } = await resend.emails.send({
-        from: "Guitar DB <onboarding@resend.dev>",
+        from: "riffbook <onboarding@resend.dev>",
         to: ["delivered@resend.dev"],
-        subject: "Welcome to Guitar DB - Verify Your Account",
+        subject: "Welcome to riffbook - Verify Your Account",
         html: emailHtml,
       });
 
@@ -103,7 +103,7 @@ async function registerUser(req, res) {
     }
 
     return res.render("success", { 
-      title: "Registration Successful - Guitar DB",
+      title: "Registration Successful - riffbook",
       email: email.substring(0, 3) + "..." + email.substring(email.indexOf("@")),
       showVerificationForm: true,
       userId: user._id.toString(),
@@ -135,7 +135,7 @@ function generateEmailTemplate(type, data) {
   switch (type) {
     case "welcome":
       return `${baseStyle}
-        <h1 style="color: #3b82f6; text-align: center; margin-bottom: 30px;">Welcome to Guitar DB!</h1>
+        <h1 style="color: #3b82f6; text-align: center; margin-bottom: 30px;">Welcome to riffbook!</h1>
         <p style="font-size: 16px; margin-bottom: 20px;">Thank you for registering, ${data.username}!</p>
         <p style="font-size: 16px; margin-bottom: 30px;">Enter this 4-digit code to verify your account:</p>
         <div style="text-align: center; margin: 30px 0;">
@@ -146,9 +146,9 @@ function generateEmailTemplate(type, data) {
     
     case "login":
       return `${baseStyle}
-        <h1 style="color: #3b82f6; text-align: center; margin-bottom: 30px;">Login to Guitar DB</h1>
+        <h1 style="color: #3b82f6; text-align: center; margin-bottom: 30px;">Login to riffbook</h1>
         <p style="font-size: 16px; margin-bottom: 20px;">Hello ${data.username},</p>
-        <p style="font-size: 16px; margin-bottom: 30px;">Enter this 4-digit code to log in to your Guitar DB account:</p>
+        <p style="font-size: 16px; margin-bottom: 30px;">Enter this 4-digit code to log in to your riffbook account:</p>
         <div style="text-align: center; margin: 30px 0;">
           <span style="display: inline-block; background-color: #f3f4f6; color: #374151; padding: 20px 30px; font-size: 36px; font-weight: bold; letter-spacing: 8px; border-radius: 8px; border: 2px solid #d1d5db; font-family: 'Varela Round', sans-serif;">${data.verificationCode}</span>
         </div>
@@ -178,7 +178,7 @@ async function verifyCode(req, res) {
   if (missing.length > 0) {
     const emailDisplay = "***@***";
     return res.render("success", {
-      title: "Enter Verification Code - Guitar DB",
+      title: "Enter Verification Code - riffbook",
       email: emailDisplay,
       showVerificationForm: true,
       userId: userId || "",
@@ -193,7 +193,7 @@ async function verifyCode(req, res) {
 
     if (!user) {
       return res.render("success", {
-        title: "Verification Error - Guitar DB",
+        title: "Verification Error - riffbook",
         email: "***@***",
         showVerificationForm: false,
         errors: ["Invalid verification request. Please try logging in again."]
@@ -204,7 +204,7 @@ async function verifyCode(req, res) {
     if (!user.verificationCodeExpires || new Date() > user.verificationCodeExpires) {
       const emailDisplay = user.email.substring(0, 3) + "..." + user.email.substring(user.email.indexOf("@"));
       return res.render("success", {
-        title: "Code Expired - Guitar DB",
+        title: "Code Expired - riffbook",
         email: emailDisplay,
         showVerificationForm: false,
         errors: ["Verification code has expired. Please request a new one."],
@@ -217,7 +217,7 @@ async function verifyCode(req, res) {
     if (user.verificationCodeAttempts >= 5) {
       const emailDisplay = user.email.substring(0, 3) + "..." + user.email.substring(user.email.indexOf("@"));
       return res.render("success", {
-        title: "Too Many Attempts - Guitar DB",
+        title: "Too Many Attempts - riffbook",
         email: emailDisplay,
         showVerificationForm: false,
         errors: ["Too many failed attempts. Please request a new code."],
@@ -236,7 +236,7 @@ async function verifyCode(req, res) {
       
       if (remainingAttempts > 0) {
         return res.render("success", {
-          title: "Invalid Code - Guitar DB",
+          title: "Invalid Code - riffbook",
           email: emailDisplay,
           showVerificationForm: true,
           userId: user._id.toString(),
@@ -247,7 +247,7 @@ async function verifyCode(req, res) {
         });
       } else {
         return res.render("success", {
-          title: "Too Many Attempts - Guitar DB",
+          title: "Too Many Attempts - riffbook",
           email: emailDisplay,
           showVerificationForm: false,
           errors: ["Too many failed attempts. Please request a new code."],
@@ -278,7 +278,7 @@ async function verifyCode(req, res) {
   } catch (error) {
     console.log(error);
     return res.render("success", {
-      title: "Server Error - Guitar DB",
+      title: "Server Error - riffbook",
       email: "***@***",
       showVerificationForm: false,
       errors: ["Server error. Please try again."]
@@ -339,9 +339,9 @@ async function resendVerificationCode(req, res) {
       });
       
       const { error } = await resend.emails.send({
-        from: "Guitar DB <onboarding@resend.dev>",
+        from: "riffbook <onboarding@resend.dev>",
         to: ["delivered@resend.dev"],
-        subject: "Guitar DB - New Verification Code",
+        subject: "riffbook - New Verification Code",
         html: emailHtml,
       });
 
@@ -359,7 +359,7 @@ async function resendVerificationCode(req, res) {
     const emailDisplay = existingUser.email.substring(0, 3) + "..." + existingUser.email.substring(existingUser.email.indexOf("@"));
     
     return res.render("success", { 
-      title: "New Code Sent - Guitar DB",
+      title: "New Code Sent - riffbook",
       email: emailDisplay,
       showVerificationForm: true,
       userId: existingUser._id.toString(),

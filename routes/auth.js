@@ -135,9 +135,9 @@ async function createUserProfile(req, res) {
       });
       
       const { error } = await resend.emails.send({
-        from: "Guitar DB <onboarding@resend.dev>",
+        from: "riffbook <onboarding@resend.dev>",
         to: ["delivered@resend.dev"],
-        subject: "Welcome to Guitar DB - Verify Your Account",
+        subject: "Welcome to riffbook - Verify Your Account",
         html: emailHtml,
       });
 
@@ -188,7 +188,7 @@ function generateEmailTemplate(type, data) {
   switch (type) {
     case "welcome":
       return `${baseStyle}
-        <h1>Welcome to Guitar DB!</h1>
+        <h1>Welcome to riffbook!</h1>
         <p>Thank you for registering, ${data.username}!</p>
         <p>Click the link below to verify your account:</p>
         <p><a href="${data.magicLink}" style="display: inline-block; background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;">Verify Account</a></p>
@@ -199,7 +199,7 @@ function generateEmailTemplate(type, data) {
         
     case "login":
       return `${baseStyle}
-        <h1>Login to Guitar DB</h1>
+        <h1>Login to riffbook</h1>
         <p>Hello ${data.username}!</p>
         <p>Click the link below to login to your account:</p>
         <p><a href="${data.magicLink}" style="display: inline-block; background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;">Login to Account</a></p>
@@ -262,9 +262,9 @@ async function sendMagicLink(req, res) {
       });
       
       const { error } = await resend.emails.send({
-        from: "Guitar DB <onboarding@resend.dev>",
+        from: "riffbook <onboarding@resend.dev>",
         to: ["delivered@resend.dev"],
-        subject: "Guitar DB - Login Link",
+        subject: "riffbook - Login Link",
         html: emailHtml,
       });
 
