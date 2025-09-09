@@ -2,6 +2,7 @@ require("dotenv").config();
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const { Resend } = require("resend");
+const Log = require("../models/log");
 
 async function findUserByEmail(email) {
   try {
@@ -9,6 +10,7 @@ async function findUserByEmail(email) {
     const user = await User.findOne({ email: email });
     return user;
   } catch (err) {
+    Log.logError(err, null, "find_user_by_email").catch(console.error);
     console.error("Error finding user by email:", err);
     return null;
   }
@@ -58,15 +60,12 @@ async function registerUser(req, res) {
       req.flash("location", location);
       return res.redirect("/register");
     }
-    
-    // All validation passed, create user
-    const jwtSecret = process.env.JWT_SECRET;
-    
+
     const user = new User({
       username,
       bio,
       location,
-      email: email, // Store email in plaintext
+      email: email,
       verified: false,
     });
 
@@ -99,6 +98,7 @@ async function registerUser(req, res) {
         console.error("Error sending email:", error);
       }
     } catch (emailError) {
+      Log.logError(emailError, null, "send_verification_email").catch(console.error);
       console.error("Failed to send verification code email:", emailError);
     }
 
@@ -110,6 +110,7 @@ async function registerUser(req, res) {
       titleColor: "white"
     });
   } catch (error) {
+    Log.logError(error, null, "register_user").catch(console.error);
     console.log(error);
     req.flash("errors", ["Server error. Please try again."]);
     return res.redirect("/register");
@@ -276,6 +277,7 @@ async function verifyCode(req, res) {
       user
     });
   } catch (error) {
+    Log.logError(error, null, "verify_code").catch(console.error);
     console.log(error);
     return res.render("success", {
       title: "Server Error - riffbook",
@@ -351,6 +353,7 @@ async function resendVerificationCode(req, res) {
         return res.redirect("/login");
       }
     } catch (emailError) {
+      Log.logError(emailError, null, "resend_verification_email").catch(console.error);
       console.error("Failed to send verification email:", emailError);
       req.flash("errors", ["Failed to send verification code. Please try again."]);
       return res.redirect("/login");
@@ -366,6 +369,7 @@ async function resendVerificationCode(req, res) {
       titleColor: "white"
     });
   } catch (error) {
+    Log.logError(error, null, "resend_verification_code").catch(console.error);
     console.log(error);
     req.flash("errors", ["Server error. Please try again."]);
     return res.redirect("/login");

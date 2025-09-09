@@ -4,6 +4,7 @@ const path = require("path");
 const { Guitar, Amp, Pedal, Bass, Acoustic, Accessory, Comments } = require("../models/equipment");
 const User = require("../models/user");
 const Tag = require("../models/tag");
+const Log = require("../models/log");
 
 const uri = "mongodb://localhost:27017/guitar-db";
 
@@ -463,7 +464,7 @@ async function populateDatabase() {
     console.log("Connected to database");
 
     // Drop the collections if they exist
-    const collectionNames = ["equipment", "users", "comments", "tags"];
+    const collectionNames = ["equipment", "users", "comments", "tags", "logs"];
     for (const name of collectionNames) {
       const collections = await mongoose.connection.db.listCollections({ name }).toArray();
       if (collections.length > 0) {
@@ -553,6 +554,81 @@ async function populateDatabase() {
     }
     console.log(`Updated ${updatedCount} equipment items with comments`);
 
+    // Generate example logs
+    const exampleLogs = [];
+    
+    // Add some user action logs
+    for (let i = 0; i < 10; i++) {
+      const randomUser = userIds[Math.floor(Math.random() * userIds.length)];
+      const randomEquipment = allEquipment[Math.floor(Math.random() * allEquipment.length)];
+      
+      exampleLogs.push({
+        level: "info",
+        message: "User added new equipment to collection",
+        userId: randomUser,
+        action: "add_equipment",
+        relatedId: randomEquipment._id.toString(),
+        timestamp: new Date(Date.now() - Math.floor(Math.random() * 30 * 24 * 60 * 60 * 1000)) // Random date within last 30 days
+      });
+    }
+
+    // Add some authentication logs
+    for (let i = 0; i < 5; i++) {
+      const randomUser = userIds[Math.floor(Math.random() * userIds.length)];
+      
+      exampleLogs.push({
+        level: "info",
+        message: "User logged in successfully",
+        userId: randomUser,
+        action: "login",
+        timestamp: new Date(Date.now() - Math.floor(Math.random() * 7 * 24 * 60 * 60 * 1000)) // Random date within last 7 days
+      });
+    }
+
+    // Add some error logs
+    exampleLogs.push({
+      level: "error",
+      message: "Database connection timeout",
+      action: "database_query",
+      error: {
+        message: "Connection timeout after 30000ms",
+        stack: "Error: Connection timeout\n    at Database.connect (/app/db.js:45:12)"
+      },
+      timestamp: new Date(Date.now() - Math.floor(Math.random() * 24 * 60 * 60 * 1000)) // Random date within last 24 hours
+    });
+
+    exampleLogs.push({
+      level: "error",
+      message: "Failed to upload image",
+      userId: userIds[0],
+      action: "upload_image",
+      relatedId: allEquipment[0]._id.toString(),
+      error: {
+        message: "File size exceeds limit",
+        stack: "Error: File too large\n    at ImageUpload.validate (/app/upload.js:23:8)"
+      },
+      timestamp: new Date(Date.now() - Math.floor(Math.random() * 48 * 60 * 60 * 1000)) // Random date within last 48 hours
+    });
+
+    // Add some comment-related logs
+    for (let i = 0; i < 3; i++) {
+      const randomUser = userIds[Math.floor(Math.random() * userIds.length)];
+      const randomEquipment = allEquipment[Math.floor(Math.random() * allEquipment.length)];
+      
+      exampleLogs.push({
+        level: "info",
+        message: "User posted comment on equipment",
+        userId: randomUser,
+        action: "add_comment",
+        relatedId: randomEquipment._id.toString(),
+        timestamp: new Date(Date.now() - Math.floor(Math.random() * 14 * 24 * 60 * 60 * 1000)) // Random date within last 14 days
+      });
+    }
+
+    // Insert logs
+    const insertedLogs = await Log.insertMany(exampleLogs);
+    console.log(`Inserted ${insertedLogs.length} example logs`);
+
     console.log("Database populated successfully");
     console.log(`Summary:
     - ${insertedUsers.length} users
@@ -563,7 +639,8 @@ async function populateDatabase() {
     - ${insertedBass.length} bass guitars
     - ${insertedAccessories.length} accessories
     - ${insertedComments.length} comments
-    - ${insertedTags.length} tags`);
+    - ${insertedTags.length} tags
+    - ${insertedLogs.length} logs`);
   } catch (err) {
     console.error("Error populating database:", err);
   } finally {
