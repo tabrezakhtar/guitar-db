@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= title %> - riffbook</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" href="https://res.cloudinary.com/dx8d5hlk1/image/upload/v1757542335/favicon-120x120_jprwqx.png" />
+  <link rel="preconnect" href="https://res.cloudinary.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;400;500;600;700&display=swap" rel="stylesheet">  <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+      body {
+      font-family: "Roboto Slab", serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      background: #000000;
+      color: #d1d5db;
+      display: flex;
+      flex-direction: column;    }
+    
+    .main-content {
+      flex: 1;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+    
+    .content-container {
+      background: #122634;
+      padding: 3rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      .content-container {
+        background: #374151;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+      }
+    }
+    
+    .logo-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 2rem;
+      font-weight: bold;
+    }
+    
+    .logo-image {
+      width: 32px;
+      height: 32px;
+      margin-right: 0.5rem;
+    }
+    
+    .logo-text {
+      color: #EAAA00;
+      font-size: 1.75rem;
+      font-weight: bold;
+      line-height: 1;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      .logo-text {
+        color: #EAAA00;
+      }
+    }
+    
+    .markdown-content {
+      color: #ffffff;
+      line-height: 1.6;
+    }
+    
+    .markdown-content h1 {
+      color: #ffffff;
+      font-size: 2rem;
+      font-weight: 600;
+      margin: 0 0 1.5rem 0;
+      border-bottom: 2px solid #EAAA00;
+      padding-bottom: 0.5rem;
+    }
+    
+    .markdown-content h2 {
+      color: #ffffff;
+      font-size: 1.5rem;
+      font-weight: 500;
+      margin: 2rem 0 1rem 0;
+    }
+    
+    .markdown-content h3 {
+      color: #ffffff;
+      font-size: 1.25rem;
+      font-weight: 500;
+      margin: 1.5rem 0 0.75rem 0;
+    }
+    
+    .markdown-content p {
+      color: #d1d5db;
+      margin: 0 0 1rem 0;
+    }
+    
+    .markdown-content ul, .markdown-content ol {
+      color: #d1d5db;
+      margin: 0 0 1rem 1.5rem;
+    }
+    
+    .markdown-content li {
+      margin: 0.5rem 0;
+    }
+    
+    .markdown-content strong {
+      color: #ffffff;
+      font-weight: 600;
+    }
+    
+    .markdown-content em {
+      color: #EAAA00;
+      font-style: italic;
+    }
+    
+    .markdown-content a {
+      color: #60a5fa;
+      text-decoration: none;
+    }
+    
+    .markdown-content a:hover {
+      color: #93c5fd;
+      text-decoration: underline;
+    }
+    
+    .back-link {
+      text-align: center;
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid #4b5563;
+    }
+    
+    .back-link a {
+      color: #60a5fa;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    
+    .back-link a:hover {
+      color: #93c5fd;
+      text-decoration: underline;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      .markdown-content {
+        color: #d1d5db;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="main-content">
+    <div class="content-container">
+      <div class="logo-container">
+        <img 
+          src="https://res.cloudinary.com/dx8d5hlk1/image/upload/v1757542336/favicon-192x192_kkkkll.png" 
+          alt="Riffbook Logo" 
+          class="logo-image"
+        />
+        <span class="logo-text">riffbook</span>
+      </div>
+      
+      <div class="markdown-content">
+        <%- content %>
+      </div>
+      
+      <div class="back-link">
+        <a href="/login">← Back to Login</a>
+      </div>
+    </div>
+  </div>
+  <%- include('partials/footer') %>
+
+</body>
+</html>

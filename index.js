@@ -7,6 +7,8 @@ const cors = require("cors");
 const path = require("path");
 const session = require("express-session");
 const flash = require("connect-flash");
+const fs = require("fs");
+const { marked } = require("marked");
 require('dotenv').config();
 
 console.log("process.env.NODE_ENV", process.env.NODE_ENV);
@@ -67,6 +69,39 @@ const renderWithFlash = (template, additionalFields = []) => {
 
 app.get("/login", renderWithFlash("login"));
 app.get("/register", renderWithFlash("register", ["bio", "location"]));
+
+// Markdown routes
+app.get("/terms", (req, res) => {
+  try {
+    const termsPath = path.join(__dirname, "docs", "terms.md");
+    const termsContent = fs.readFileSync(termsPath, "utf8");
+    const htmlContent = marked(termsContent);
+    
+    res.render("markdown", {
+      title: "Terms & Conditions",
+      content: htmlContent
+    });
+  } catch (error) {
+    console.error("Error reading terms file:", error);
+    res.status(404).send("Terms & Conditions not found");
+  }
+});
+
+app.get("/privacy", (req, res) => {
+  try {
+    const privacyPath = path.join(__dirname, "docs", "privacy.md");
+    const privacyContent = fs.readFileSync(privacyPath, "utf8");
+    const htmlContent = marked(privacyContent);
+    
+    res.render("markdown", {
+      title: "Privacy Policy", 
+      content: htmlContent
+    });
+  } catch (error) {
+    console.error("Error reading privacy file:", error);
+    res.status(404).send("Privacy Policy not found");
+  }
+});
 
 app.get("/ping", (req, res) => {
   res.json({ message: "ping received", timestamp: new Date().toISOString() });
