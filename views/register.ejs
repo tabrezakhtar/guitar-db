@@ -40,10 +40,8 @@
         background: #122634;
         color: #d1d5db;
       }
-    }
-
-    .login-container {
-      background: #f9fafb;
+    }    .login-container {
+      background: #122634;
       padding: 2rem;
       border-radius: 8px;
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
@@ -54,7 +52,6 @@
 
     @media (prefers-color-scheme: dark) {
       .login-container {
-        background: #374151;
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
       }
     }
@@ -65,10 +62,22 @@
       font-weight: 600;
       text-align: center;
       margin: 0 0 0.5rem 0;
+    }    @media (prefers-color-scheme: dark) {
+      h1 {
+        color: #ffffff;
+      }
+    }
+
+    h2 {
+      color: #000000;
+      font-size: 1.125rem;
+      font-weight: 500;
+      text-align: center;
+      margin: 0 0 0.5rem 0;
     }
 
     @media (prefers-color-scheme: dark) {
-      h1 {
+      h2 {
         color: #ffffff;
       }
     }
@@ -134,9 +143,7 @@
       label {
         color: #d1d5db;
       }
-    }
-
-    input[type="text"],
+    }    input[type="text"],
     input[type="email"],
     textarea {
       width: 100%;
@@ -144,7 +151,7 @@
       border: 1px solid #d1d5db;
       border-radius: 6px;
       background: #ffffff;
-      color: #111827;
+      color: #000000;
       font-size: 0.875rem;
       transition: all 0.2s ease;
     }
@@ -166,15 +173,13 @@
     textarea {
       resize: vertical;
       min-height: 80px;
-    }
-
-    @media (prefers-color-scheme: dark) {
+    }    @media (prefers-color-scheme: dark) {
       input[type="text"],
       input[type="email"],
       textarea {
-        background: #374151;
+        background: #ffffff;
         border-color: #4b5563;
-        color: #ffffff;
+        color: #000000;
       }
 
       input[type="text"]::placeholder,
@@ -252,19 +257,49 @@
     @media (prefers-color-scheme: dark) {
       .register-link a {
         color: #60a5fa;
-      }
-
-      .register-link a:hover {
+      }      .register-link a:hover {
         color: #93c5fd;
+      }
+    }
+      .logo-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 2rem;
+      font-weight: bold;
+    }
+    
+    .logo-image {
+      width: 32px;
+      height: 32px;
+      margin-right: 0.5rem;
+    }
+    
+    .logo-text {
+      color: #EAAA00;
+      font-size: 1.75rem;
+      font-weight: bold;
+      line-height: 1;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      .logo-text {
+        color: #EAAA00;
       }
     }
   </style>
 </head>
 
-<body>
-  <div class="main-content">
+<body>  <div class="main-content">
     <div class="login-container">
-      <h1>Welcome to riffbook!</h1>
+      <div class="logo-container">
+        <img 
+          src="https://res.cloudinary.com/dx8d5hlk1/image/upload/v1757542336/favicon-192x192_kkkkll.png" 
+          alt="Riffbook Logo" 
+          class="logo-image"
+        />
+        <span class="logo-text">riffbook</span>      </div>
+      <h2>Welcome to riffbook!</h2>
       <p>Create an account to start your guitar collection journey</p>
 
       <% if (typeof errors !=='undefined' && errors.length> 0) { %>
