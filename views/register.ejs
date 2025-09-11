@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-  <title>Sign Up - riffbook</title>
+<head>  <title>Sign Up - riffbook</title>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <meta name="viewport" content="width=device-width, initial-scale=1">  <link rel="icon" type="image/png" href="https://res.cloudinary.com/dx8d5hlk1/image/upload/v1757542335/favicon-120x120_jprwqx.png" />
+  <link rel="preconnect" href="https://res.cloudinary.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;400;500;600;700&display=swap"
     rel="stylesheet">
@@ -20,6 +21,12 @@
       min-height: 100vh;
       background: #ffffff;
       color: #374151;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .main-content {
+      flex: 1;
       display: flex;
       align-items: flex-start;
       justify-content: center;
@@ -254,21 +261,22 @@
 </head>
 
 <body>
-  <div class="login-container">
-    <h1>Welcome to riffbook!</h1>
-    <p>Create an account to start your guitar collection journey</p>
+  <div class="main-content">
+    <div class="login-container">
+      <h1>Welcome to riffbook!</h1>
+      <p>Create an account to start your guitar collection journey</p>
 
-    <% if (typeof errors !=='undefined' && errors.length> 0) { %>
-      <div class="form-errors">
-        <ul>
-          <% errors.forEach(function(error) { %>
-            <li>
-              <%= error %>
-            </li>
-            <% }) %>
-        </ul>
-      </div>
-      <% } %>
+      <% if (typeof errors !=='undefined' && errors.length> 0) { %>
+        <div class="form-errors">
+          <ul>
+            <% errors.forEach(function(error) { %>
+              <li>
+                <%= error %>
+              </li>
+              <% }) %>
+          </ul>
+        </div>
+        <% } %>
 
         <form action="/api/auth/register" method="POST" class="login-form">
           <div class="form-group">
@@ -299,12 +307,13 @@
           </div>
 
           <button type="submit" class="btn btn-primary">Create Account</button>
-        </form>
-
-        <p class="register-link">
+        </form>        <p class="register-link">
           Already have an account? <a href="/login">Login</a>
         </p>
+    </div>
   </div>
+
+  <%- include('partials/footer') %>
 
   <script>
     document.addEventListener("DOMContentLoaded", function () {

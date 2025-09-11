@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-  <title>Success - riffbook</title>
+<head>  <title>Success - riffbook</title>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <meta name="viewport" content="width=device-width, initial-scale=1">  <link rel="icon" type="image/png" href="https://res.cloudinary.com/dx8d5hlk1/image/upload/v1757542335/favicon-120x120_jprwqx.png" />
+  <link rel="preconnect" href="https://res.cloudinary.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;400;500;600;700&display=swap"
     rel="stylesheet">
@@ -20,6 +21,12 @@
       min-height: 100vh;
       background: #ffffff;
       color: #374151;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .main-content {
+      flex: 1;
       display: flex;
       align-items: flex-start;
       justify-content: center;
@@ -382,8 +389,9 @@
 </head>
 
 <body>
-  <div class="success-container">
-    <h1 <% if (typeof titleColor !== 'undefined' && titleColor === 'white') { %>style="color: white !important;"<% } %>><% if (typeof showVerificationForm !== 'undefined' && showVerificationForm) { %>Enter Verification Code<% } else { %>Registration Successful!<% } %></h1>
+  <div class="main-content">
+    <div class="success-container">
+      <h1 <% if (typeof titleColor !== 'undefined' && titleColor === 'white') { %>style="color: white !important;"<% } %>><% if (typeof showVerificationForm !== 'undefined' && showVerificationForm) { %>Enter Verification Code<% } else { %>Registration Successful!<% } %></h1>
     
     <% if (typeof showVerificationForm !== 'undefined' && showVerificationForm) { %>
       <div class="success-message">
@@ -453,12 +461,13 @@
         <p>Click the link in your email to log in and start your guitar journey.</p>
         <p class="note">📧 If you don't see the email within a few minutes, please check your spam or junk folder.</p>
       </div>
-    <% } %>
-
-    <div class="return-link">
+    <% } %>    <div class="return-link">
       <a href="/login">Return to login page</a>
     </div>
+    </div>
   </div>
+
+  <%- include('partials/footer') %>
 
   <script>
     document.addEventListener("DOMContentLoaded", function() {

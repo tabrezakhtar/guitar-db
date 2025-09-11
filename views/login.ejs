@@ -3,7 +3,9 @@
   <head>
     <title>Login - riffbook</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1">    <link rel="icon" type="image/png" href="https://res.cloudinary.com/dx8d5hlk1/image/upload/v1757542335/favicon-120x120_jprwqx.png" />
+    <link rel="preconnect" href="https://res.cloudinary.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/styles.css">
@@ -19,12 +21,20 @@
         padding: 0;
       }      body {
         display: flex;
-        align-items: flex-start;
-        justify-content: center;
+        flex-direction: column;
         font-family: "Roboto Slab", serif;
         background: #ffffff;
         color: #374151;
         min-height: 100vh;
+        margin: 0;
+        padding: 0;
+      }
+      
+      .main-content {
+        flex: 1;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
         padding-top: 6vh;
       }
       
@@ -234,32 +244,35 @@
           color: #93c5fd;
         }
       }
-    </style>
-  </head>
+    </style>  </head>
   <body>
-    <div class="login-container">
-      <h1>Login to riffbook</h1>
-      <p>Enter your email address to receive a 4-digit verification code</p>
-      <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
-        <div class="form-errors">
-          <ul>
-            <% errors.forEach(function(error) { %>
-              <li><%= error %></li>
-            <% }) %>
-          </ul>
-        </div>
-      <% } %>
-      <form action="/api/auth/sendCode" method="POST" class="login-form">
-        <div class="form-group">
-          <label for="email">Email address</label>
-          <input type="email" id="email" name="email" placeholder="your@email.com" class="<% if (typeof missing !== 'undefined' && missing.includes('email')) { %>input-error<% } %>" value="<%= typeof email !== 'undefined' ? email : '' %>">
-        </div>
-        <button type="submit" class="btn btn-primary">Send Verification Code</button>
-      </form>
-      <p class="register-link">
-        Don't have an account? <a href="/register">Register</a>
-      </p>
+    <div class="main-content">
+      <div class="login-container">
+        <h1>Login to riffbook</h1>
+        <p>Enter your email address to receive a 4-digit verification code</p>
+        <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
+          <div class="form-errors">
+            <ul>
+              <% errors.forEach(function(error) { %>
+                <li><%= error %></li>
+              <% }) %>
+            </ul>
+          </div>
+        <% } %>
+        <form action="/api/auth/sendCode" method="POST" class="login-form">
+          <div class="form-group">
+            <label for="email">Email address</label>
+            <input type="email" id="email" name="email" placeholder="your@email.com" class="<% if (typeof missing !== 'undefined' && missing.includes('email')) { %>input-error<% } %>" value="<%= typeof email !== 'undefined' ? email : '' %>">
+          </div>
+          <button type="submit" class="btn btn-primary">Send Verification Code</button>
+        </form>
+        <p class="register-link">
+          Don't have an account? <a href="/register">Register</a>
+        </p>
+      </div>
     </div>
+
+    <%- include('partials/footer') %>
 
     <script>
       document.addEventListener("DOMContentLoaded", function() {
