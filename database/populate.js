@@ -5,6 +5,7 @@ const { Guitar, Amp, Pedal, Bass, Acoustic, Accessory, Comments } = require("../
 const User = require("../models/user");
 const Tag = require("../models/tag");
 const Log = require("../models/log");
+const Version = require("../models/version");
 
 const uri = "mongodb://localhost:27017/guitar-db";
 
@@ -461,10 +462,8 @@ function assignTagsToEquipment(equipment, tagIds) {
 async function populateDatabase() {
   try {
     await mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-    console.log("Connected to database");
-
-    // Drop the collections if they exist
-    const collectionNames = ["equipment", "users", "comments", "tags", "logs"];
+    console.log("Connected to database");    // Drop the collections if they exist
+    const collectionNames = ["equipment", "users", "comments", "tags", "logs", "versions"];
     for (const name of collectionNames) {
       const collections = await mongoose.connection.db.listCollections({ name }).toArray();
       if (collections.length > 0) {
@@ -623,14 +622,20 @@ async function populateDatabase() {
         relatedId: randomEquipment._id.toString(),
         timestamp: new Date(Date.now() - Math.floor(Math.random() * 14 * 24 * 60 * 60 * 1000)) // Random date within last 14 days
       });
-    }
-
-    // Insert logs
+    }    // Insert logs
     const insertedLogs = await Log.insertMany(exampleLogs);
     console.log(`Inserted ${insertedLogs.length} example logs`);
 
-    console.log("Database populated successfully");
-    console.log(`Summary:
+    // Create version entry
+    const versionData = {
+      version: "0.1",
+      description: "Initial version of riffbook database"
+    };
+    
+    const insertedVersion = await Version.create(versionData);
+    console.log(`Created version: ${insertedVersion.version}`);
+
+    console.log("Database populated successfully");    console.log(`Summary:
     - ${insertedUsers.length} users
     - ${insertedGuitars.length} guitars
     - ${insertedAcoustic.length} acoustic guitars
@@ -640,7 +645,8 @@ async function populateDatabase() {
     - ${insertedAccessories.length} accessories
     - ${insertedComments.length} comments
     - ${insertedTags.length} tags
-    - ${insertedLogs.length} logs`);
+    - ${insertedLogs.length} logs
+    - Version: ${insertedVersion.version}`);
   } catch (err) {
     console.error("Error populating database:", err);
   } finally {

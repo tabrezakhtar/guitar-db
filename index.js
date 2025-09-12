@@ -9,6 +9,7 @@ const session = require("express-session");
 const flash = require("connect-flash");
 const fs = require("fs");
 const { marked } = require("marked");
+const Version = require("./models/version");
 require('dotenv').config();
 
 console.log("process.env.NODE_ENV", process.env.NODE_ENV);
@@ -105,6 +106,24 @@ app.get("/privacy", (req, res) => {
 
 app.get("/ping", (req, res) => {
   res.json({ message: "ping received", timestamp: new Date().toISOString() });
+});
+
+app.get("/version", async (req, res) => {
+  try {
+    const version = await Version.findOne().sort({ createdAt: -1 });
+    if (!version) {
+      return res.status(404).json({ error: "Version not found" });
+    }
+    res.json({
+      version: version.version,
+      description: version.description,
+      createdAt: version.createdAt,
+      updatedAt: version.updatedAt
+    });
+  } catch (error) {
+    console.error("Error fetching version:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 app.listen(port, () => {
