@@ -3,11 +3,10 @@
     <div class="footer-copyright">
       <span>&copy; <%= new Date().getFullYear() %> riffbook. All rights reserved.</span>
     </div>
-    
-    <div class="footer-links">
+      <div class="footer-links">
       <a href="/privacy">Privacy Policy</a>
       <a href="/terms">Terms & Conditions</a>
-      <a href="/contact">Contact Us</a>
+      <a href="http://<%= process.env.FRONTEND_URL || 'http://localhost:5173' %>/contact.html">Contact Us</a>
     </div>
   </div>
 </footer>
