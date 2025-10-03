@@ -3,7 +3,8 @@
   <head>
     <title>Login - riffbook</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">    <link rel="icon" type="image/png" href="https://res.cloudinary.com/dx8d5hlk1/image/upload/v1757542335/favicon-120x120_jprwqx.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="https://res.cloudinary.com/dx8d5hlk1/image/upload/v1757542335/favicon-120x120_jprwqx.png" />
     <link rel="preconnect" href="https://res.cloudinary.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -69,7 +70,8 @@
         text-align: center;
         margin: 0 0 0.5rem 0;
       }
-        @media (prefers-color-scheme: dark) {
+      
+      @media (prefers-color-scheme: dark) {
         h1 {
           color: #ffffff;
         }
@@ -151,7 +153,8 @@
           color: #d1d5db;
         }
       }
-        input[type="email"] {
+      
+      input[type="email"] {
         width: 100%;
         padding: 0.75rem 1rem;
         border: 1px solid #d1d5db;
@@ -171,7 +174,8 @@
         border-color: #3b82f6;
         box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
       }
-        @media (prefers-color-scheme: dark) {
+      
+      @media (prefers-color-scheme: dark) {
         input[type="email"] {
           background: #ffffff;
           border-color: #4b5563;
@@ -250,11 +254,13 @@
         .register-link a {
           color: #60a5fa;
         }
-            .register-link a:hover {
-        color: #93c5fd;
+        
+        .register-link a:hover {
+          color: #93c5fd;
+        }
       }
-      }
-        .logo-container {
+      
+      .logo-container {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -282,7 +288,8 @@
       }
     </style>
   </head>
-  <body>    <div class="main-content">
+  <body>
+    <div class="main-content">
       <div class="login-container">
         <div class="logo-container">
           <img 
@@ -290,7 +297,8 @@
             alt="Riffbook Logo" 
             class="logo-image"
           />
-          <span class="logo-text">riffbook</span>        </div>
+          <span class="logo-text">riffbook</span>
+        </div>
         <h2>Login to riffbook</h2>
         <p>Enter your email address to receive a 4-digit verification code</p>
         <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
@@ -313,14 +321,14 @@
           Don't have an account? <a href="/register">Register</a>
         </p>
         
-        <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #e5e7eb; text-align: center;">
+        <form action="/api/auth/guestLogin" method="POST" style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #e5e7eb; text-align: center;">
           <p style="margin-bottom: 0.75rem;">
             Want to explore the app without signing up?
           </p>
-          <button type="button" style="width: 100%; background: #1d52bc; color: #ffffff; border: none; padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: background-color 0.2s ease;">
+          <button type="submit" style="width: 100%; background: #1d52bc; color: #ffffff; border: none; padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: background-color 0.2s ease;">
             Login as a Temporary Guest
           </button>
-        </div>
+        </form>
       </div>
     </div>
 
