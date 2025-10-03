@@ -286,6 +286,40 @@
           color: #EAAA00;
         }
       }
+      
+      .guest-login-form {
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e5e7eb;
+        text-align: center;
+      }
+      
+      .guest-login-description {
+        margin-bottom: 0.75rem;
+      }
+      
+      .guest-login-button {
+        width: 100%;
+        background: #1d52bc;
+        color: #ffffff;
+        border: none;
+        padding: 0.75rem 1rem;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+      }
+      
+      .guest-login-button:hover {
+        background: #1543a5;
+      }
+      
+      @media (prefers-color-scheme: dark) {
+        .guest-login-form {
+          border-top: 1px solid #4b5563;
+        }
+      }
     </style>
   </head>
   <body>
@@ -321,12 +355,12 @@
           Don't have an account? <a href="/register">Register</a>
         </p>
         
-        <form action="/api/auth/guestLogin" method="POST" style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #e5e7eb; text-align: center;">
-          <p style="margin-bottom: 0.75rem;">
+        <form action="/api/auth/guestLogin" method="POST" class="guest-login-form">
+          <p class="guest-login-description">
             Want to explore the app without signing up?
           </p>
-          <button type="submit" style="width: 100%; background: #1d52bc; color: #ffffff; border: none; padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: background-color 0.2s ease;">
-            Login as a Temporary Guest
+          <button type="submit" class="guest-login-button">
+            Continue as a Temporary Guest
           </button>
         </form>
       </div>

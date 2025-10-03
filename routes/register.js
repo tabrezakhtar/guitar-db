@@ -376,4 +376,52 @@ async function resendVerificationCode(req, res) {
   }
 }
 
-module.exports = { registerUser, verifyCode, resendVerificationCode };
+async function guestLogin(req, res) {
+  const jwtSecret = process.env.JWT_SECRET;
+  
+  try {
+    // Generate a random 6-digit number for guest username
+    let guestNumber;
+    let guestUsername;
+    let existingUser;
+    
+    // Keep generating until we find a unique username
+    do {
+      guestNumber = Math.floor(100000 + Math.random() * 900000); // 6 digits
+      guestUsername = `Guest${guestNumber}`;
+      existingUser = await User.findOne({ username: guestUsername });
+    } while (existingUser);
+    
+    // Create temporary guest user
+    const guestUser = new User({
+      username: guestUsername,
+      email: `${guestUsername.toLowerCase()}@guest.local`, // Temporary email
+      bio: "Temporary guest user",
+      location: "",
+      verified: true, // Guests are automatically verified
+      guest: true // Mark as guest user
+    });
+
+    await guestUser.save();
+    
+    // Generate session token
+    const sessionToken = jwt.sign(
+      { id: guestUser._id },
+      jwtSecret,
+      { expiresIn: "1h" }
+    );
+    
+    // Render verify template with token and user
+    return res.render("verify", { 
+      token: sessionToken,
+      user: guestUser
+    });
+  } catch (error) {
+    Log.logError(error, null, "guest_login").catch(console.error);
+    console.log(error);
+    req.flash("errors", ["Failed to create guest account. Please try again."]);
+    return res.redirect("/login");
+  }
+}
+
+module.exports = { registerUser, verifyCode, resendVerificationCode, guestLogin };

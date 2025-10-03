@@ -49,6 +49,10 @@ const userSchema = new mongoose.Schema({
   verificationCodeAttempts: {
     type: Number,
     default: 0
+  },
+  guest: {
+    type: Boolean,
+    default: false
   }
 });
 
