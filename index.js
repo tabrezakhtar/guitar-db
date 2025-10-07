@@ -41,12 +41,16 @@ app.set("view engine", "ejs");
 
 const apiRoutes = require("./routes");
 
-const corsOptions = {
-  origin: ["http://127.0.0.1:5173", "http://localhost:5173"],
-  optionsSuccessStatus: 200
-};
+if (process.env.CORS_ORIGINS) {
+  const corsOptions = {
+    origin: process.env.CORS_ORIGINS.split(','),
+    optionsSuccessStatus: 200
+  };
 
-app.use(cors(corsOptions));
+  console.log("Cors options found. Adding CORS middleware.");
+  app.use(cors(corsOptions));
+}
+
 app.use("/api/", apiRoutes);
 app.use(compression());
 
