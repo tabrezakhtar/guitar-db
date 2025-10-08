@@ -14,11 +14,24 @@ require('dotenv').config();
 
 console.log("process.env.NODE_ENV", process.env.NODE_ENV);
 const uri = process.env.DATABASE_URI;
-mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+const connectToDatabase = async () => {
+  try {
+    await mongoose.connect(uri, { 
+      useNewUrlParser: true, 
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 5000
+    });
+    console.log("Connected to database.");
+  } catch {
+    console.log("Failed to connect to database.");
+  }
+};
+
+connectToDatabase();
 
 const db = mongoose.connection;
 db.on("error", (error) => console.error(error));
-db.once("open", () => console.log("Connected to database."));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -109,7 +122,16 @@ app.get("/privacy", (req, res) => {
 });
 
 app.get("/ping", (req, res) => {
-  res.json({ message: "ping received", timestamp: new Date().toISOString() });
+  const response = { 
+    message: "ping received", 
+    timestamp: new Date().toISOString() 
+  };
+  
+  if (mongoose.connection.readyState === 1) {
+    response.database = "online";
+  }
+  
+  res.json(response);
 });
 
 app.get("/version", async (req, res) => {
