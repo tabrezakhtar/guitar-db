@@ -8,7 +8,6 @@ const path = require("path");
 const session = require("express-session");
 const flash = require("connect-flash");
 const fs = require("fs");
-const { marked } = require("marked");
 const Version = require("./models/version");
 require('dotenv').config();
 
@@ -89,8 +88,9 @@ app.get("/login", renderWithFlash("login"));
 app.get("/register", renderWithFlash("register", ["bio", "location"]));
 
 // Markdown routes
-app.get("/terms", (req, res) => {
+app.get("/terms", async (req, res) => {
   try {
+    const { marked } = await import("marked");
     const termsPath = path.join(__dirname, "docs", "terms.md");
     const termsContent = fs.readFileSync(termsPath, "utf8");
     const htmlContent = marked(termsContent);
@@ -105,8 +105,9 @@ app.get("/terms", (req, res) => {
   }
 });
 
-app.get("/privacy", (req, res) => {
+app.get("/privacy", async (req, res) => {
   try {
+    const { marked } = await import("marked");
     const privacyPath = path.join(__dirname, "docs", "privacy.md");
     const privacyContent = fs.readFileSync(privacyPath, "utf8");
     const htmlContent = marked(privacyContent);
