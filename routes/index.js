@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const equipmentRoutes = require("./equipment");
-const { login, createUserProfile, refreshToken } = require("./auth");
+const pagesRoutes = require("./pages");
+const { createUserProfile, refreshToken } = require("./auth");
 const { registerUser, verifyCode, resendVerificationCode, guestLogin } = require("./register");
 const { getUserProfile, updateUserProfile, deleteUserAvatar, deleteUserProfile } = require("./users");
 const { verifyToken, checkEquipmentOwnership, checkUserOwnership } = require("../middleware/auth");
@@ -21,7 +22,8 @@ router.get("/equipment/tags", equipmentRoutes.getAllTags);
 router.get("/equipment/user/:userId", equipmentRoutes.getByUser);
 router.get("/equipment/searchByText", equipmentRoutes.searchByText);
 
-// router.post("/auth/login", login);
+router.get("/pages/landing", pagesRoutes.landing);
+
 router.post("/auth/register", registerUser);
 router.post("/auth/createProfile", createProfileLimiter, createUserProfile);
 router.post("/auth/sendCode", magicLinkLimiter, resendVerificationCode);
@@ -35,7 +37,7 @@ router.delete("/users/deleteProfile", verifyToken, checkUserOwnership, deleteUse
 router.get("/test/success", (req, res) => {
   res.render("success", { status: "success", message: "Template test successful" });
 });
-// Test routes for rate limiting
+
 router.post("/test/magic-link", testMagicLinkLimiter, (req, res) => {
   res.json({ message: "Test magic link endpoint", timestamp: new Date().toISOString() });
 });
