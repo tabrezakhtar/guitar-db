@@ -38,10 +38,13 @@ riffbook is a cataloging tool. We do not verify the accuracy of guitar specifica
 
 ## 5. Intellectual Property
 
-### 5.1 Content
+### 5.1 Our Content
 All content, features, and functionality on riffbook, including text, graphics, logos, and code, are owned by us and protected by copyright laws.
 
-### 5.2 Prohibited Uses
+### 5.2 Your Content
+When you upload content to riffbook, you grant us a non-exclusive, worldwide, royalty-free license to use, display, and distribute your content to provide our services. You confirm that you own or have permission to share this content.
+
+### 5.3 Prohibited Uses
 You may not:
 - Modify, adapt, or hack our website
 - Use our website for any illegal or unauthorized purpose
