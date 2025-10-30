@@ -126,7 +126,7 @@ function generateVerificationCode() {
 function generateEmailTemplate(type, data) {
   const logoHeader = `
     <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 30px;">
-      <img src="https://res.cloudinary.com/dx8d5hlk1/image/upload/v1757542336/favicon-192x192_kkkkll.png" alt="Riffbook Logo" style="width: 64px; height: 64px; margin-right: 12px;" />
+      <img src="https://res.cloudinary.com/dx8d5hlk1/image/upload/v1757542336/favicon-192x192_kkkkll.png" alt="riffbook Logo" style="width: 64px; height: 64px; margin-right: 12px;" />
       <span style="color: #EAAA00; font-size: 48px; font-weight: bold; font-family: 'Varela Round', sans-serif;">riffbook</span>
     </div>
   `;
