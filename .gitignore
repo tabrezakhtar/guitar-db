@@ -109,3 +109,4 @@ config.json
 .vscode
 functions/
 database/backup/
+report.cmd
