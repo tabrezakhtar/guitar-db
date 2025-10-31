@@ -108,4 +108,4 @@ config.json
 .idea
 .vscode
 functions/
-# .github/*
+database/backup/
