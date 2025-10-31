@@ -110,3 +110,4 @@ config.json
 functions/
 database/data_backup/
 report.cmd
+backup.cmd
