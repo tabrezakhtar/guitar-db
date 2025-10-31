@@ -108,5 +108,5 @@ config.json
 .idea
 .vscode
 functions/
-database/backup/
+database/data_backup/
 report.cmd
