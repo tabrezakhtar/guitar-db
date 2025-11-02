@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html>
 
-<head>  <title>Sign Up - riffbook</title>
+<head>
+  <title>Sign Up - riffbook</title>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">  <link rel="icon" type="image/png" href="https://res.cloudinary.com/dx8d5hlk1/image/upload/v1757542335/favicon-120x120_jprwqx.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png"
+    href="https://res.cloudinary.com/dx8d5hlk1/image/upload/v1757542335/favicon-120x120_jprwqx.png" />
   <link rel="preconnect" href="https://res.cloudinary.com">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,7 +18,7 @@
     * {
       box-sizing: border-box;
     }
-    
+
     body {
       font-family: "Roboto Slab", serif;
       margin: 0;
@@ -26,7 +29,7 @@
       display: flex;
       flex-direction: column;
     }
-    
+
     .main-content {
       flex: 1;
       display: flex;
@@ -40,7 +43,9 @@
         background: #122634;
         color: #d1d5db;
       }
-    }    .login-container {
+    }
+
+    .login-container {
       background: #122634;
       padding: 2rem;
       border-radius: 8px;
@@ -62,7 +67,9 @@
       font-weight: 600;
       text-align: center;
       margin: 0 0 0.5rem 0;
-    }    @media (prefers-color-scheme: dark) {
+    }
+
+    @media (prefers-color-scheme: dark) {
       h1 {
         color: #ffffff;
       }
@@ -143,7 +150,9 @@
       label {
         color: #d1d5db;
       }
-    }    input[type="text"],
+    }
+
+    input[type="text"],
     input[type="email"],
     textarea {
       width: 100%;
@@ -173,7 +182,10 @@
     textarea {
       resize: vertical;
       min-height: 80px;
-    }    @media (prefers-color-scheme: dark) {
+    }
+
+    @media (prefers-color-scheme: dark) {
+
       input[type="text"],
       input[type="email"],
       textarea {
@@ -257,48 +269,51 @@
     @media (prefers-color-scheme: dark) {
       .register-link a {
         color: #60a5fa;
-      }      .register-link a:hover {
+      }
+
+      .register-link a:hover {
         color: #93c5fd;
       }
     }
-      .logo-container {
+
+    .logo-container {
       display: flex;
       align-items: center;
       justify-content: center;
       margin-bottom: 2rem;
       font-weight: bold;
     }
-    
+
     .logo-image {
       width: 32px;
       height: 32px;
       margin-right: 0.5rem;
     }
-    
+
     .logo-text {
       color: #EAAA00;
       font-size: 1.75rem;
       font-weight: bold;
       line-height: 1;
     }
-    
+
     @media (prefers-color-scheme: dark) {
       .logo-text {
         color: #EAAA00;
       }
     }
-    
+
     .guest-login-form {
       margin-top: 2rem;
       padding-top: 1.5rem;
       border-top: 1px solid #e5e7eb;
       text-align: center;
     }
-    
+
     .guest-login-description {
       margin-bottom: 0.75rem;
     }
-    
+
     .guest-login-button {
       width: 100%;
       background: #1d52bc;
@@ -311,11 +326,11 @@
       cursor: pointer;
       transition: background-color 0.2s ease;
     }
-    
+
     .guest-login-button:hover {
       background: #1543a5;
     }
-    
+
     @media (prefers-color-scheme: dark) {
       .guest-login-form {
         border-top: 1px solid #4b5563;
@@ -324,15 +339,21 @@
   </style>
 </head>
 
-<body>  <div class="main-content">
+<body>
+  <div class="main-content">
     <div class="login-container">
-      <div class="logo-container">
-        <img 
-          src="https://res.cloudinary.com/dx8d5hlk1/image/upload/v1757542336/favicon-192x192_kkkkll.png" 
-          alt="Riffbook Logo" 
-          class="logo-image"
-        />
-        <span class="logo-text">riffbook</span>      </div>
+      <div style="position: relative;">
+        <a href="http://<%= process.env.FRONTEND_URL || 'http://localhost:5173' %>" 
+           style="position: absolute; top: -20px; left: -20px; color: #60a5fa; text-decoration: none; font-size: 0.875rem; font-weight: 500;">
+          ← Return to app
+        </a>
+        <div class="logo-container">
+          <img src="https://res.cloudinary.com/dx8d5hlk1/image/upload/v1757542336/favicon-192x192_kkkkll.png"
+            alt="Riffbook Logo" class="logo-image" />
+          <span class="logo-text">riffbook</span>
+        </div>
+      </div>
+
       <h2>Welcome to riffbook!</h2>
       <p>Create an account to start your guitar collection journey</p>
 
@@ -348,69 +369,70 @@
         </div>
         <% } %>
 
-        <form action="/api/auth/register" method="POST" class="login-form">
-          <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" id="username" name="username" placeholder="Choose a username"
-              class="<% if (typeof missing !== 'undefined' && missing.includes('username')) { %>input-error<% } %>"
-              value="<%= typeof username !== 'undefined' ? username : '' %>">
-          </div>
+          <form action="/api/auth/register" method="POST" class="login-form">
+            <div class="form-group">
+              <label for="username">Username</label>
+              <input type="text" id="username" name="username" placeholder="Choose a username"
+                class="<% if (typeof missing !== 'undefined' && missing.includes('username')) { %>input-error<% } %>"
+                value="<%= typeof username !== 'undefined' ? username : '' %>">
+            </div>
 
-          <div class="form-group">
-            <label for="email">Email address</label>
-            <input type="email" id="email" name="email" placeholder="your@email.com"
-              class="<% if (typeof missing !== 'undefined' && missing.includes('email')) { %>input-error<% } %>"
-              value="<%= typeof email !== 'undefined' ? email : '' %>">
-          </div>
+            <div class="form-group">
+              <label for="email">Email address</label>
+              <input type="email" id="email" name="email" placeholder="your@email.com"
+                class="<% if (typeof missing !== 'undefined' && missing.includes('email')) { %>input-error<% } %>"
+                value="<%= typeof email !== 'undefined' ? email : '' %>">
+            </div>
 
-          <div class="form-group">
-            <label for="bio">About you (optional)</label>
-            <textarea id="bio" name="bio" placeholder="Tell us about your guitar interests" rows="3"
-              class="<% if (typeof missing !== 'undefined' && missing.includes('bio')) { %>input-error<% } %>"><%= typeof bio !== 'undefined' ? bio : '' %></textarea>
-          </div>
+            <div class="form-group">
+              <label for="bio">About you (optional)</label>
+              <textarea id="bio" name="bio" placeholder="Tell us about your guitar interests" rows="3"
+                class="<% if (typeof missing !== 'undefined' && missing.includes('bio')) { %>input-error<% } %>"><%= typeof bio !== 'undefined' ? bio : '' %></textarea>
+            </div>
 
-          <div class="form-group">
-            <label for="location">Location (optional)</label>
-            <input type="text" id="location" name="location" placeholder="City, Country"
-              class="<% if (typeof missing !== 'undefined' && missing.includes('location')) { %>input-error<% } %>"
-              value="<%= typeof location !== 'undefined' ? location : '' %>">
-          </div>
+            <div class="form-group">
+              <label for="location">Location (optional)</label>
+              <input type="text" id="location" name="location" placeholder="City, Country"
+                class="<% if (typeof missing !== 'undefined' && missing.includes('location')) { %>input-error<% } %>"
+                value="<%= typeof location !== 'undefined' ? location : '' %>">
+            </div>
 
-          <button type="submit" class="btn btn-primary">Create Account</button>
-        </form>        <p class="register-link">
-          Already have an account? <a href="/login">Login</a>
-        </p>
-        
-        <form action="/api/auth/guestLogin" method="POST" class="guest-login-form">
-          <p class="guest-login-description">
-            Want to explore the app without signing up?
+            <button type="submit" class="btn btn-primary">Create Account</button>
+          </form>
+          <p class="register-link">
+            Already have an account? <a href="/login">Login</a>
           </p>
-          <button type="submit" class="guest-login-button">
-            Continue as a Temporary Guest
-          </button>
-        </form>
+
+          <form action="/api/auth/guestLogin" method="POST" class="guest-login-form">
+            <p class="guest-login-description">
+              Want to explore the app without signing up?
+            </p>
+            <button type="submit" class="guest-login-button">
+              Continue as a Temporary Guest
+            </button>
+          </form>
     </div>
   </div>
 
   <%- include('partials/footer') %>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      var form = document.querySelector(".login-form");
-      var button = form.querySelector("button[type='submit']");
-      form.addEventListener("submit", function () {
-        button.disabled = true;
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var form = document.querySelector(".login-form");
+        var button = form.querySelector("button[type='submit']");
+        form.addEventListener("submit", function () {
+          button.disabled = true;
+        });
       });
-    });
 
-    ParallaxBackground.init({
-      zIndex: -1,
-      imagePath: 'images/',
-      imageCount: 24,
-      speeds: [50, 70, 42, 20],
-      animate: false
-    });
-  </script>
+      ParallaxBackground.init({
+        zIndex: -1,
+        imagePath: 'images/',
+        imageCount: 24,
+        speeds: [50, 70, 42, 20],
+        animate: false
+      });
+    </script>
 </body>
 
 </html>
