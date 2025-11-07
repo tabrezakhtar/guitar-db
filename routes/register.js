@@ -25,6 +25,15 @@ async function registerUser(req, res) {
   if (!username) {
     missing.push("username");
     errors.push("Username is required");
+  } else if (username.length > 25) {
+    missing.push("username");
+    errors.push("Username must be 25 characters or less");
+  } else {
+    const emojiRegex = /[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/u;
+    if (emojiRegex.test(username)) {
+      missing.push("username");
+      errors.push("Username cannot contain emojis");
+    }
   }
   if (!email) {
     missing.push("email");

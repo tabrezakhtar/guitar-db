@@ -50,7 +50,7 @@ function colorizeJson(obj, indent = 0) {
 
 async function viewLastLogs() {
   let client = null
-  
+
   try {
     const uri = process.env.DATABASE_URI || 'mongodb://localhost:27017/guitar-db'
     client = new MongoClient(uri)
@@ -62,7 +62,7 @@ async function viewLastLogs() {
     const logs = await db.collection('logs')
       .find({})
       .sort({ timestamp: -1 })
-      .limit(20)
+      .limit(50)
       .toArray()
     
     if (logs.length === 0) {
