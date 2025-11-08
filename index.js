@@ -9,6 +9,7 @@ const session = require("express-session");
 const flash = require("connect-flash");
 const fs = require("fs");
 const Version = require("./models/version");
+const Log = require("./models/log");
 require('dotenv').config();
 
 console.log("process.env.NODE_ENV", process.env.NODE_ENV);
@@ -151,6 +152,27 @@ app.get("/version", async (req, res) => {
     console.error("Error fetching version:", error);
     res.status(500).json({ error: "Internal server error" });
   }
+});
+
+// Global error handler middleware - must be after all routes
+app.use((err, req, res, next) => {
+  // Log error to database
+  Log.logError(err, req.user?.id || null, req.route?.path || req.path).catch(console.error);
+  
+  console.error("Unhandled error:", err);
+  
+  // Send JSON error response for API routes
+  if (res.headersSent) {
+    return next(err);
+  }
+  
+  const statusCode = err.status || err.statusCode || 500;
+  const message = process.env.NODE_ENV === "production" ? "Internal server error" : err.message;
+  
+  res.status(statusCode).json({
+    error: message,
+    ...(process.env.NODE_ENV !== "production" && { stack: err.stack })
+  });
 });
 
 app.listen(port, () => {
