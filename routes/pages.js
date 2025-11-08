@@ -1,5 +1,4 @@
 const equipmentRoutes = require("./equipment");
-const Log = require("../models/log");
 
 async function landing(req, res) {
   try {
@@ -55,7 +54,6 @@ async function landing(req, res) {
       popular: popularData.items || []
     });
   } catch (err) {
-    Log.logError(err, req.user?._id, "landing_page").catch(console.error);
     res.status(500).json({
       message: err.message,
       errors: "Failed to retrieve landing page data"

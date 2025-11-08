@@ -2,7 +2,6 @@ const { Guitar, Amp, Pedal, Bass, Acoustic, Accessory, Equipment, Comments } = r
 const { queryBuilder } = require("../query-builder.js");
 const { deleteCloudinaryImages } = require("../helpers/cloudinary");
 const Tag = require("../models/tag");
-const Log = require("../models/log");
 
 function getModelByType(type) {
   switch (type) {
@@ -130,7 +129,6 @@ async function get(req, res) {
       pages: Math.ceil(total / limit) 
     });
   } catch (err) {
-    Log.logError(err, req.user?._id, "get_equipment").catch(console.error);
     res.status(500).json({ 
       message: err.message,
       errors: "Failed to retrieve equipment data"
@@ -167,7 +165,6 @@ async function searchByText(req, res) {
     const processedItems = processEquipmentItems(items);
     res.status(200).json({ items: processedItems });
   } catch (err) {
-    Log.logError(err, req.user?._id, "search_equipment").catch(console.error);
     res.status(500).json({
       message: err.message,
       errors: "Failed to search equipment"
@@ -181,7 +178,6 @@ async function settings(req, res) {
     const settings = await getSettings(type);
     res.status(200).send({ settings });
   } catch (err) {
-    Log.logError(err, req.user?._id, "get_settings").catch(console.error);
     res.status(500).json({ 
       message: err.message,
       errors: "Failed to retrieve settings"
@@ -225,7 +221,6 @@ async function getById(req, res) {
     const processedItem = processEquipmentItem(item, true);
     res.status(200).json({ item: processedItem, settings: {} });
   } catch (err) {
-    Log.logError(err, req.user?._id, "get_by_id").catch(console.error);
     res.status(500).json({ 
       message: err.message,
       errors: "Failed to retrieve equipment details"
@@ -284,7 +279,6 @@ async function getByUser(req, res) {
       total, 
     });
   } catch (err) {
-    Log.logError(err, req.user?._id, "get_by_user").catch(console.error);
     res.status(500).json({ 
       message: err.message,
       errors: "Failed to retrieve user's equipment"
@@ -319,7 +313,6 @@ async function filter(req, res) {
     const processedItems = processEquipmentItems(items);
     res.status(200).send({ items: processedItems });
   } catch (err) {
-    Log.logError(err, req.user?._id, "filter_equipment").catch(console.error);
     res.status(500).json({ 
       message: err.message,
       errors: "Failed to filter equipment data"
@@ -357,7 +350,6 @@ async function add(req, res) {
     console.log("Saved equipment: ", processedItem);
     res.status(201).json(processedItem);
   } catch (err) {
-    Log.logError(err, req.user?._id, "add_equipment").catch(console.error);
     res.status(400).json({ 
       message: err.message,
       errors: "Failed to save equipment"
@@ -395,7 +387,6 @@ async function update(req, res) {
 
     res.status(200).json(itemObject);
   } catch (err) {    
-    Log.logError(err, req.user?._id, "update_equipment").catch(console.error);
     res.status(400).json({ 
       message: err.message,
       errors: "Failed to update equipment"
@@ -419,7 +410,6 @@ async function remove(req, res) {
     await itemToDelete.deleteOne();
     res.status(200).json({ message: "Equipment deleted successfully" });
   } catch (err) {
-    Log.logError(err, req.user?._id, "delete_equipment").catch(console.error);
     res.status(500).json({ 
       message: err.message,
       errors: "Failed to delete equipment"
@@ -452,7 +442,6 @@ async function deleteImage(req, res) {
     await item.save();
     res.status(200).json({ message: "Image deleted successfully" });
   } catch (err) {
-    Log.logError(err, req.user?._id, "delete_image").catch(console.error);
     res.status(500).json({ 
       message: err.message,
       errors: "Failed to delete image"
@@ -499,7 +488,6 @@ async function addComment(req, res) {
 
     res.status(201).json(populatedComment);
   } catch (err) {
-    Log.logError(err, req.user?._id, "add_comment").catch(console.error);
     res.status(500).json({ 
       message: err.message,
       errors: "Failed to add comment"
@@ -549,7 +537,6 @@ async function toggleLike(req, res) {
       likes: equipment.likes.length
     });
   } catch (err) {
-    Log.logError(err, req.user?._id, "toggle_like").catch(console.error);
     console.log(err);
     res.status(500).json({
       message: err.message,
@@ -565,7 +552,6 @@ async function getAllTags(req, res) {
       .sort({ name: 1 });
     res.status(200).json({ tags });
   } catch (err) {
-    Log.logError(err, req.user?._id, "get_all_tags").catch(console.error);
     res.status(500).json({ 
       message: err.message,
       errors: "Failed to retrieve tags"
