@@ -1,4 +1,4 @@
-const { MongoClient } = require("mongodb");
+﻿const { MongoClient } = require("mongodb");
 const dotenv = require("dotenv");
 const moment = require("moment");
 const fs = require("fs");
@@ -6,7 +6,7 @@ const path = require("path");
 
 dotenv.config()
 
-// ANSI color codes
+
 const colors = {
   reset: '\x1b[0m',
   bright: '\x1b[1m',
@@ -20,20 +20,18 @@ const colors = {
   gray: '\x1b[90m'
 }
 
-
-
 async function backupDatabase() {
   let client = null
   
   try {
-    const uri = process.env.DATABASE_URI || 'mongodb://localhost:27017/guitar-db'
+    const uri = process.env.DATABASE_URI || 'mongodb:
     client = new MongoClient(uri)
     await client.connect()
     const db = client.db()
     
     console.log(`${colors.bright}${colors.blue}Starting database backup...${colors.reset}\n`)
     
-    // Create timestamped backup folder
+    
     const timestamp = moment().format('DD-MM-YYYY HH-mm-ss')
     const backupDir = path.join(__dirname, 'data_backup', `${timestamp}`)
     
@@ -43,7 +41,7 @@ async function backupDatabase() {
     
     console.log(`${colors.cyan}Backup directory: ${backupDir}${colors.reset}`)
     
-    // Get all collection names
+    
     const collections = await db.listCollections().toArray()
     console.log(`${colors.bright}Found ${colors.yellow}${collections.length}${colors.reset}${colors.bright} collections to backup${colors.reset}`)
     
@@ -52,10 +50,10 @@ async function backupDatabase() {
       
       console.log(`${colors.gray}Backing up collection: ${colors.cyan}${collectionName}${colors.reset}`)
       
-      // Get all documents from collection
+      
       const documents = await db.collection(collectionName).find({}).toArray()
       
-      // Convert ObjectIds to strings for JSON serialization
+      
       const processedDocuments = documents.map(doc => {
         return JSON.parse(JSON.stringify(doc, (key, value) => {
           if (value && typeof value === 'object' && value.constructor && value.constructor.name === 'ObjectId') {
@@ -65,16 +63,16 @@ async function backupDatabase() {
         }))
       })
       
-      // Write to JSON file
+      
       const filename = `${collectionName}.json`
       const filepath = path.join(backupDir, filename)
       
       fs.writeFileSync(filepath, JSON.stringify(processedDocuments, null, 2))
       
-      console.log(`${colors.green}✓ Saved ${documents.length} documents to ${filename}${colors.reset}`)
+      console.log(`${colors.green}âœ“ Saved ${documents.length} documents to ${filename}${colors.reset}`)
     }
     
-    // Create backup info file
+    
     const backupInfo = {
       timestamp: new Date().toISOString(),
       database: db.databaseName,
@@ -87,7 +85,7 @@ async function backupDatabase() {
       JSON.stringify(backupInfo, null, 2)
     )
     
-    console.log(`\n${colors.bright}${colors.green}✓ Database backup completed successfully!${colors.reset}`)
+    console.log(`\n${colors.bright}${colors.green}âœ“ Database backup completed successfully!${colors.reset}`)
     console.log(`${colors.cyan}Backup saved to: ${backupDir}${colors.reset}`)
     
   } catch (error) {

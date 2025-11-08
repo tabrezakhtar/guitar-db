@@ -4,7 +4,6 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { Resend } = require("resend");
 
-// unused
 async function login(req, res) {
   if (!req.body) {
     return res.status(400).send({
@@ -44,7 +43,6 @@ async function login(req, res) {
   }
 }
 
-// unused
 async function register(req, res) {
   if (!req.body) {
     return res.status(400).send({
@@ -126,7 +124,6 @@ async function createUserProfile(req, res) {
 
     const magicLink = generateMagicLink(user._id, jwtSecret);
 
-    // Send magic link email
     try {
       const resend = new Resend(process.env.EMAIL);
       const emailHtml = generateEmailTemplate("welcome", {
@@ -162,7 +159,6 @@ async function createUserProfile(req, res) {
   }
 }
 
-// Helper function to generate magic link
 function generateMagicLink(userId, jwtSecret) {
   const magicToken = jwt.sign(
     { id: userId },
@@ -174,7 +170,6 @@ function generateMagicLink(userId, jwtSecret) {
   return `${baseUrl}/verifymagiclink?token=${magicToken}`;
 }
 
-// Helper function to generate email templates
 function generateEmailTemplate(type, data) {
   const baseStyle = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -232,7 +227,6 @@ async function sendMagicLink(req, res) {
   }
 
   try {
-    // Find user by checking hashed email against all users
     const users = await User.find({});
     let matchedUser = null;
 
@@ -253,7 +247,6 @@ async function sendMagicLink(req, res) {
 
     const magicLink = generateMagicLink(matchedUser._id, jwtSecret);
 
-    // Send magic link email
     try {
       const resend = new Resend(process.env.EMAIL);
       const emailHtml = generateEmailTemplate("login", {
@@ -308,10 +301,8 @@ async function verifyMagicLink(req, res) {
   }
   
   try {
-    // Verify the token from the magic link
     const decoded = jwt.verify(token, jwtSecret);
     
-    // Find user based on id in token
     const user = await User.findById(decoded.id).select("-email");
 
     if (!user) {
@@ -321,7 +312,6 @@ async function verifyMagicLink(req, res) {
       });
     }
     
-    // Generate a new session token with shorter expiration
     const sessionToken = jwt.sign(
       { id: user._id },
       jwtSecret,
@@ -331,7 +321,6 @@ async function verifyMagicLink(req, res) {
     user.verified = true;
     await user.save();
     
-    // Return session token and user info
     res.json({
       token: sessionToken,
       user
@@ -369,10 +358,8 @@ async function refreshToken(req, res) {
   const jwtSecret = process.env.JWT_SECRET;
 
   try {
-    // Verify the existing token
     const decoded = jwt.verify(token, jwtSecret, { ignoreExpiration: true });
     
-    // Find user based on id in token
     const user = await User.findById(decoded.id);
     
     if (!user) {
@@ -382,10 +369,9 @@ async function refreshToken(req, res) {
       });
     }
     
-    // Check if token is within a reasonable refresh window (e.g., expired within last 7 days)
     const currentTime = Math.floor(Date.now() / 1000);
     const tokenExpiry = decoded.exp;
-    const refreshWindowSeconds = 7 * 24 * 60 * 60; // 7 days in seconds
+    const refreshWindowSeconds = 7 * 24 * 60 * 60;
     
     if (currentTime - tokenExpiry > refreshWindowSeconds) {
       return res.status(401).json({
@@ -394,14 +380,12 @@ async function refreshToken(req, res) {
       });
     }
     
-    // Generate a new token
     const newToken = jwt.sign(
       { id: user._id },
       jwtSecret,
       { expiresIn: "15m" }
     );
     
-    // Return the new token
     res.json({ token: newToken });
   } catch (error) {
     console.log(error);

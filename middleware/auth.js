@@ -1,12 +1,11 @@
-const jwt = require("jsonwebtoken");
+﻿const jwt = require("jsonwebtoken");
 const { Equipment } = require("../models/equipment");
 
-// Middleware to verify JWT token
 const verifyToken = (req, res, next) => {
-  // Get token from header (support both x-auth-token and Authorization: Bearer token)
+  
   const token = req.header("Authorization")?.replace("Bearer ", "") || req.header("x-auth-token");
 
-  // Check if token exists
+  
   if (!token) {
     return res.status(401).json({
       message: "No token, authorization denied",
@@ -15,10 +14,8 @@ const verifyToken = (req, res, next) => {
   }
 
   try {
-    // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     
-    // Add user id from payload to request object
     req.userId = decoded.id;
     next();
   } catch (err) {
@@ -35,10 +32,9 @@ const verifyToken = (req, res, next) => {
   }
 };
 
-// Middleware to check if user owns the equipment
 const checkEquipmentOwnership = async (req, res, next) => {
   try {
-    // Get equipment id from params or body
+    
     const equipmentId = req.params.id || req.body.equipmentId;
     
     if (!equipmentId) {
@@ -48,7 +44,6 @@ const checkEquipmentOwnership = async (req, res, next) => {
       });
     }
 
-    // Find equipment
     const equipment = await Equipment.findById(equipmentId);
     
     if (!equipment) {
@@ -58,7 +53,7 @@ const checkEquipmentOwnership = async (req, res, next) => {
       });
     }
 
-    // Check if user owns the equipment
+    
     if (equipment.user && equipment.user.toString() !== req.userId) {
       return res.status(403).json({
         message: "Not authorized",
@@ -66,22 +61,16 @@ const checkEquipmentOwnership = async (req, res, next) => {
       });
     }
 
-    // If everything is valid, pass the equipment to the next middleware
     req.equipment = equipment;
     next();
   } catch (err) {
-    console.log(err);
-    res.status(500).json({
-      message: "Server error",
-      errors: "An error occurred while checking equipment ownership"
-    });
+    next(err);
   }
 };
 
-// Middleware to check if user owns the user profile
 const checkUserOwnership = async (req, res, next) => {
   try {
-    // Get user id from params, body or query
+    
     const userIdToCheck = req.params.userId || req.body._id || req.body.userId || req.query.userId;
     
     if (!userIdToCheck) {
@@ -91,21 +80,16 @@ const checkUserOwnership = async (req, res, next) => {
       });
     }
 
-    // Check if user owns the profile
-    if (userIdToCheck !== req.userId) {
+  if (userIdToCheck !== req.userId) {
       return res.status(403).json({
         message: "Not authorized",
         errors: "You are not authorized to modify this user profile"
       });
     }
-
+  
     next();
   } catch (err) {
-    console.log(err)
-    res.status(500).json({
-      message: "Server error",
-      errors: "An error occurred while checking user ownership"
-    });
+    next(err);
   }
 };
 

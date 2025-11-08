@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+﻿const mongoose = require("mongoose");
 
 const logSchema = new mongoose.Schema({
   level: {
@@ -35,7 +35,7 @@ const logSchema = new mongoose.Schema({
   capped: { size: 52428800 }
 });
 
-// Helper methods
+
 logSchema.statics.logError = function(error, userId = null, action = null) {
   return this.create({
     level: "error",
@@ -60,3 +60,4 @@ logSchema.statics.logAction = function(message, userId, action, relatedId = null
 };
 
 module.exports = mongoose.model("Log", logSchema);
+

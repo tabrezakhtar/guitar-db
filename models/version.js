@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+﻿const mongoose = require("mongoose");
 
 const versionSchema = new mongoose.Schema({
   version: {
@@ -26,3 +26,4 @@ versionSchema.pre("save", function(next) {
 });
 
 module.exports = mongoose.model("Version", versionSchema);
+

@@ -1,6 +1,6 @@
 const equipmentRoutes = require("./equipment");
 
-async function landing(req, res) {
+async function landing(req, res, next) {
   try {
     const recentPromise = new Promise((resolve, reject) => {
       const mockReq = {
@@ -20,7 +20,9 @@ async function landing(req, res) {
         })
       };
       
-      equipmentRoutes.get(mockReq, mockRes).catch(reject);
+      const mockNext = (err) => reject(err);
+      
+      equipmentRoutes.get(mockReq, mockRes, mockNext).catch(reject);
     });
 
     const popularPromise = new Promise((resolve, reject) => {
@@ -41,7 +43,9 @@ async function landing(req, res) {
         })
       };
       
-      equipmentRoutes.get(mockReq, mockRes).catch(reject);
+      const mockNext = (err) => reject(err);
+      
+      equipmentRoutes.get(mockReq, mockRes, mockNext).catch(reject);
     });
 
     const [recentData, popularData] = await Promise.all([
@@ -54,10 +58,7 @@ async function landing(req, res) {
       popular: popularData.items || []
     });
   } catch (err) {
-    res.status(500).json({
-      message: err.message,
-      errors: "Failed to retrieve landing page data"
-    });
+    next(err);
   }
 }
 

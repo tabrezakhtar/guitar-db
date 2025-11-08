@@ -36,10 +36,8 @@ db.on("error", (error) => console.error(error));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Set up session and flash
 app.use(session({
   secret: process.env.SESSION_SECRET || "guitardbsecret",
   resave: false,
@@ -48,7 +46,6 @@ app.use(session({
 }));
 app.use(flash());
 
-// Set up EJS as the view engine
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
@@ -88,7 +85,6 @@ const renderWithFlash = (template, additionalFields = []) => {
 app.get("/login", renderWithFlash("login"));
 app.get("/register", renderWithFlash("register", ["bio", "location"]));
 
-// Markdown routes
 app.get("/terms", async (req, res) => {
   try {
     const { marked } = await import("marked");
@@ -154,24 +150,19 @@ app.get("/version", async (req, res) => {
   }
 });
 
-// Global error handler middleware - must be after all routes
 app.use((err, req, res, next) => {
-  // Log error to database
   Log.logError(err, req.user?.id || null, req.route?.path || req.path).catch(console.error);
   
   console.error("Unhandled error:", err);
   
-  // Send JSON error response for API routes
   if (res.headersSent) {
     return next(err);
   }
   
   const statusCode = err.status || err.statusCode || 500;
-  const message = process.env.NODE_ENV === "production" ? "Internal server error" : err.message;
   
   res.status(statusCode).json({
-    error: message,
-    ...(process.env.NODE_ENV !== "production" && { stack: err.stack })
+    error: "Internal server error"
   });
 });
 

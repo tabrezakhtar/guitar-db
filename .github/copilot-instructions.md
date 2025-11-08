@@ -2,7 +2,7 @@
 - prefer speech marks over single quotes for strings and imports. e.g. import { useEffect, useState } from "react";
 - indent code using 2 spaces
 - prefer commonjs syntax as this is a node.js web app
-- dont comment the code
+- don not comment the code
 - when requiring another file or module, put the require at the rtop of the page instead of inline
 ## Folder Structure
 - keep the folder structure flat unless explicity told to do otherwise

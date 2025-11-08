@@ -1,10 +1,10 @@
-const { MongoClient } = require("mongodb");
+﻿const { MongoClient } = require("mongodb");
 const dotenv = require("dotenv");
 const moment = require("moment");
 
 dotenv.config()
 
-// ANSI color codes
+
 const colors = {
   reset: '\x1b[0m',
   bright: '\x1b[1m',
@@ -52,7 +52,7 @@ async function viewLastLogs() {
   let client = null
 
   try {
-    const uri = process.env.DATABASE_URI || 'mongodb://localhost:27017/guitar-db'
+    const uri = process.env.DATABASE_URI || 'mongodb:
     client = new MongoClient(uri)
     await client.connect()
     const db = client.db()

@@ -5,7 +5,6 @@ const { Resend } = require("resend");
 
 async function findUserByEmail(email) {
   try {
-    // With emails stored as plaintext, we can directly query by email
     const user = await User.findOne({ email: email });
     return user;
   } catch (err) {
@@ -14,8 +13,7 @@ async function findUserByEmail(email) {
   }
 }
 
-// this is use in the new templates
-async function registerUser(req, res) {
+async function registerUser(req, res, next) {
   const { username, email, bio, location } = req.body;
   const errors = [];
   const missing = [];
@@ -49,7 +47,6 @@ async function registerUser(req, res) {
   }
 
   try {
-    // Check if user already exists
     const existingUser = await findUserByEmail(email);
     if (existingUser) {
       req.flash("errors", ["This email is already registered"]);
@@ -79,14 +76,13 @@ async function registerUser(req, res) {
     await user.save();
 
     const verificationCode = generateVerificationCode();
-    const codeExpires = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+    const codeExpires = new Date(Date.now() + 15 * 60 * 1000);
 
     user.verificationCode = verificationCode;
     user.verificationCodeExpires = codeExpires;
     user.verificationCodeAttempts = 0;
     await user.save();
 
-    // Send verification code email
     try {
       const resend = new Resend(process.env.EMAIL);
       const emailHtml = generateEmailTemplate("welcome", {
@@ -116,18 +112,14 @@ async function registerUser(req, res) {
       titleColor: "white"
     });
   } catch (error) {
-    console.log(error);
-    req.flash("errors", ["Server error. Please try again."]);
-    return res.redirect("/register");
+    next(error);
   }
 }
 
-// Helper function to generate 4-digit verification code
 function generateVerificationCode() {
   return Math.floor(1000 + Math.random() * 9000).toString();
 }
 
-// Helper function to generate email templates
 function generateEmailTemplate(type, data) {
   const logoHeader = `
     <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 30px;">
@@ -174,7 +166,7 @@ function generateEmailTemplate(type, data) {
   }
 }
 
-async function verifyCode(req, res) {
+async function verifyCode(req, res, next) {
   const { code, userId } = req.body;
   const jwtSecret = process.env.JWT_SECRET;
   const errors = [];
@@ -214,7 +206,6 @@ async function verifyCode(req, res) {
       });
     }
 
-    // Check if code has expired
     if (!user.verificationCodeExpires || new Date() > user.verificationCodeExpires) {
       const emailDisplay = user.email.substring(0, 3) + "..." + user.email.substring(user.email.indexOf("@"));
       return res.render("success", {
@@ -227,7 +218,6 @@ async function verifyCode(req, res) {
       });
     }
 
-    // Check attempt limit
     if (user.verificationCodeAttempts >= 5) {
       const emailDisplay = user.email.substring(0, 3) + "..." + user.email.substring(user.email.indexOf("@"));
       return res.render("success", {
@@ -240,7 +230,6 @@ async function verifyCode(req, res) {
       });
     }
 
-    // Verify the code
     if (user.verificationCode !== code) {
       user.verificationCodeAttempts += 1;
       await user.save();
@@ -271,14 +260,12 @@ async function verifyCode(req, res) {
       }
     }
 
-    // Code is valid - clear verification fields and mark as verified
     user.verificationCode = null;
     user.verificationCodeExpires = null;
     user.verificationCodeAttempts = 0;
     user.verified = true;
     await user.save();
     
-    // Generate a new session token
     const sessionToken = jwt.sign(
       { id: user._id },
       jwtSecret,
@@ -290,23 +277,15 @@ async function verifyCode(req, res) {
       user
     });
   } catch (error) {
-    console.log(error);
-    return res.render("success", {
-      title: "Server Error - riffbook",
-      email: "***@***",
-      showVerificationForm: false,
-      errors: ["Server error. Please try again."]
-    });
+    next(error);
   }
 }
 
-// Function to resend verification code for users with expired codes
-async function resendVerificationCode(req, res) {
+async function resendVerificationCode(req, res, next) {
   const { email, userId } = req.body;
   const errors = [];
   const missing = [];
   
-  // Handle both email-based and userId-based requests
   if (!email && !userId) {
     missing.push("email");
     errors.push("Email or user ID is required");
@@ -323,10 +302,8 @@ async function resendVerificationCode(req, res) {
     let existingUser;
     
     if (userId) {
-      // Direct lookup by userId (for resend from verification page)
       existingUser = await User.findById(userId);
     } else {
-      // Find user by email - direct lookup with plaintext email
       existingUser = await findUserByEmail(email);
     }
     
@@ -337,14 +314,13 @@ async function resendVerificationCode(req, res) {
     }
     
     const verificationCode = generateVerificationCode();
-    const codeExpires = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+    const codeExpires = new Date(Date.now() + 15 * 60 * 1000);
     
     existingUser.verificationCode = verificationCode;
     existingUser.verificationCodeExpires = codeExpires;
     existingUser.verificationCodeAttempts = 0;
     await existingUser.save();
     
-    // Send verification code email
     try {
       const resend = new Resend(process.env.EMAIL);
       const emailHtml = generateEmailTemplate("login", {
@@ -380,56 +356,47 @@ async function resendVerificationCode(req, res) {
       titleColor: "white"
     });
   } catch (error) {
-    console.log(error);
-    req.flash("errors", ["Server error. Please try again."]);
-    return res.redirect("/login");
+    next(error);
   }
 }
 
-async function guestLogin(req, res) {
+async function guestLogin(req, res, next) {
   const jwtSecret = process.env.JWT_SECRET;
   
   try {
-    // Generate a random 6-digit number for guest username
     let guestNumber;
     let guestUsername;
     let existingUser;
     
-    // Keep generating until we find a unique username
     do {
-      guestNumber = Math.floor(100000 + Math.random() * 900000); // 6 digits
+      guestNumber = Math.floor(100000 + Math.random() * 900000);
       guestUsername = `Guest${guestNumber}`;
       existingUser = await User.findOne({ username: guestUsername });
     } while (existingUser);
     
-    // Create temporary guest user
     const guestUser = new User({
       username: guestUsername,
-      email: `${guestUsername.toLowerCase()}@guest.local`, // Temporary email
+      email: `${guestUsername.toLowerCase()}@guest.local`,
       bio: "Temporary guest user",
       location: "",
-      verified: true, // Guests are automatically verified
-      guest: true // Mark as guest user
+      verified: true,
+      guest: true
     });
 
     await guestUser.save();
     
-    // Generate session token
     const sessionToken = jwt.sign(
       { id: guestUser._id },
       jwtSecret,
       { expiresIn: "1h" }
     );
     
-    // Render verify template with token and user
     return res.render("verify", { 
       token: sessionToken,
       user: guestUser
     });
   } catch (error) {
-    console.log(error);
-    req.flash("errors", ["Failed to create guest account. Please try again."]);
-    return res.redirect("/login");
+    next(error);
   }
 }
 

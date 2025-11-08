@@ -38,11 +38,9 @@ function processEquipmentItem(item, keepData = false) {
   
   const itemObject = item.toObject ? item.toObject() : { ...item };
   
-  // Add counts
   itemObject.commentCount = item.comments ? item.comments.length : 0;
   itemObject.likesCount = item.likes ? item.likes.length : 0;
   
-  // Remove data if not needed
   if (!keepData) {
     delete itemObject.likes;
   }
@@ -72,7 +70,7 @@ async function getSettings(type) {
   return settings[0];
 }
 
-async function get(req, res) {
+async function get(req, res, next) {
   const type = req.query.type ? req.query.type.toLowerCase() : "";
   const model = getModelByType(type);
   if (!model) {
@@ -129,14 +127,11 @@ async function get(req, res) {
       pages: Math.ceil(total / limit) 
     });
   } catch (err) {
-    res.status(500).json({ 
-      message: err.message,
-      errors: "Failed to retrieve equipment data"
-    });
+    next(err);
   }
 }
 
-async function searchByText(req, res) {
+async function searchByText(req, res, next) {
   const text = req.query.q ? req.query.q.trim() : "";
   const sortBy = req.query.sortBy || "date";
   const sortOrder = req.query.sortOrder === "desc" ? -1 : 1;
@@ -165,27 +160,21 @@ async function searchByText(req, res) {
     const processedItems = processEquipmentItems(items);
     res.status(200).json({ items: processedItems });
   } catch (err) {
-    res.status(500).json({
-      message: err.message,
-      errors: "Failed to search equipment"
-    });
+    next(err);
   }
 }
 
-async function settings(req, res) {
+async function settings(req, res, next) {
   const type = req.query.type ? req.query.type.toLowerCase() : "";
   try {
     const settings = await getSettings(type);
     res.status(200).send({ settings });
   } catch (err) {
-    res.status(500).json({ 
-      message: err.message,
-      errors: "Failed to retrieve settings"
-    });
+    next(err);
   }
 }
 
-async function getById(req, res) {
+async function getById(req, res, next) {
   const type = req.query.type ? req.query.type.toLowerCase() : "";
   const model = getModelByType(type);
   if (!model) {
@@ -221,14 +210,11 @@ async function getById(req, res) {
     const processedItem = processEquipmentItem(item, true);
     res.status(200).json({ item: processedItem, settings: {} });
   } catch (err) {
-    res.status(500).json({ 
-      message: err.message,
-      errors: "Failed to retrieve equipment details"
-    });
+    next(err);
   }
 }
 
-async function getByUser(req, res) {
+async function getByUser(req, res, next) {
   try {
     const userId = req.params.userId;
     
@@ -279,14 +265,11 @@ async function getByUser(req, res) {
       total, 
     });
   } catch (err) {
-    res.status(500).json({ 
-      message: err.message,
-      errors: "Failed to retrieve user's equipment"
-    });
+    next(err);
   }
 }
 
-async function filter(req, res) {
+async function filter(req, res, next) {
   const type = req.query.type ? req.query.type.toLowerCase() : "";
   const model = getModelByType(type);
   if (!model) {
@@ -313,14 +296,11 @@ async function filter(req, res) {
     const processedItems = processEquipmentItems(items);
     res.status(200).send({ items: processedItems });
   } catch (err) {
-    res.status(500).json({ 
-      message: err.message,
-      errors: "Failed to filter equipment data"
-    });
+    next(err);
   }
 }
 
-async function add(req, res) {
+async function add(req, res, next) {
   const type = req.query.type ? req.query.type.toLowerCase() : "";
   const model = getModelByType(type);
   if (!model) {
@@ -350,14 +330,11 @@ async function add(req, res) {
     console.log("Saved equipment: ", processedItem);
     res.status(201).json(processedItem);
   } catch (err) {
-    res.status(400).json({ 
-      message: err.message,
-      errors: "Failed to save equipment"
-    });
+    next(err);
   }
 }
 
-async function update(req, res) {
+async function update(req, res, next) {
   const type = req.query.type ? req.query.type.toLowerCase() : "";
   const model = getModelByType(type);
   if (!model) {
@@ -387,14 +364,11 @@ async function update(req, res) {
 
     res.status(200).json(itemObject);
   } catch (err) {    
-    res.status(400).json({ 
-      message: err.message,
-      errors: "Failed to update equipment"
-    });
+    next(err);
   }
 }
 
-async function remove(req, res) {
+async function remove(req, res, next) {
   try {
     const itemToDelete = await Equipment.findById(req.params.id);
     if (!itemToDelete) {
@@ -410,14 +384,11 @@ async function remove(req, res) {
     await itemToDelete.deleteOne();
     res.status(200).json({ message: "Equipment deleted successfully" });
   } catch (err) {
-    res.status(500).json({ 
-      message: err.message,
-      errors: "Failed to delete equipment"
-    });
+    next(err);
   }
 }
 
-async function deleteImage(req, res) {
+async function deleteImage(req, res, next) {
   try {
     const item = await Equipment.findById(req.params.id);
     if (!item) {
@@ -442,14 +413,11 @@ async function deleteImage(req, res) {
     await item.save();
     res.status(200).json({ message: "Image deleted successfully" });
   } catch (err) {
-    res.status(500).json({ 
-      message: err.message,
-      errors: "Failed to delete image"
-    });
+    next(err);
   }
 }
 
-async function addComment(req, res) {
+async function addComment(req, res, next) {
   try {
     const { equipmentId, text } = req.body;
     
@@ -488,17 +456,14 @@ async function addComment(req, res) {
 
     res.status(201).json(populatedComment);
   } catch (err) {
-    res.status(500).json({ 
-      message: err.message,
-      errors: "Failed to add comment"
-    });
+    next(err);
   }
 }
 
-async function toggleLike(req, res) {
+async function toggleLike(req, res, next) {
   try {
     const equipmentId = req.params.id;
-    const userId = req.userId; // From auth middleware
+    const userId = req.userId;
 
     const equipment = await Equipment.findById(equipmentId);
     
@@ -509,7 +474,6 @@ async function toggleLike(req, res) {
       });
     }
     
-    // Check if user is trying to like their own equipment
     if (equipment.user.toString() === userId) {
       return res.status(400).json({
         message: "Cannot like your own equipment",
@@ -517,16 +481,13 @@ async function toggleLike(req, res) {
       });
     }
     
-    // Check if user has already liked this equipment
     const likeIndex = equipment.likes.findIndex(
       like => like.toString() === userId
     );
     
     if (likeIndex === -1) {
-      // User hasn't liked it yet, so add the like
       equipment.likes.push(userId);
     } else {
-      // User has already liked it, so remove the like
       equipment.likes.splice(likeIndex, 1);
     }
     
@@ -537,25 +498,18 @@ async function toggleLike(req, res) {
       likes: equipment.likes.length
     });
   } catch (err) {
-    console.log(err);
-    res.status(500).json({
-      message: err.message,
-      errors: "Failed to update like status"
-    });
+    next(err);
   }
 }
 
-async function getAllTags(req, res) {
+async function getAllTags(req, res, next) {
   try {
     const tags = await Tag.find()
       .collation({ locale: "en", strength: 2 })
       .sort({ name: 1 });
     res.status(200).json({ tags });
   } catch (err) {
-    res.status(500).json({ 
-      message: err.message,
-      errors: "Failed to retrieve tags"
-    });
+    next(err);
   }
 }
 

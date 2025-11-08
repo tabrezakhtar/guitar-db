@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+﻿const mongoose = require("mongoose");
 const fs = require("fs");
 const path = require("path");
 const { Guitar, Amp, Pedal, Bass, Acoustic, Accessory, Comments } = require("../models/equipment");
@@ -9,7 +9,6 @@ const Version = require("../models/version");
 
 const uri = "mongodb://localhost:27017/guitar-db";
 
-// Load data from JSON files
 function loadJsonFile(filename) {
   const filePath = path.join(__dirname, "data", filename);
   const fileContent = fs.readFileSync(filePath, "utf8");
@@ -20,7 +19,7 @@ const users = loadJsonFile("users.json");
 const guitars = loadJsonFile("guitars.json");
 const acoustic = loadJsonFile("acoustic.json");
 const amps = loadJsonFile("amps.json").map(amp => {
-  // Convert "N/A" power values to null to avoid schema validation errors
+  
   if (amp.power === "N/A") {
     amp.power = null;
   }
@@ -31,11 +30,11 @@ const bass = loadJsonFile("bass.json");
 const accessories = loadJsonFile("accessories.json");
 const tags = loadJsonFile("tags.json");
 
-// Generate realistic comments
+
 function generateComments(equipmentIds, userIds) {
   const comments = [];
   
-  // Comment templates by user persona
+  
   const commentTemplates = {
     "GuitarHero42": [
       "This thing absolutely shreds! Best purchase I've made all year.",
@@ -109,7 +108,7 @@ function generateComments(equipmentIds, userIds) {
     ]
   };
   
-  // Define appropriate comment templates for different equipment types
+  
   const equipmentTypeComments = {
     "guitar": {
       "generic": [
@@ -340,33 +339,33 @@ function generateComments(equipmentIds, userIds) {
   };
   
   equipmentIds.forEach(equipment => {
-    // Add 1-3 comments for each equipment
+    
     const commentCount = Math.floor(Math.random() * 3) + 1;
     
     for (let i = 0; i < commentCount; i++) {
-      // Select a random user to be the commenter
+      
       const randomUserIndex = Math.floor(Math.random() * userIds.length);
       const userId = userIds[randomUserIndex];
       const user = users[randomUserIndex];
       const username = user.username;
       
-      // Get appropriate comment templates for this user
+      
       let commentText = "";
       const userTemplates = commentTemplates[username] || commentTemplates["ToneSeeker"];
       
-      // 50% chance to use a user-specific comment
+      
       if (Math.random() > 0.5) {
         const randomTemplateIndex = Math.floor(Math.random() * userTemplates.length);
         commentText = userTemplates[randomTemplateIndex];
       } else {
-        // Otherwise use equipment-specific comment based on type and brand
+        
         const equipmentType = equipment.type;
         const equipmentBrand = equipment.brand;
         
-        // Get generic comments for this type of equipment
+        
         const genericComments = equipmentTypeComments[equipmentType]?.generic || [];
         
-        // Try to get brand-specific or effect-specific comments
+        
         let specificComments = [];
         if (equipmentType === "guitar" || equipmentType === "amp" || equipmentType === "bass") {
           specificComments = equipmentTypeComments[equipmentType]?.specific?.[equipmentBrand] || [];
@@ -376,21 +375,21 @@ function generateComments(equipmentIds, userIds) {
           specificComments = equipmentTypeComments[equipmentType]?.specific?.[equipment.accessoryType] || [];
         }
         
-        // Combine generic and specific comments
+        
         const availableComments = [...genericComments, ...specificComments];
         
-        // Select a random comment
+        
         const randomIndex = Math.floor(Math.random() * availableComments.length);
         commentText = availableComments[randomIndex];
       }
       
-      // Generate a random date within the past year
+      
       const now = new Date();
       const pastDate = new Date(now.setDate(now.getDate() - Math.floor(Math.random() * 365)));
       
       comments.push({
         equipmentId: equipment._id,
-        user: userId,  // Using user ObjectId reference instead of username
+        user: userId,  
         text: commentText,
         date: new Date(pastDate.toISOString())
       });
@@ -416,11 +415,11 @@ function getPicsumImages(count = 5) {
   const images = [];
   for (let i = 0; i < count; i++) {
     const [w, h] = resolutions[i % resolutions.length];
-    // Use a random seed for each image to ensure uniqueness
+    
     const seed = Math.floor(Math.random() * 1000000) + Date.now() + i;
-    images.push(`https://picsum.photos/seed/${seed}/${w}/${h}`);
+    images.push(`https:
   }
-  // Shuffle the images array
+  
   for (let i = images.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [images[i], images[j]] = [images[j], images[i]];
@@ -428,7 +427,7 @@ function getPicsumImages(count = 5) {
   return images;
 }
 
-// Add user to equipment and assign 5 unique Picsum images as an array
+
 function assignUsersToEquipment(equipment, userIds) {
   return equipment.map((item, index) => {
     item.user = userIds[index % userIds.length];
@@ -437,22 +436,22 @@ function assignUsersToEquipment(equipment, userIds) {
   });
 }
 
-// Assign random tags to equipment
+
 function assignTagsToEquipment(equipment, tagIds) {
   return equipment.map(item => {
-    // Determine how many tags to assign (1-4 tags per item)
+    
     const tagCount = Math.floor(Math.random() * 4) + 1;
     
-    // Create a copy of the tag IDs array to shuffle
+    
     const availableTags = [...tagIds];
     
-    // Simple shuffle algorithm to randomize tags
+    
     for (let i = availableTags.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [availableTags[i], availableTags[j]] = [availableTags[j], availableTags[i]];
     }
     
-    // Assign randomly selected tags
+    
     item.tags = availableTags.slice(0, tagCount);
     
     return item;
@@ -462,7 +461,7 @@ function assignTagsToEquipment(equipment, tagIds) {
 async function populateDatabase() {
   try {
     await mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-    console.log("Connected to database");    // Drop the collections if they exist
+    console.log("Connected to database");    
     const collectionNames = ["equipment", "users", "comments", "tags", "logs", "versions"];
     for (const name of collectionNames) {
       const collections = await mongoose.connection.db.listCollections({ name }).toArray();
@@ -472,17 +471,17 @@ async function populateDatabase() {
       }
     }
 
-    // Insert users first to get their IDs
+    
     const insertedUsers = await User.insertMany(users);
     console.log("Inserted users");
     const userIds = insertedUsers.map(user => user._id);
 
-    // Insert tags to get their IDs
+    
     const insertedTags = await Tag.insertMany(tags);
     console.log(`Inserted ${insertedTags.length} tags`);
     const tagIds = insertedTags.map(tag => tag._id);
 
-    // Assign users to equipment
+    
     const guitarsWithUsers = assignUsersToEquipment(guitars, userIds);
     const acousticWithUsers = assignUsersToEquipment(acoustic, userIds);
     const ampsWithUsers = assignUsersToEquipment(amps, userIds);
@@ -490,7 +489,7 @@ async function populateDatabase() {
     const bassWithUsers = assignUsersToEquipment(bass, userIds);
     const accessoriesWithUsers = assignUsersToEquipment(accessories, userIds);
 
-    // Assign tags to equipment
+    
     const guitarsWithTags = assignTagsToEquipment(guitarsWithUsers, tagIds);
     const acousticWithTags = assignTagsToEquipment(acousticWithUsers, tagIds);
     const ampsWithTags = assignTagsToEquipment(ampsWithUsers, tagIds);
@@ -498,7 +497,7 @@ async function populateDatabase() {
     const bassWithTags = assignTagsToEquipment(bassWithUsers, tagIds);
     const accessoriesWithTags = assignTagsToEquipment(accessoriesWithUsers, tagIds);
 
-    // Insert equipment
+    
     const insertedGuitars = await Guitar.insertMany(guitarsWithTags);
     console.log(`Inserted ${insertedGuitars.length} guitars`);
 
@@ -517,7 +516,7 @@ async function populateDatabase() {
     const insertedAccessories = await Accessory.insertMany(accessoriesWithTags);
     console.log(`Inserted ${insertedAccessories.length} accessories`);
 
-    // Combine all equipment
+    
     const allEquipment = [
       ...insertedGuitars,
       ...insertedAcoustic,
@@ -527,12 +526,12 @@ async function populateDatabase() {
       ...insertedAccessories
     ];
 
-    // Generate and insert comments
+    
     const comments = generateComments(allEquipment, userIds);
     const insertedComments = await Comments.insertMany(comments);
     console.log(`Inserted ${insertedComments.length} comments`);
 
-    // Update equipment documents with comment references
+    
     const commentsByEquipment = {};
     insertedComments.forEach(comment => {
       const equipmentId = comment.equipmentId.toString();
@@ -542,7 +541,7 @@ async function populateDatabase() {
       commentsByEquipment[equipmentId].push(comment._id);
     });
 
-    // Update each equipment with its comments
+    
     let updatedCount = 0;
     for (const equipmentId in commentsByEquipment) {
       await mongoose.model("Equipment").findByIdAndUpdate(
@@ -553,10 +552,10 @@ async function populateDatabase() {
     }
     console.log(`Updated ${updatedCount} equipment items with comments`);
 
-    // Generate example logs
+    
     const exampleLogs = [];
     
-    // Add some user action logs
+    
     for (let i = 0; i < 10; i++) {
       const randomUser = userIds[Math.floor(Math.random() * userIds.length)];
       const randomEquipment = allEquipment[Math.floor(Math.random() * allEquipment.length)];
@@ -567,11 +566,11 @@ async function populateDatabase() {
         userId: randomUser,
         action: "add_equipment",
         relatedId: randomEquipment._id.toString(),
-        timestamp: new Date(Date.now() - Math.floor(Math.random() * 30 * 24 * 60 * 60 * 1000)) // Random date within last 30 days
+        timestamp: new Date(Date.now() - Math.floor(Math.random() * 30 * 24 * 60 * 60 * 1000)) 
       });
     }
 
-    // Add some authentication logs
+    
     for (let i = 0; i < 5; i++) {
       const randomUser = userIds[Math.floor(Math.random() * userIds.length)];
       
@@ -580,11 +579,11 @@ async function populateDatabase() {
         message: "User logged in successfully",
         userId: randomUser,
         action: "login",
-        timestamp: new Date(Date.now() - Math.floor(Math.random() * 7 * 24 * 60 * 60 * 1000)) // Random date within last 7 days
+        timestamp: new Date(Date.now() - Math.floor(Math.random() * 7 * 24 * 60 * 60 * 1000)) 
       });
     }
 
-    // Add some error logs
+    
     exampleLogs.push({
       level: "error",
       message: "Database connection timeout",
@@ -593,7 +592,7 @@ async function populateDatabase() {
         message: "Connection timeout after 30000ms",
         stack: "Error: Connection timeout\n    at Database.connect (/app/db.js:45:12)"
       },
-      timestamp: new Date(Date.now() - Math.floor(Math.random() * 24 * 60 * 60 * 1000)) // Random date within last 24 hours
+      timestamp: new Date(Date.now() - Math.floor(Math.random() * 24 * 60 * 60 * 1000)) 
     });
 
     exampleLogs.push({
@@ -606,10 +605,10 @@ async function populateDatabase() {
         message: "File size exceeds limit",
         stack: "Error: File too large\n    at ImageUpload.validate (/app/upload.js:23:8)"
       },
-      timestamp: new Date(Date.now() - Math.floor(Math.random() * 48 * 60 * 60 * 1000)) // Random date within last 48 hours
+      timestamp: new Date(Date.now() - Math.floor(Math.random() * 48 * 60 * 60 * 1000)) 
     });
 
-    // Add some comment-related logs
+    
     for (let i = 0; i < 3; i++) {
       const randomUser = userIds[Math.floor(Math.random() * userIds.length)];
       const randomEquipment = allEquipment[Math.floor(Math.random() * allEquipment.length)];
@@ -620,13 +619,13 @@ async function populateDatabase() {
         userId: randomUser,
         action: "add_comment",
         relatedId: randomEquipment._id.toString(),
-        timestamp: new Date(Date.now() - Math.floor(Math.random() * 14 * 24 * 60 * 60 * 1000)) // Random date within last 14 days
+        timestamp: new Date(Date.now() - Math.floor(Math.random() * 14 * 24 * 60 * 60 * 1000)) 
       });
-    }    // Insert logs
+    }    
     const insertedLogs = await Log.insertMany(exampleLogs);
     console.log(`Inserted ${insertedLogs.length} example logs`);
 
-    // Create version entry
+    
     const versionData = {
       version: "0.1",
       description: "Initial version of riffbook database"
@@ -659,6 +658,6 @@ if (!uri.includes("localhost")) {
   console.log("Not on localhost, skipping database population.");
   process.exit(0);
 }
-  // Only populate if connected to a MongoDB URI
+  
 
 populateDatabase();

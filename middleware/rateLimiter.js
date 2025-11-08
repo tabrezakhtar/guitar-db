@@ -1,11 +1,11 @@
-const rateLimit = require("express-rate-limit");
+﻿const rateLimit = require("express-rate-limit");
 
 const isRateLimitEnabled = process.env.RATE_LIMIT === "true";
 
 const noOpMiddleware = (req, res, next) => next();
 
 const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+  windowMs: 15 * 60 * 1000, 
   max: 10,
   message: {
     message: "Too many authentication attempts",
@@ -22,7 +22,7 @@ const authLimiter = rateLimit({
 });
 
 const magicLinkLimiter = rateLimit({
-  windowMs: 5 * 60 * 1000, // 5 minutes
+  windowMs: 5 * 60 * 1000, 
   max: 3,
   message: {
     message: "Too many magic link requests",
@@ -39,7 +39,7 @@ const magicLinkLimiter = rateLimit({
 });
 
 const refreshTokenLimiter = rateLimit({
-  windowMs: 5 * 60 * 1000, // 5 minutes
+  windowMs: 5 * 60 * 1000, 
   max: 20,
   message: {
     message: "Too many token refresh requests",
@@ -56,7 +56,7 @@ const refreshTokenLimiter = rateLimit({
 });
 
 const createProfileLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hour
+  windowMs: 60 * 60 * 1000, 
   max: 5,
   message: {
     message: "Too many profile creation attempts",
@@ -73,7 +73,7 @@ const createProfileLimiter = rateLimit({
 });
 
 const testMagicLinkLimiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 minute
+  windowMs: 1 * 60 * 1000, 
   max: 2,
   message: {
     message: "Too many magic link requests (TEST MODE)",
@@ -90,7 +90,7 @@ const testMagicLinkLimiter = rateLimit({
 });
 
 const testRefreshLimiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 minute
+  windowMs: 1 * 60 * 1000, 
   max: 3,
   message: {
     message: "Too many token refresh requests (TEST MODE)",
@@ -114,3 +114,4 @@ module.exports = {
   testMagicLinkLimiter: isRateLimitEnabled ? testMagicLinkLimiter : noOpMiddleware,
   testRefreshLimiter: isRateLimitEnabled ? testRefreshLimiter : noOpMiddleware
 };
+
