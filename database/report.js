@@ -4,7 +4,6 @@ const moment = require("moment");
 
 dotenv.config()
 
-
 const colors = {
   reset: '\x1b[0m',
   bright: '\x1b[1m',
@@ -52,7 +51,7 @@ async function viewLastLogs() {
   let client = null
 
   try {
-    const uri = process.env.DATABASE_URI || 'mongodb:
+    const uri = process.env.DATABASE_URI || 'mongodb://localhost:27017/guitar-db';
     client = new MongoClient(uri)
     await client.connect()
     const db = client.db()
