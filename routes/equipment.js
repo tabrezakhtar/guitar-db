@@ -191,13 +191,13 @@ async function getById(req, res, next) {
         options: { sort: { date: -1 } },
         populate: {
           path: "user",
-          select: "_id username avatarUrl"
+          select: "_id username avatarUrl admin"
         }
       })
       .populate("tags")
       .populate({
         path: "user",
-        select: "_id username avatarUrl"
+        select: "_id username avatarUrl admin"
       });
 
     if (!item) {
@@ -254,7 +254,7 @@ async function getByUser(req, res, next) {
       .populate("tags")
       .populate({
         path: "user",
-        select: "_id username avatarUrl"
+        select: "_id username avatarUrl admin"
       });
     
     const itemsWithCommentCount = processEquipmentItems(items);
@@ -290,7 +290,7 @@ async function filter(req, res, next) {
       .populate("tags")
       .populate({
         path: "user",
-        select: "_id username avatarUrl"
+        select: "_id username avatarUrl admin"
       });
       
     const processedItems = processEquipmentItems(items);
@@ -322,7 +322,7 @@ async function add(req, res, next) {
       .populate("tags")
       .populate({
         path: "user",
-        select: "_id username avatarUrl"
+        select: "_id username avatarUrl admin"
       });
     
     const processedItem = processEquipmentItem(populatedEquipment);
@@ -350,7 +350,7 @@ async function update(req, res, next) {
       .populate("comments")
       .populate({
         path: "user",
-        select: "_id username avatarUrl"
+        select: "_id username avatarUrl admin"
       });
 
     if (!updatedEquipment) {
@@ -451,7 +451,7 @@ async function addComment(req, res, next) {
     const populatedComment = await Comments.findById(savedComment._id)
       .populate({
       path: "user",
-      select: "_id username avatarUrl"
+      select: "_id username avatarUrl admin"
       });
 
     res.status(201).json(populatedComment);
