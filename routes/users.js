@@ -14,13 +14,27 @@ async function getUserProfile(req, res, next) {
       });
     }
     
-    const user = await User.findById(userId).select("username bio location website createdAt");
+    const user = await User.findById(userId).select("username bio location website createdAt admin");
     
     if (!user) {
       return res.status(404).json({ 
         message: "User not found",
         errors: "No user found with this ID"
       });
+    }
+
+    // Build user response object, only include admin if it's true
+    const userResponse = {
+      _id: user._id,
+      username: user.username,
+      bio: user.bio,
+      location: user.location,
+      website: user.website,
+      createdAt: user.createdAt
+    };
+    
+    if (user.admin === true) {
+      userResponse.admin = user.admin;
     }
 
     const recentComments = await Comments.find({ user: userId })
@@ -39,7 +53,7 @@ async function getUserProfile(req, res, next) {
     const likedEquipment = await Equipment.find({ likes: userId })
       .select("_id name brand images");
 
-    res.json({ user, comments: recentComments, likedEquipment });
+    res.json({ user: userResponse, comments: recentComments, likedEquipment });
   } catch (error) {
     next(error);
   }
