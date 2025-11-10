@@ -41,6 +41,46 @@ function processEquipmentItem(item, keepData = false) {
   itemObject.commentCount = item.comments ? item.comments.length : 0;
   itemObject.likesCount = item.likes ? item.likes.length : 0;
   
+  // Process user object to conditionally include admin field
+  if (itemObject.user && typeof itemObject.user === 'object') {
+    const processedUser = {
+      _id: itemObject.user._id,
+      username: itemObject.user.username,
+      avatarUrl: itemObject.user.avatarUrl
+    };
+    
+    // Only include admin if it's true
+    if (itemObject.user.admin === true) {
+      processedUser.admin = itemObject.user.admin;
+    }
+    
+    itemObject.user = processedUser;
+  }
+  
+  // Process comments array to conditionally include admin field for comment users
+  if (itemObject.comments && Array.isArray(itemObject.comments)) {
+    itemObject.comments = itemObject.comments.map(comment => {
+      if (comment.user && typeof comment.user === 'object') {
+        const processedCommentUser = {
+          _id: comment.user._id,
+          username: comment.user.username,
+          avatarUrl: comment.user.avatarUrl
+        };
+        
+        // Only include admin if it's true
+        if (comment.user.admin === true) {
+          processedCommentUser.admin = comment.user.admin;
+        }
+        
+        return {
+          ...comment,
+          user: processedCommentUser
+        };
+      }
+      return comment;
+    });
+  }
+  
   if (!keepData) {
     delete itemObject.likes;
   }
