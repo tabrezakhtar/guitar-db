@@ -24,7 +24,7 @@ async function backupDatabase() {
   let client = null
   
   try {
-    const uri = process.env.DATABASE_URI || 'mongodb:
+    const uri = process.env.DATABASE_URI || "mongodb://localhost:27017/guitar-db"
     client = new MongoClient(uri)
     await client.connect()
     const db = client.db()
