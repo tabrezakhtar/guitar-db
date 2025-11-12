@@ -172,13 +172,11 @@
 
         <% if (typeof errors==='undefined' || errors.length===0) { %>
           <script>
-            // Immediately redirect to frontend if there are no errors
-            document.addEventListener("DOMContentLoaded", function () {
+              document.addEventListener("DOMContentLoaded", function () {
               const token = document.getElementById("token").value;
               const user = document.getElementById("user").value;
 
-              // Redirect to frontend with token and user ID as query params
-              const frontendUrl = <%= JSON.stringify((process.env.FRONTEND_URL ? "http://" + process.env.FRONTEND_URL : "http://localhost:5173")) %>;
+              const frontendUrl = "<%- process.env.FRONTEND_URL ? 'http://' + process.env.FRONTEND_URL : 'http://localhost:5173' %>";
               window.location.href = `${frontendUrl}/auth?token=${encodeURIComponent(token)}&user=${encodeURIComponent(user)}`;
             });
           </script>
