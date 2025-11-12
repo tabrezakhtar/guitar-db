@@ -177,8 +177,6 @@
               const user = document.getElementById("user").value;
 
               const frontendUrl = "<%- process.env.FRONTEND_URL ? process.env.FRONTEND_URL : 'http://localhost:5173' %>";
-              console.log("*****************************");
-              console.log(`${frontendUrl}/auth?token=${encodeURIComponent(token)}&user=${encodeURIComponent(user)}`);
               window.location.href = `${frontendUrl}/auth?token=${encodeURIComponent(token)}&user=${encodeURIComponent(user)}`;
             });
           </script>
