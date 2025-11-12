@@ -178,7 +178,7 @@
               const user = document.getElementById("user").value;
 
               // Redirect to frontend with token and user ID as query params
-              const frontendUrl = "http://localhost:5173"; // Change this to match your frontend URL
+              const frontendUrl = <%= JSON.stringify((process.env.FRONTEND_URL ? "http://" + process.env.FRONTEND_URL : "http://localhost:5173")) %>;
               window.location.href = `${frontendUrl}/auth?token=${encodeURIComponent(token)}&user=${encodeURIComponent(user)}`;
             });
           </script>
