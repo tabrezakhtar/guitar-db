@@ -417,7 +417,7 @@ function getPicsumImages(count = 5) {
     const [w, h] = resolutions[i % resolutions.length];
     
     const seed = Math.floor(Math.random() * 1000000) + Date.now() + i;
-    images.push(`https:
+    images.push(`https://picsum.photos/seed/${seed}/${w}/${h}`);
   }
   
   for (let i = images.length - 1; i > 0; i--) {
