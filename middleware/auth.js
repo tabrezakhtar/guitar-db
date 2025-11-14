@@ -1,5 +1,5 @@
 ﻿const jwt = require("jsonwebtoken");
-const { Equipment } = require("../models/equipment");
+const { Equipment, Comments } = require("../models/equipment");
 
 const verifyToken = (req, res, next) => {
   
@@ -93,8 +93,43 @@ const checkUserOwnership = async (req, res, next) => {
   }
 };
 
+const checkCommentOwnership = async (req, res, next) => {
+  try {
+    const commentId = req.params.id || req.body.commentId;
+    
+    if (!commentId) {
+      return res.status(400).json({
+        message: "Comment ID is required",
+        errors: "Comment ID is required for this operation"
+      });
+    }
+
+    const comment = await Comments.findById(commentId);
+    
+    if (!comment) {
+      return res.status(404).json({
+        message: "Comment not found",
+        errors: "The specified comment could not be found"
+      });
+    }
+
+    if (comment.user && comment.user.toString() !== req.userId) {
+      return res.status(403).json({
+        message: "Not authorized",
+        errors: "You are not authorized to delete this comment"
+      });
+    }
+
+    req.comment = comment;
+    next();
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   verifyToken,
   checkEquipmentOwnership,
-  checkUserOwnership
+  checkUserOwnership,
+  checkCommentOwnership
 };

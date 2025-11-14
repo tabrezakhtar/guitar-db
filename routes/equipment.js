@@ -500,6 +500,30 @@ async function addComment(req, res, next) {
   }
 }
 
+async function deleteComment(req, res, next) {
+  try {
+    const comment = req.comment;
+    const equipmentId = comment.equipmentId;
+
+    const equipment = await Equipment.findById(equipmentId);
+    if (equipment) {
+      equipment.comments = equipment.comments.filter(
+        commentId => commentId.toString() !== comment._id.toString()
+      );
+      await equipment.save();
+    }
+
+    await Comments.findByIdAndDelete(comment._id);
+
+    res.status(200).json({ 
+      message: "Comment deleted successfully",
+      commentId: comment._id
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 async function toggleLike(req, res, next) {
   try {
     const equipmentId = req.params.id;
@@ -564,6 +588,7 @@ module.exports = {
   settings, 
   add, 
   addComment,
+  deleteComment,
   getAllTags,
   toggleLike,
   searchByText

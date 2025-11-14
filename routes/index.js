@@ -5,7 +5,7 @@ const pagesRoutes = require("./pages");
 const { createUserProfile, refreshToken } = require("./auth");
 const { registerUser, verifyCode, resendVerificationCode, guestLogin } = require("./register");
 const { getUserProfile, updateUserProfile, deleteUserAvatar, deleteUserProfile } = require("./users");
-const { verifyToken, checkEquipmentOwnership, checkUserOwnership } = require("../middleware/auth");
+const { verifyToken, checkEquipmentOwnership, checkUserOwnership, checkCommentOwnership } = require("../middleware/auth");
 const { authLimiter, magicLinkLimiter, refreshTokenLimiter, createProfileLimiter, testMagicLinkLimiter, testRefreshLimiter } = require("../middleware/rateLimiter");
 
 router.get("/equipment/list/", equipmentRoutes.get);
@@ -18,6 +18,7 @@ router.delete("/equipment/deleteImage/:id", verifyToken, checkEquipmentOwnership
 router.post("/equipment/toggleLike/:id", verifyToken, equipmentRoutes.toggleLike);
 router.get("/equipment/settings", equipmentRoutes.settings);
 router.post("/equipment/addComment", verifyToken, equipmentRoutes.addComment);
+router.delete("/equipment/deleteComment/:id", verifyToken, checkCommentOwnership, equipmentRoutes.deleteComment);
 router.get("/equipment/tags", equipmentRoutes.getAllTags);
 router.get("/equipment/user/:userId", equipmentRoutes.getByUser);
 router.get("/equipment/searchByText", equipmentRoutes.searchByText);
