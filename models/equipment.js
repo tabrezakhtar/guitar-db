@@ -9,13 +9,13 @@ const EquipmentSchema = new Schema({
   description: { type: String, required: true },
   why: String,
   recommendation: String,
-  brand: { type: String, required: true },
+  brand: { type: String },
   likes: [{ type: Schema.Types.ObjectId, ref: "User" }],
   comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
   images: [String],
   year: Number,
-  date: { 
-    type: Date, 
+  date: {
+    type: Date,
     default: () => new Date(new Date().toISOString())
   },
   colour: String,
@@ -69,8 +69,8 @@ const CommentSchema = new Schema({
   equipmentId: { type: Schema.Types.ObjectId, ref: "Equipment" },
   user: { type: Schema.Types.ObjectId, ref: "User" },
   text: String,
-  date: { 
-    type: Date, 
+  date: {
+    type: Date,
     default: () => new Date(new Date().toISOString())
   }
 });
