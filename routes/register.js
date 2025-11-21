@@ -17,7 +17,7 @@ async function registerUser(req, res, next) {
   const { username, email, bio, location } = req.body;
   const errors = [];
   const missing = [];
-  
+
   if (!username) {
     missing.push("username");
     errors.push("Username is required");
@@ -35,7 +35,7 @@ async function registerUser(req, res, next) {
     missing.push("email");
     errors.push("Email is required");
   }
-  
+
   if (missing.length > 0) {
     req.flash("errors", errors);
     req.flash("missing", missing);
@@ -53,7 +53,6 @@ async function registerUser(req, res, next) {
       req.flash("username", username);
       req.flash("bio", bio);
       req.flash("location", location);
-      return res.redirect("/register");
     }
 
     const existingUsername = await User.findOne({ username });
@@ -62,6 +61,9 @@ async function registerUser(req, res, next) {
       req.flash("email", email);
       req.flash("bio", bio);
       req.flash("location", location);
+    }
+
+    if (existingUser || existingUsername) {
       return res.redirect("/register");
     }
 
@@ -89,7 +91,7 @@ async function registerUser(req, res, next) {
         username,
         verificationCode
       });
-      
+
       const { error } = await resend.emails.send({
         from: "riffbook <onboarding@resend.dev>",
         to: ["delivered@resend.dev"],
@@ -104,7 +106,7 @@ async function registerUser(req, res, next) {
       console.error("Failed to send verification code email:", emailError);
     }
 
-    return res.render("success", { 
+    return res.render("success", {
       title: "Registration Successful - riffbook",
       email: email.substring(0, 3) + "..." + email.substring(email.indexOf("@")),
       showVerificationForm: true,
@@ -127,12 +129,12 @@ function generateEmailTemplate(type, data) {
       <span style="color: #EAAA00; font-size: 48px; font-weight: bold; font-family: 'Varela Round', sans-serif;">riffbook</span>
     </div>
   `;
-  
+
   const baseStyle = `
     <div style="font-family: 'Varela Round', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
       ${logoHeader}
   `;
-  
+
   const footerStyle = `
       <p style="font-size: 12px; color: #666; margin-top: 30px;">If you did not request this email, please delete it or ignore it. Someone may have entered your email address by mistake.</p>
     </div>
@@ -149,7 +151,7 @@ function generateEmailTemplate(type, data) {
         </div>
         <p style="font-size: 14px; color: #6b7280; text-align: center;">This code will expire in 15 minutes.</p>
         ${footerStyle}`;
-    
+
     case "login":
       return `${baseStyle}
         <h1 style="color: #3b82f6; text-align: center; margin-bottom: 30px;">Login to riffbook</h1>
@@ -160,7 +162,7 @@ function generateEmailTemplate(type, data) {
         </div>
         <p style="font-size: 14px; color: #6b7280; text-align: center;">This code will expire in 15 minutes.</p>
         ${footerStyle}`;
-        
+
     default:
       throw new Error("Invalid email template type");
   }
@@ -233,10 +235,10 @@ async function verifyCode(req, res, next) {
     if (user.verificationCode !== code) {
       user.verificationCodeAttempts += 1;
       await user.save();
-      
+
       const remainingAttempts = 5 - user.verificationCodeAttempts;
       const emailDisplay = user.email.substring(0, 3) + "..." + user.email.substring(user.email.indexOf("@"));
-      
+
       if (remainingAttempts > 0) {
         return res.render("success", {
           title: "Invalid Code - riffbook",
@@ -265,14 +267,14 @@ async function verifyCode(req, res, next) {
     user.verificationCodeAttempts = 0;
     user.verified = true;
     await user.save();
-    
+
     const sessionToken = jwt.sign(
       { id: user._id },
       jwtSecret,
       { expiresIn: "1h" }
     );
-    
-    return res.render("verify", { 
+
+    return res.render("verify", {
       token: sessionToken,
       user
     });
@@ -285,49 +287,49 @@ async function resendVerificationCode(req, res, next) {
   const { email, userId } = req.body;
   const errors = [];
   const missing = [];
-  
+
   if (!email && !userId) {
     missing.push("email");
     errors.push("Email or user ID is required");
   }
-  
+
   if (missing.length > 0) {
     req.flash("errors", errors);
     req.flash("missing", missing);
     if (email) req.flash("email", email);
     return res.redirect("/login");
   }
-  
+
   try {
     let existingUser;
-    
+
     if (userId) {
       existingUser = await User.findById(userId);
     } else {
       existingUser = await findUserByEmail(email);
     }
-    
+
     if (!existingUser) {
       req.flash("errors", ["No account found with this information"]);
       if (email) req.flash("email", email);
       return res.redirect("/login");
     }
-    
+
     const verificationCode = generateVerificationCode();
     const codeExpires = new Date(Date.now() + 15 * 60 * 1000);
-    
+
     existingUser.verificationCode = verificationCode;
     existingUser.verificationCodeExpires = codeExpires;
     existingUser.verificationCodeAttempts = 0;
     await existingUser.save();
-    
+
     try {
       const resend = new Resend(process.env.EMAIL);
       const emailHtml = generateEmailTemplate("login", {
         username: existingUser.username,
         verificationCode
       });
-      
+
       const { error } = await resend.emails.send({
         from: "riffbook <onboarding@resend.dev>",
         to: ["delivered@resend.dev"],
@@ -345,10 +347,10 @@ async function resendVerificationCode(req, res, next) {
       req.flash("errors", ["Failed to send verification code. Please try again."]);
       return res.redirect("/login");
     }
-    
+
     const emailDisplay = existingUser.email.substring(0, 3) + "..." + existingUser.email.substring(existingUser.email.indexOf("@"));
-    
-    return res.render("success", { 
+
+    return res.render("success", {
       title: "New Code Sent - riffbook",
       email: emailDisplay,
       showVerificationForm: true,
@@ -362,18 +364,18 @@ async function resendVerificationCode(req, res, next) {
 
 async function guestLogin(req, res, next) {
   const jwtSecret = process.env.JWT_SECRET;
-  
+
   try {
     let guestNumber;
     let guestUsername;
     let existingUser;
-    
+
     do {
       guestNumber = Math.floor(100000 + Math.random() * 900000);
       guestUsername = `Guest${guestNumber}`;
       existingUser = await User.findOne({ username: guestUsername });
     } while (existingUser);
-    
+
     const guestUser = new User({
       username: guestUsername,
       email: `${guestUsername.toLowerCase()}@guest.local`,
@@ -384,14 +386,14 @@ async function guestLogin(req, res, next) {
     });
 
     await guestUser.save();
-    
+
     const sessionToken = jwt.sign(
       { id: guestUser._id },
       jwtSecret,
       { expiresIn: "1h" }
     );
-    
-    return res.render("verify", { 
+
+    return res.render("verify", {
       token: sessionToken,
       user: guestUser
     });
