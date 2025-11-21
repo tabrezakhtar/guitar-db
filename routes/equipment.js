@@ -35,12 +35,12 @@ function processEquipmentItems(items, keepData = false) {
 
 function processEquipmentItem(item, keepData = false) {
   if (!item) return null;
-  
+
   const itemObject = item.toObject ? item.toObject() : { ...item };
-  
+
   itemObject.commentCount = item.comments ? item.comments.length : 0;
   itemObject.likesCount = item.likes ? item.likes.length : 0;
-  
+
   // Process user object to conditionally include admin field
   if (itemObject.user && typeof itemObject.user === 'object') {
     const processedUser = {
@@ -48,15 +48,15 @@ function processEquipmentItem(item, keepData = false) {
       username: itemObject.user.username,
       avatarUrl: itemObject.user.avatarUrl
     };
-    
+
     // Only include admin if it's true
     if (itemObject.user.admin === true) {
       processedUser.admin = itemObject.user.admin;
     }
-    
+
     itemObject.user = processedUser;
   }
-  
+
   // Process comments array to conditionally include admin field for comment users
   if (itemObject.comments && Array.isArray(itemObject.comments)) {
     itemObject.comments = itemObject.comments.map(comment => {
@@ -66,12 +66,12 @@ function processEquipmentItem(item, keepData = false) {
           username: comment.user.username,
           avatarUrl: comment.user.avatarUrl
         };
-        
+
         // Only include admin if it's true
         if (comment.user.admin === true) {
           processedCommentUser.admin = comment.user.admin;
         }
-        
+
         return {
           ...comment,
           user: processedCommentUser
@@ -80,11 +80,11 @@ function processEquipmentItem(item, keepData = false) {
       return comment;
     });
   }
-  
+
   if (!keepData) {
     delete itemObject.likes;
   }
-  
+
   return itemObject;
 }
 
@@ -114,8 +114,8 @@ async function get(req, res, next) {
   const type = req.query.type ? req.query.type.toLowerCase() : "";
   const model = getModelByType(type);
   if (!model) {
-    return res.status(400).send({ 
-      message: "Invalid type", 
+    return res.status(400).send({
+      message: "Invalid type",
       errors: "Invalid equipment type provided"
     });
   }
@@ -134,7 +134,7 @@ async function get(req, res, next) {
 
   try {
     let query = {};
-    
+
     if (req.query.tags) {
       try {
         const tags = JSON.parse(req.query.tags);
@@ -145,7 +145,7 @@ async function get(req, res, next) {
         console.error("Error parsing tags parameter:", err);
       }
     }
-    
+
     const items = await model.find(query)
       .collation({ locale: "en", strength: 2 })
       .sort(sort)
@@ -156,15 +156,15 @@ async function get(req, res, next) {
         path: "user",
         select: "username avatarUrl -_id"
       });
-    
+
     const processedItems = processEquipmentItems(items);
-    
+
     const total = await model.countDocuments(query);
-    res.status(200).send({ 
-      items: processedItems, 
-      total, 
-      page, 
-      pages: Math.ceil(total / limit) 
+    res.status(200).send({
+      items: processedItems,
+      total,
+      page,
+      pages: Math.ceil(total / limit)
     });
   } catch (err) {
     next(err);
@@ -194,7 +194,7 @@ async function searchByText(req, res, next) {
       .populate("tags")
       .populate({
         path: "user",
-        select: "username avatarUrl -_id"
+        select: "username avatarUrl admin -_id"
       });
 
     const processedItems = processEquipmentItems(items);
@@ -218,8 +218,8 @@ async function getById(req, res, next) {
   const type = req.query.type ? req.query.type.toLowerCase() : "";
   const model = getModelByType(type);
   if (!model) {
-    return res.status(400).send({ 
-      message: "Invalid type", 
+    return res.status(400).send({
+      message: "Invalid type",
       errors: "Invalid equipment type provided"
     });
   }
@@ -241,7 +241,7 @@ async function getById(req, res, next) {
       });
 
     if (!item) {
-      return res.status(404).json({ 
+      return res.status(404).json({
         message: `${type} not found`,
         errors: `The requested ${type} could not be found`
       });
@@ -257,10 +257,10 @@ async function getById(req, res, next) {
 async function getByUser(req, res, next) {
   try {
     const userId = req.params.userId;
-    
+
     if (!userId) {
-      return res.status(400).json({ 
-        message: "Missing user ID", 
+      return res.status(400).json({
+        message: "Missing user ID",
         errors: "User ID is required"
       });
     }
@@ -269,14 +269,14 @@ async function getByUser(req, res, next) {
     const sortOrder = req.query.sortOrder === "desc" ? -1 : 1;
 
     let query = { user: userId };
-    
+
     if (req.query.type) {
       const type = req.query.type.toLowerCase();
       if (["guitar", "acoustic", "amp", "pedal", "bass", "accessory"].includes(type)) {
         query.__t = type.charAt(0).toUpperCase() + type.slice(1);
       }
     }
-    
+
     if (req.query.tags) {
       try {
         const tags = JSON.parse(req.query.tags);
@@ -296,13 +296,13 @@ async function getByUser(req, res, next) {
         path: "user",
         select: "_id username avatarUrl admin"
       });
-    
+
     const itemsWithCommentCount = processEquipmentItems(items);
-    
+
     const total = await Equipment.countDocuments(query);
-    res.status(200).send({ 
-      items: itemsWithCommentCount, 
-      total, 
+    res.status(200).send({
+      items: itemsWithCommentCount,
+      total,
     });
   } catch (err) {
     next(err);
@@ -313,8 +313,8 @@ async function filter(req, res, next) {
   const type = req.query.type ? req.query.type.toLowerCase() : "";
   const model = getModelByType(type);
   if (!model) {
-    return res.status(400).send({ 
-      message: "Invalid type", 
+    return res.status(400).send({
+      message: "Invalid type",
       errors: "Invalid equipment type provided"
     });
   }
@@ -332,7 +332,7 @@ async function filter(req, res, next) {
         path: "user",
         select: "_id username avatarUrl admin"
       });
-      
+
     const processedItems = processEquipmentItems(items);
     res.status(200).send({ items: processedItems });
   } catch (err) {
@@ -344,7 +344,7 @@ async function add(req, res, next) {
   const type = req.query.type ? req.query.type.toLowerCase() : "";
   const model = getModelByType(type);
   if (!model) {
-    return res.status(400).send({ 
+    return res.status(400).send({
       message: "Invalid type",
       errors: "Invalid equipment type provided"
     });
@@ -357,16 +357,16 @@ async function add(req, res, next) {
 
   try {
     const savedEquipment = await newEquipment.save();
- 
+
     const populatedEquipment = await model.findById(savedEquipment._id)
       .populate("tags")
       .populate({
         path: "user",
         select: "_id username avatarUrl admin"
       });
-    
+
     const processedItem = processEquipmentItem(populatedEquipment);
-    
+
     console.log("Saved equipment: ", processedItem);
     res.status(201).json(processedItem);
   } catch (err) {
@@ -378,8 +378,8 @@ async function update(req, res, next) {
   const type = req.query.type ? req.query.type.toLowerCase() : "";
   const model = getModelByType(type);
   if (!model) {
-    return res.status(400).send({ 
-      message: "Invalid type", 
+    return res.status(400).send({
+      message: "Invalid type",
       errors: "Invalid equipment type provided"
     });
   }
@@ -394,7 +394,7 @@ async function update(req, res, next) {
       });
 
     if (!updatedEquipment) {
-      return res.status(404).json({ 
+      return res.status(404).json({
         message: `${type} not found`,
         errors: `The ${type} you're trying to update could not be found`
       });
@@ -403,7 +403,7 @@ async function update(req, res, next) {
     const itemObject = processEquipmentItem(updatedEquipment, true);
 
     res.status(200).json(itemObject);
-  } catch (err) {    
+  } catch (err) {
     next(err);
   }
 }
@@ -412,8 +412,8 @@ async function remove(req, res, next) {
   try {
     const itemToDelete = await Equipment.findById(req.params.id);
     if (!itemToDelete) {
-      return res.status(404).json({ 
-        message: "Equipment not found", 
+      return res.status(404).json({
+        message: "Equipment not found",
         errors: "The equipment you're trying to delete could not be found"
       });
     }
@@ -432,22 +432,22 @@ async function deleteImage(req, res, next) {
   try {
     const item = await Equipment.findById(req.params.id);
     if (!item) {
-      return res.status(404).json({ 
-        message: "Equipment not found", 
+      return res.status(404).json({
+        message: "Equipment not found",
         errors: "The equipment associated with this image could not be found"
       });
     }
 
     const imageToDelete = item.images.find((image) => image === req.body.imageUrl);
     console.log("Image to delete: ", imageToDelete);
-    
+
     if (!imageToDelete) {
-      return res.status(404).json({ 
-        message: "Image not found", 
+      return res.status(404).json({
+        message: "Image not found",
         errors: "The specified image URL could not be found"
       });
     }
-    
+
     await deleteCloudinaryImages([imageToDelete]);
     item.images = item.images.filter((image) => image !== req.body.imageUrl);
     await item.save();
@@ -460,9 +460,9 @@ async function deleteImage(req, res, next) {
 async function addComment(req, res, next) {
   try {
     const { equipmentId, text } = req.body;
-    
+
     if (!equipmentId || !text) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         message: "Missing required fields",
         errors: "Missing required fields - Equipment Id, Comment text"
       });
@@ -470,7 +470,7 @@ async function addComment(req, res, next) {
 
     const equipment = await Equipment.findById(equipmentId);
     if (!equipment) {
-      return res.status(404).json({ 
+      return res.status(404).json({
         message: "Equipment not found",
         errors: "The specified equipment could not be found"
       });
@@ -515,7 +515,7 @@ async function deleteComment(req, res, next) {
 
     await Comments.findByIdAndDelete(comment._id);
 
-    res.status(200).json({ 
+    res.status(200).json({
       message: "Comment deleted successfully",
       commentId: comment._id
     });
@@ -530,34 +530,34 @@ async function toggleLike(req, res, next) {
     const userId = req.userId;
 
     const equipment = await Equipment.findById(equipmentId);
-    
+
     if (!equipment) {
-      return res.status(404).json({ 
-        message: "Equipment not found", 
+      return res.status(404).json({
+        message: "Equipment not found",
         errors: "The equipment you're trying to like could not be found"
       });
     }
-    
+
     if (equipment.user.toString() === userId) {
       return res.status(400).json({
         message: "Cannot like your own equipment",
         errors: "You cannot like your own equipment"
       });
     }
-    
+
     const likeIndex = equipment.likes.findIndex(
       like => like.toString() === userId
     );
-    
+
     if (likeIndex === -1) {
       equipment.likes.push(userId);
     } else {
       equipment.likes.splice(likeIndex, 1);
     }
-    
+
     await equipment.save();
-    
-    res.status(200).json({ 
+
+    res.status(200).json({
       message: likeIndex === -1 ? "Equipment liked" : "Equipment unliked",
       likes: equipment.likes.length
     });
@@ -577,16 +577,16 @@ async function getAllTags(req, res, next) {
   }
 }
 
-module.exports = { 
-  get, 
+module.exports = {
+  get,
   getById,
-  getByUser, 
-  filter, 
-  update, 
-  remove, 
-  deleteImage, 
-  settings, 
-  add, 
+  getByUser,
+  filter,
+  update,
+  remove,
+  deleteImage,
+  settings,
+  add,
   addComment,
   deleteComment,
   getAllTags,
