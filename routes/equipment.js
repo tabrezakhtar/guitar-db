@@ -154,7 +154,7 @@ async function get(req, res, next) {
       .populate("tags")
       .populate({
         path: "user",
-        select: "username avatarUrl -_id"
+        select: "username avatarUrl admin -_id"
       });
 
     const processedItems = processEquipmentItems(items);
