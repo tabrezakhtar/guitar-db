@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const path = require("path");
 const session = require("express-session");
+const MongoStore = require("connect-mongo");
 const flash = require("connect-flash");
 const fs = require("fs");
 const Version = require("./models/version");
@@ -13,12 +14,17 @@ const Log = require("./models/log");
 require('dotenv').config();
 
 console.log("process.env.NODE_ENV", process.env.NODE_ENV);
+
+if (!process.env.SESSION_SECRET) {
+  throw new Error("SESSION_SECRET environment variable is not set");
+}
+
 const uri = process.env.DATABASE_URI;
 
 const connectToDatabase = async () => {
   try {
-    await mongoose.connect(uri, { 
-      useNewUrlParser: true, 
+    await mongoose.connect(uri, {
+      useNewUrlParser: true,
       useUnifiedTopology: true,
       serverSelectionTimeoutMS: 5000
     });
@@ -39,9 +45,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(session({
-  secret: process.env.SESSION_SECRET || "guitardbsecret",
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
+  store: MongoStore.create({
+    mongoUrl: uri
+  }),
   cookie: { secure: process.env.NODE_ENV === "production" }
 }));
 app.use(flash());
@@ -73,11 +82,11 @@ const renderWithFlash = (template, additionalFields = []) => {
       username: req.flash("username")[0] || "",
       email: req.flash("email")[0] || ""
     };
-    
+
     additionalFields.forEach(field => {
       data[field] = req.flash(field)[0] || "";
     });
-    
+
     res.render(template, data);
   };
 };
@@ -91,7 +100,7 @@ app.get("/terms", async (req, res) => {
     const termsPath = path.join(__dirname, "docs", "terms.md");
     const termsContent = fs.readFileSync(termsPath, "utf8");
     const htmlContent = marked(termsContent);
-    
+
     res.render("markdown", {
       title: "Terms & Conditions",
       content: htmlContent
@@ -108,9 +117,9 @@ app.get("/privacy", async (req, res) => {
     const privacyPath = path.join(__dirname, "docs", "privacy.md");
     const privacyContent = fs.readFileSync(privacyPath, "utf8");
     const htmlContent = marked(privacyContent);
-    
+
     res.render("markdown", {
-      title: "Privacy Policy", 
+      title: "Privacy Policy",
       content: htmlContent
     });
   } catch (error) {
@@ -120,15 +129,15 @@ app.get("/privacy", async (req, res) => {
 });
 
 app.get("/ping", (req, res) => {
-  const response = { 
-    message: "ping received", 
-    timestamp: new Date().toISOString() 
+  const response = {
+    message: "ping received",
+    timestamp: new Date().toISOString()
   };
-  
+
   if (mongoose.connection.readyState === 1) {
     response.database = "online";
   }
-  
+
   res.json(response);
 });
 
@@ -152,15 +161,15 @@ app.get("/version", async (req, res) => {
 
 app.use((err, req, res, next) => {
   Log.logError(err, req.user?.id || null, req.route?.path || req.path).catch(console.error);
-  
+
   console.error("Unhandled error:", err);
-  
+
   if (res.headersSent) {
     return next(err);
   }
-  
+
   const statusCode = err.status || err.statusCode || 500;
-  
+
   res.status(statusCode).json({
     error: "Internal server error"
   });
