@@ -3,6 +3,34 @@ const { queryBuilder } = require("../query-builder.js");
 const { deleteCloudinaryImages } = require("../helpers/cloudinary");
 const Tag = require("../models/tag");
 
+async function manageTagCounts(newTags, oldTags = []) {
+  // Convert tag arrays to arrays of tag IDs for comparison
+  const newTagIds = newTags.map(tag => typeof tag === 'string' ? tag : tag._id.toString());
+  const oldTagIds = oldTags.map(tag => typeof tag === 'string' ? tag : tag._id.toString());
+
+  // Find tags that were added (in new but not in old)
+  const addedTagIds = newTagIds.filter(id => !oldTagIds.includes(id));
+
+  // Find tags that were removed (in old but not in new)
+  const removedTagIds = oldTagIds.filter(id => !newTagIds.includes(id));
+
+  // Increment counts for added tags
+  if (addedTagIds.length > 0) {
+    await Tag.updateMany(
+      { _id: { $in: addedTagIds } },
+      { $inc: { count: 1 } }
+    );
+  }
+
+  // Decrement counts for removed tags
+  if (removedTagIds.length > 0) {
+    await Tag.updateMany(
+      { _id: { $in: removedTagIds } },
+      { $inc: { count: -1 } }
+    );
+  }
+}
+
 function getModelByType(type) {
   switch (type) {
     case "guitar":
@@ -358,6 +386,11 @@ async function add(req, res, next) {
   try {
     const savedEquipment = await newEquipment.save();
 
+    // Update tag counts for newly added equipment
+    if (req.body.tags && req.body.tags.length > 0) {
+      await manageTagCounts(req.body.tags);
+    }
+
     const populatedEquipment = await model.findById(savedEquipment._id)
       .populate("tags")
       .populate({
@@ -385,6 +418,21 @@ async function update(req, res, next) {
   }
 
   try {
+    // Load existing equipment to compare tags
+    const existingEquipment = await model.findById(req.params.id);
+
+    if (!existingEquipment) {
+      return res.status(404).json({
+        message: `${type} not found`,
+        errors: `The ${type} you're trying to update could not be found`
+      });
+    }
+
+    // Update tag counts if tags have changed
+    if (req.body.tags) {
+      await manageTagCounts(req.body.tags, existingEquipment.tags);
+    }
+
     const updatedEquipment = await model.findByIdAndUpdate(req.params.id, req.body, { new: true })
       .populate("tags")
       .populate("comments")
@@ -392,13 +440,6 @@ async function update(req, res, next) {
         path: "user",
         select: "_id username avatarUrl admin"
       });
-
-    if (!updatedEquipment) {
-      return res.status(404).json({
-        message: `${type} not found`,
-        errors: `The ${type} you're trying to update could not be found`
-      });
-    }
 
     const itemObject = processEquipmentItem(updatedEquipment, true);
 

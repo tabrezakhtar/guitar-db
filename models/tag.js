@@ -16,6 +16,10 @@ const tagSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
+  count: {
+    type: Number,
+    default: 0
+  },
   createdAt: {
     type: Date,
     default: () => new Date(new Date().toISOString())
