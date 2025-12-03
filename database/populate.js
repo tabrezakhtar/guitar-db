@@ -628,7 +628,7 @@ async function populateDatabase() {
     
     const versionData = {
       version: "0.1",
-      description: "Initial version of riffbook database"
+      description: "Initial version of rifftales database"
     };
     
     const insertedVersion = await Version.create(versionData);

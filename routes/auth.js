@@ -7,7 +7,7 @@ const { Resend } = require("resend");
 async function login(req, res) {
   if (!req.body) {
     return res.status(400).send({
-      message: "No request body provided", 
+      message: "No request body provided",
       errors: "Request body is required"
     });
   }
@@ -92,7 +92,7 @@ async function createUserProfile(req, res) {
   const jwtSecret = process.env.JWT_SECRET;
 
   if (!username) {
-    return res.status(400).json({ 
+    return res.status(400).json({
       message: "Username is required",
       errors: "Username is required"
     });
@@ -130,11 +130,11 @@ async function createUserProfile(req, res) {
         username,
         magicLink
       });
-      
+
       const { error } = await resend.emails.send({
-        from: "riffbook <onboarding@resend.dev>",
+        from: "rifftales <onboarding@resend.dev>",
         to: ["delivered@resend.dev"],
-        subject: "Welcome to riffbook - Verify Your Account",
+        subject: "Welcome to rifftales - Verify Your Account",
         html: emailHtml,
       });
 
@@ -145,14 +145,14 @@ async function createUserProfile(req, res) {
       console.error("Failed to send magic link email:", emailError);
     }
 
-    res.status(201).json({ 
+    res.status(201).json({
       message: "Profile created successfully",
       userId: user._id,
       magicLink
     });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ 
+    res.status(500).json({
       message: "Server error",
       errors: "An internal server error occurred"
     });
@@ -165,7 +165,7 @@ function generateMagicLink(userId, jwtSecret) {
     jwtSecret,
     { expiresIn: "7d" }
   );
-  
+
   const baseUrl = process.env.BACKEND_URL || "http://localhost:5000";
   return `${baseUrl}/verifymagiclink?token=${magicToken}`;
 }
@@ -174,7 +174,7 @@ function generateEmailTemplate(type, data) {
   const baseStyle = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
   `;
-  
+
   const footerStyle = `
       <p style="font-size: 12px; color: #666;">If you did not request this email, please delete it or ignore it. Someone may have entered your email address by mistake.</p>
     </div>
@@ -183,7 +183,7 @@ function generateEmailTemplate(type, data) {
   switch (type) {
     case "welcome":
       return `${baseStyle}
-        <h1>Welcome to riffbook!</h1>
+        <h1>Welcome to rifftales!</h1>
         <p>Thank you for registering, ${data.username}!</p>
         <p>Click the link below to verify your account:</p>
         <p><a href="${data.magicLink}" style="display: inline-block; background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;">Verify Account</a></p>
@@ -191,10 +191,10 @@ function generateEmailTemplate(type, data) {
         <p>${data.magicLink}</p>
         <p>This link will expire in 7 days.</p>
         ${footerStyle}`;
-        
+
     case "login":
       return `${baseStyle}
-        <h1>Login to riffbook</h1>
+        <h1>Login to rifftales</h1>
         <p>Hello ${data.username}!</p>
         <p>Click the link below to login to your account:</p>
         <p><a href="${data.magicLink}" style="display: inline-block; background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;">Login to Account</a></p>
@@ -202,7 +202,7 @@ function generateEmailTemplate(type, data) {
         <p>${data.magicLink}</p>
         <p>This link will expire in 7 days.</p>
         ${footerStyle}`;
-        
+
     default:
       throw new Error("Invalid email template type");
   }
@@ -220,7 +220,7 @@ async function sendMagicLink(req, res) {
   const jwtSecret = process.env.JWT_SECRET;
 
   if (!email) {
-    return res.status(400).json({ 
+    return res.status(400).json({
       message: "Email is required",
       errors: "Email is required"
     });
@@ -253,11 +253,11 @@ async function sendMagicLink(req, res) {
         username: matchedUser.username,
         magicLink
       });
-      
+
       const { error } = await resend.emails.send({
-        from: "riffbook <onboarding@resend.dev>",
+        from: "rifftales <onboarding@resend.dev>",
         to: ["delivered@resend.dev"],
-        subject: "riffbook - Login Link",
+        subject: "rifftales - Login Link",
         html: emailHtml,
       });
 
@@ -276,13 +276,13 @@ async function sendMagicLink(req, res) {
       });
     }
 
-    res.status(200).json({ 
+    res.status(200).json({
       message: "Magic link sent successfully",
       userId: matchedUser._id
     });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ 
+    res.status(500).json({
       message: "Server error",
       errors: "An internal server error occurred"
     });
@@ -294,24 +294,24 @@ async function verifyMagicLink(req, res) {
   const jwtSecret = process.env.JWT_SECRET;
 
   if (!token) {
-    return res.status(400).json({ 
+    return res.status(400).json({
       message: "No token provided",
       errors: "Token is required"
     });
   }
-  
+
   try {
     const decoded = jwt.verify(token, jwtSecret);
-    
+
     const user = await User.findById(decoded.id).select("-email");
 
     if (!user) {
-      return res.status(404).json({ 
+      return res.status(404).json({
         message: "User not found",
         errors: "No user found with this ID"
       });
     }
-    
+
     const sessionToken = jwt.sign(
       { id: user._id },
       jwtSecret,
@@ -320,7 +320,7 @@ async function verifyMagicLink(req, res) {
 
     user.verified = true;
     await user.save();
-    
+
     res.json({
       token: sessionToken,
       user
@@ -328,17 +328,17 @@ async function verifyMagicLink(req, res) {
   } catch (error) {
     console.log(error);
     if (error.name === "JsonWebTokenError") {
-      return res.status(401).json({ 
+      return res.status(401).json({
         message: "Invalid token",
         errors: "Invalid token"
       });
     } else if (error.name === "TokenExpiredError") {
-      return res.status(401).json({ 
+      return res.status(401).json({
         message: "Token has expired",
         errors: "Token has expired"
       });
     }
-    res.status(500).json({ 
+    res.status(500).json({
       message: "Server error",
       errors: "An internal server error occurred"
     });
@@ -354,38 +354,38 @@ async function refreshToken(req, res) {
       errors: "Token is required"
     });
   }
-  
+
   const jwtSecret = process.env.JWT_SECRET;
 
   try {
     const decoded = jwt.verify(token, jwtSecret, { ignoreExpiration: true });
-    
+
     const user = await User.findById(decoded.id);
-    
+
     if (!user) {
       return res.status(404).json({
         message: "User not found",
         errors: "No user found with this ID"
       });
     }
-    
+
     const currentTime = Math.floor(Date.now() / 1000);
     const tokenExpiry = decoded.exp;
     const refreshWindowSeconds = 7 * 24 * 60 * 60;
-    
+
     if (currentTime - tokenExpiry > refreshWindowSeconds) {
       return res.status(401).json({
         message: "Token expired beyond refresh window",
         errors: "Please log in again"
       });
     }
-    
+
     const newToken = jwt.sign(
       { id: user._id },
       jwtSecret,
       { expiresIn: "15m" }
     );
-    
+
     res.json({ token: newToken });
   } catch (error) {
     console.log(error);

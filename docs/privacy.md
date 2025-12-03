@@ -2,7 +2,7 @@
 
 _Last updated: June 22, 2025_
 
-Welcome to **riffbook**. Your privacy is important to us. This Privacy Policy explains how we collect, use, and protect your information when you use our website.
+Welcome to **rifftales**. Your privacy is important to us. This Privacy Policy explains how we collect, use, and protect your information when you use our website.
 
 ## What Data We Collect
 
@@ -42,8 +42,8 @@ We may update this Privacy Policy from time to time. Changes will be posted on t
 
 ## Contact
 
-If you have any questions about this privacy policy, feel free to contact us using the contact form on [this page](https://www.riffbook.co.uk/contact/).
+If you have any questions about this privacy policy, feel free to contact us using the contact form on [this page](https://www.rifftales.com/contact/).
 
 ---
 
-Thank you for using riffbook
+Thank you for using rifftales
