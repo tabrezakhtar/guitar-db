@@ -4,8 +4,8 @@
       <span>&copy; <%= new Date().getFullYear() %> rifftales. All rights reserved.</span>
     </div>
       <div class="footer-links">
-      <a href="/privacy">Privacy Policy</a>
-      <a href="/terms">Terms & Conditions</a>
+      <a href="<%= process.env.FRONTEND_URL || 'http://localhost:5173' %>/privacy">Privacy Policy</a>
+      <a href="<%= process.env.FRONTEND_URL || 'http://localhost:5173' %>/terms">Terms & Conditions</a>
       <a href="<%= process.env.FRONTEND_URL || 'http://localhost:5173' %>/contact.html">Contact Us</a>
     </div>
   </div>
@@ -17,14 +17,14 @@
       border-top: 1px solid #e5e7eb;
       background: #f9fafb;
     }
-    
+
     @media (prefers-color-scheme: dark) {
       .footer {
         border-top-color: #374151;
         background: #1f2937;
       }
     }
-    
+
     .footer-content {
       max-width: 1200px;
       margin: 0 auto;
@@ -34,49 +34,49 @@
       gap: 1rem;
       padding: 0 1rem;
     }
-    
+
     @media (min-width: 768px) {
       .footer-content {
         flex-direction: row;
         justify-content: space-between;
       }
     }
-    
+
     .footer-copyright {
       color: #6b7280;
       font-size: 0.875rem;
     }
-    
+
     @media (prefers-color-scheme: dark) {
       .footer-copyright {
         color: #9ca3af;
       }
     }
-    
+
     .footer-links {
       display: flex;
       flex-wrap: wrap;
       gap: 1.5rem;
       justify-content: center;
     }
-    
+
     .footer-links a {
       color: #6b7280;
       text-decoration: none;
       font-size: 0.875rem;
       transition: color 0.2s ease;
     }
-    
+
     .footer-links a:hover {
       color: #374151;
       text-decoration: underline;
     }
-    
+
     @media (prefers-color-scheme: dark) {
       .footer-links a {
         color: #9ca3af;
       }
-      
+
       .footer-links a:hover {
         color: #d1d5db;
       }
