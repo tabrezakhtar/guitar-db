@@ -94,7 +94,7 @@ async function registerUser(req, res, next) {
 
       const { error } = await resend.emails.send({
         from: "rifftales <onboarding@resend.dev>",
-        to: ["delivered@resend.dev"],
+        to: [email],
         subject: "Welcome to rifftales - Verify Your Account",
         html: emailHtml,
       });
