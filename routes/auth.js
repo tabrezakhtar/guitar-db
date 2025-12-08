@@ -291,7 +291,7 @@ async function verifyMagicLink(req, res) {
   try {
     const decoded = jwt.verify(token, jwtSecret);
 
-    const user = await User.findById(decoded.id).select("-email");
+    const user = await User.findById(decoded.id).select("-email -verificationCode -verificationCodeAttempts -verificationCodeExpires");
 
     if (!user) {
       return res.status(404).json({
