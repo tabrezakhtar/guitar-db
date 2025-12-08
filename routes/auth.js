@@ -107,16 +107,13 @@ async function createUserProfile(req, res) {
       });
     }
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedEmail = await bcrypt.hash(email, salt);
-
     const user = new User({
       username,
       bio,
       location,
       website,
       avatarUrl,
-      email: hashedEmail,
+      email: email,
       verified: false,
     });
 
@@ -132,7 +129,7 @@ async function createUserProfile(req, res) {
       });
 
       const { error } = await resend.emails.send({
-        from: "rifftales <onboarding@resend.dev>",
+        from: "rifftales <noreply@rifftales.net>",
         to: [email],
         subject: "Welcome to rifftales - Verify Your Account",
         html: emailHtml,
@@ -227,16 +224,7 @@ async function sendMagicLink(req, res) {
   }
 
   try {
-    const users = await User.find({});
-    let matchedUser = null;
-
-    for (const user of users) {
-      const isMatch = await bcrypt.compare(email, user.email);
-      if (isMatch) {
-        matchedUser = user;
-        break;
-      }
-    }
+    const matchedUser = await User.findOne({ email });
 
     if (!matchedUser) {
       return res.status(404).json({
@@ -255,7 +243,7 @@ async function sendMagicLink(req, res) {
       });
 
       const { error } = await resend.emails.send({
-        from: "rifftales <onboarding@resend.dev>",
+        from: "rifftales <noreply@rifftales.net>",
         to: [email],
         subject: "rifftales - Login Link",
         html: emailHtml,

@@ -93,7 +93,7 @@ async function registerUser(req, res, next) {
       });
 
       const { error } = await resend.emails.send({
-        from: "rifftales <onboarding@resend.dev>",
+        from: "rifftales <noreply@rifftales.net>",
         to: [email],
         subject: "Welcome to rifftales - Verify Your Account",
         html: emailHtml,
@@ -331,8 +331,8 @@ async function resendVerificationCode(req, res, next) {
       });
 
       const { error } = await resend.emails.send({
-        from: "rifftales <onboarding@resend.dev>",
-        to: ["delivered@resend.dev"],
+        from: "rifftales <noreply@rifftales.net>",
+        to: [existingUser.email],
         subject: "rifftales - New Verification Code",
         html: emailHtml,
       });
