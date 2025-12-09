@@ -274,9 +274,15 @@ async function verifyCode(req, res, next) {
       { expiresIn: "1h" }
     );
 
+    // Remove sensitive fields before sending to client
+    const userForClient = user.toObject();
+    delete userForClient.verificationCode;
+    delete userForClient.verificationCodeAttempts;
+    delete userForClient.verificationCodeExpires;
+
     return res.render("verify", {
       token: sessionToken,
-      user
+      user: userForClient
     });
   } catch (error) {
     next(error);
@@ -393,9 +399,15 @@ async function guestLogin(req, res, next) {
       { expiresIn: "1h" }
     );
 
+    // Remove sensitive fields before sending to client
+    const guestUserForClient = guestUser.toObject();
+    delete guestUserForClient.verificationCode;
+    delete guestUserForClient.verificationCodeAttempts;
+    delete guestUserForClient.verificationCodeExpires;
+
     return res.render("verify", {
       token: sessionToken,
-      user: guestUser
+      user: guestUserForClient
     });
   } catch (error) {
     next(error);
