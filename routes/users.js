@@ -6,18 +6,18 @@ const { deleteCloudinaryImages } = require("../helpers/cloudinary");
 async function getUserProfile(req, res, next) {
   try {
     const userId = req.query.userId;
-    
+
     if (!userId) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         message: "User ID is required",
         errors: "User ID is required"
       });
     }
-    
-    const user = await User.findById(userId).select("username bio location website createdAt admin");
-    
+
+    const user = await User.findById(userId).select("username bio location website createdAt admin avatarUrl");
+
     if (!user) {
-      return res.status(404).json({ 
+      return res.status(404).json({
         message: "User not found",
         errors: "No user found with this ID"
       });
@@ -30,9 +30,10 @@ async function getUserProfile(req, res, next) {
       bio: user.bio,
       location: user.location,
       website: user.website,
-      createdAt: user.createdAt
+      createdAt: user.createdAt,
+      avatarUrl: user.avatarUrl
     };
-    
+
     if (user.admin === true) {
       userResponse.admin = user.admin;
     }
@@ -70,14 +71,14 @@ async function updateUserProfile(req, res, next) {
   const { _id, username, bio, location, website, avatarUrl } = req.body;
 
   if (!_id) {
-    return res.status(400).json({ 
+    return res.status(400).json({
       message: "User ID is required",
       errors: "User ID is required"
     });
   }
 
   if (!username) {
-    return res.status(400).json({ 
+    return res.status(400).json({
       message: "Username is required",
       errors: "Username is required"
     });
@@ -93,7 +94,7 @@ async function updateUserProfile(req, res, next) {
     }
 
     let user = await User.findById(_id);
-    
+
     if (!user) {
       return res.status(404).json({
         message: "User not found",
@@ -109,7 +110,7 @@ async function updateUserProfile(req, res, next) {
 
     await user.save();
 
-    res.status(200).json({ 
+    res.status(200).json({
       message: "Profile updated successfully",
       user: {
         _id: user._id,
@@ -139,7 +140,7 @@ async function deleteUserAvatar(req, res, next) {
     const user = await User.findById(userId);
 
     await deleteCloudinaryImages([avatarUrl]);
-    
+
     user.avatarUrl = null;
     await user.save();
 
@@ -171,7 +172,7 @@ async function deleteUserProfile(req, res, next) {
 
   try {
     const user = await User.findById(userId);
-    
+
     if (!user) {
       return res.status(404).json({
         message: "User not found",
@@ -180,7 +181,7 @@ async function deleteUserProfile(req, res, next) {
     }
 
     const imagesToDelete = [];
-    
+
     if (user.avatarUrl) {
       imagesToDelete.push(user.avatarUrl);
     }
