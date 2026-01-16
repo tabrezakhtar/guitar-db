@@ -2,6 +2,7 @@ require("dotenv").config();
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const { Resend } = require("resend");
+const cookie = require("cookie");
 
 async function findUserByEmail(email) {
   try {
@@ -168,6 +169,20 @@ function generateEmailTemplate(type, data) {
   }
 }
 
+function generateTokens(userId, jwtSecret) {
+  const accessToken = jwt.sign(
+    { id: userId },
+    jwtSecret,
+    { expiresIn: "15m" }
+  );
+  const refreshToken = jwt.sign(
+    { id: userId },
+    jwtSecret,
+    { expiresIn: "7d" }
+  );
+  return { accessToken, refreshToken };
+}
+
 async function verifyCode(req, res, next) {
   const { code, userId } = req.body;
   const jwtSecret = process.env.JWT_SECRET;
@@ -268,11 +283,7 @@ async function verifyCode(req, res, next) {
     user.verified = true;
     await user.save();
 
-    const sessionToken = jwt.sign(
-      { id: user._id },
-      jwtSecret,
-      { expiresIn: "1h" }
-    );
+    const { accessToken, refreshToken } = generateTokens(user._id, jwtSecret);
 
     // Remove sensitive fields before sending to client
     const userForClient = user.toObject();
@@ -280,8 +291,23 @@ async function verifyCode(req, res, next) {
     delete userForClient.verificationCodeAttempts;
     delete userForClient.verificationCodeExpires;
 
+    res.setHeader('Set-Cookie', [
+      cookie.serialize('accessToken', accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 15 * 60,
+        path: '/',
+        sameSite: 'strict',
+      }),
+      cookie.serialize('refreshToken', refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 7 * 24 * 60 * 60,
+        path: '/',
+        sameSite: 'strict',
+      }),
+    ]);
     return res.render("verification-redirect", {
-      token: sessionToken,
       user: userForClient
     });
   } catch (error) {
@@ -393,11 +419,7 @@ async function guestLogin(req, res, next) {
 
     await guestUser.save();
 
-    const sessionToken = jwt.sign(
-      { id: guestUser._id },
-      jwtSecret,
-      { expiresIn: "1h" }
-    );
+    const { accessToken, refreshToken } = generateTokens(guestUser._id, jwtSecret);
 
     // Remove sensitive fields before sending to client
     const guestUserForClient = guestUser.toObject();
@@ -405,8 +427,23 @@ async function guestLogin(req, res, next) {
     delete guestUserForClient.verificationCodeAttempts;
     delete guestUserForClient.verificationCodeExpires;
 
+    res.setHeader('Set-Cookie', [
+      cookie.serialize('accessToken', accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 15 * 60,
+        path: '/',
+        sameSite: 'strict',
+      }),
+      cookie.serialize('refreshToken', refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 7 * 24 * 60 * 60,
+        path: '/',
+        sameSite: 'strict',
+      }),
+    ]);
     return res.render("verification-redirect", {
-      token: sessionToken,
       user: guestUserForClient
     });
   } catch (error) {

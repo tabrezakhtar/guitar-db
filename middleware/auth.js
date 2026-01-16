@@ -2,10 +2,8 @@
 const { Equipment, Comments } = require("../models/equipment");
 
 const verifyToken = (req, res, next) => {
-  
-  const token = req.header("Authorization")?.replace("Bearer ", "") || req.header("x-auth-token");
+  const token = req.cookies.token;
 
-  
   if (!token) {
     return res.status(401).json({
       message: "No token, authorization denied",
