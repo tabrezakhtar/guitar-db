@@ -53,7 +53,7 @@ const verifyToken = (req, res, next) => {
     const refreshResult = verifyTokenSafe(refreshToken, process.env.JWT_SECRET);
     
     if (refreshResult.valid) {
-      const { accessToken: newAccessToken } = generateTokens(refreshResult.decoded.id, process.env.JWT_SECRET);
+      const { accessToken: newAccessToken, refreshToken: newRefreshToken } = generateTokens(refreshResult.decoded.id, process.env.JWT_SECRET);
       const isProd = process.env.NODE_ENV === "production";
       res.cookie("accessToken", newAccessToken, {
         httpOnly: true,
@@ -61,6 +61,14 @@ const verifyToken = (req, res, next) => {
         sameSite: isProd ? "strict" : "lax",
         path: "/",
         maxAge: 15 * 60 * 1000
+      });
+
+      res.cookie("refreshToken", newRefreshToken, {
+        httpOnly: true,
+        secure: isProd,
+        sameSite: isProd ? "strict" : "lax",
+        path: "/",
+        maxAge: 7 * 24 * 60 * 60 * 1000
       });
       req.userId = refreshResult.decoded.id;
       return next();
