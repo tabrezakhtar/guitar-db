@@ -2,6 +2,7 @@ require("dotenv").config();
 const User = require("../models/user");
 const { Comments, Equipment } = require("../models/equipment.js");
 const { deleteCloudinaryImages } = require("../helpers/cloudinary");
+const cookie = require("cookie");
 
 async function getUserProfile(req, res, next) {
   try {
@@ -211,6 +212,24 @@ async function deleteUserProfile(req, res, next) {
     );
 
     await User.findByIdAndDelete(userId);
+
+    // http invalidate cookies
+    res.setHeader("Set-Cookie", [
+      cookie.serialize("accessToken", "", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 0,
+        path: "/",
+        sameSite: "strict"
+      }),
+      cookie.serialize("refreshToken", "", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 0,
+        path: "/",
+        sameSite: "strict"
+      })
+    ]);
 
     res.status(200).json({
       message: "User profile deleted successfully",
