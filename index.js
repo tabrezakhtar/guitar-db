@@ -7,6 +7,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const path = require("path");
 const session = require("express-session");
+const cookieParser = require("cookie-parser");
 const MongoStore = require("connect-mongo");
 const flash = require("connect-flash");
 const Version = require("./models/version");
@@ -53,7 +54,9 @@ app.use(session({
   }),
   cookie: { secure: process.env.NODE_ENV === "production" }
 }));
+
 app.use(flash());
+app.use(cookieParser());
 
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
