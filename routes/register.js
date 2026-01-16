@@ -2,7 +2,7 @@ require("dotenv").config();
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const { Resend } = require("resend");
-const cookie = require("cookie");
+// ...existing code...
 
 async function findUserByEmail(email) {
   try {
@@ -291,22 +291,24 @@ async function verifyCode(req, res, next) {
     delete userForClient.verificationCodeAttempts;
     delete userForClient.verificationCodeExpires;
 
-    res.setHeader('Set-Cookie', [
-      cookie.serialize('accessToken', accessToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: 15 * 60,
-        path: '/',
-        sameSite: 'strict',
-      }),
-      cookie.serialize('refreshToken', refreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: 7 * 24 * 60 * 60,
-        path: '/',
-        sameSite: 'strict',
-      }),
-    ]);
+    const isProd = process.env.NODE_ENV === "production";
+
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: isProd ? "strict" : "lax",
+      path: "/",
+      maxAge: 15 * 60 * 1000
+    });
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: isProd ? "strict" : "lax",
+      path: "/",
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    });
+
     return res.render("verification-redirect", {
       user: userForClient
     });
@@ -427,22 +429,24 @@ async function guestLogin(req, res, next) {
     delete guestUserForClient.verificationCodeAttempts;
     delete guestUserForClient.verificationCodeExpires;
 
-    res.setHeader('Set-Cookie', [
-      cookie.serialize('accessToken', accessToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: 15 * 60,
-        path: '/',
-        sameSite: 'strict',
-      }),
-      cookie.serialize('refreshToken', refreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: 7 * 24 * 60 * 60,
-        path: '/',
-        sameSite: 'strict',
-      }),
-    ]);
+    const isProd = process.env.NODE_ENV === "production";
+
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: isProd ? "strict" : "lax",
+      path: "/",
+      maxAge: 15 * 60 * 1000
+    });
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: isProd ? "strict" : "lax",
+      path: "/",
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    });
+
     return res.render("verification-redirect", {
       user: guestUserForClient
     });
