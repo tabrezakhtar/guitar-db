@@ -106,7 +106,7 @@ async function registerUser(req, res, next) {
       console.error("Failed to send verification code email:", emailError);
     }
 
-    return res.render("success", {
+    return res.render("verification", {
       title: "Registration Successful - rifftales",
       email: email.substring(0, 3) + "..." + email.substring(email.indexOf("@")),
       showVerificationForm: true,
@@ -185,7 +185,7 @@ async function verifyCode(req, res, next) {
 
   if (missing.length > 0) {
     const emailDisplay = "***@***";
-    return res.render("success", {
+    return res.render("verification", {
       title: "Enter Verification Code - rifftales",
       email: emailDisplay,
       showVerificationForm: true,
@@ -200,7 +200,7 @@ async function verifyCode(req, res, next) {
     const user = await User.findById(userId);
 
     if (!user) {
-      return res.render("success", {
+      return res.render("verification", {
         title: "Verification Error - rifftales",
         email: "***@***",
         showVerificationForm: false,
@@ -210,7 +210,7 @@ async function verifyCode(req, res, next) {
 
     if (!user.verificationCodeExpires || new Date() > user.verificationCodeExpires) {
       const emailDisplay = user.email.substring(0, 3) + "..." + user.email.substring(user.email.indexOf("@"));
-      return res.render("success", {
+      return res.render("verification", {
         title: "Code Expired - rifftales",
         email: emailDisplay,
         showVerificationForm: false,
@@ -222,7 +222,7 @@ async function verifyCode(req, res, next) {
 
     if (user.verificationCodeAttempts >= 5) {
       const emailDisplay = user.email.substring(0, 3) + "..." + user.email.substring(user.email.indexOf("@"));
-      return res.render("success", {
+      return res.render("verification", {
         title: "Too Many Attempts - rifftales",
         email: emailDisplay,
         showVerificationForm: false,
@@ -240,7 +240,7 @@ async function verifyCode(req, res, next) {
       const emailDisplay = user.email.substring(0, 3) + "..." + user.email.substring(user.email.indexOf("@"));
 
       if (remainingAttempts > 0) {
-        return res.render("success", {
+        return res.render("verification", {
           title: "Invalid Code - rifftales",
           email: emailDisplay,
           showVerificationForm: true,
@@ -251,7 +251,7 @@ async function verifyCode(req, res, next) {
           titleColor: "white"
         });
       } else {
-        return res.render("success", {
+        return res.render("verification", {
           title: "Too Many Attempts - rifftales",
           email: emailDisplay,
           showVerificationForm: false,
@@ -280,7 +280,7 @@ async function verifyCode(req, res, next) {
     delete userForClient.verificationCodeAttempts;
     delete userForClient.verificationCodeExpires;
 
-    return res.render("verify", {
+    return res.render("verification-redirect", {
       token: sessionToken,
       user: userForClient
     });
@@ -356,7 +356,7 @@ async function resendVerificationCode(req, res, next) {
 
     const emailDisplay = existingUser.email.substring(0, 3) + "..." + existingUser.email.substring(existingUser.email.indexOf("@"));
 
-    return res.render("success", {
+    return res.render("verification", {
       title: "New Code Sent - rifftales",
       email: emailDisplay,
       showVerificationForm: true,
@@ -405,7 +405,7 @@ async function guestLogin(req, res, next) {
     delete guestUserForClient.verificationCodeAttempts;
     delete guestUserForClient.verificationCodeExpires;
 
-    return res.render("verify", {
+    return res.render("verification-redirect", {
       token: sessionToken,
       user: guestUserForClient
     });
