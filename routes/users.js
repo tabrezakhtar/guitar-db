@@ -127,6 +127,7 @@ async function updateUserProfile(req, res, next) {
     next(error);
   }
 }
+
 async function deleteUserAvatar(req, res, next) {
   if (!req.body || !req.body.userId || !req.body.avatarUrl) {
     return res.status(400).json({
@@ -161,6 +162,7 @@ async function deleteUserAvatar(req, res, next) {
     next(error);
   }
 }
+
 async function deleteUserProfile(req, res, next) {
   if (!req.body || !req.body.userId) {
     return res.status(400).json({
@@ -241,4 +243,21 @@ async function deleteUserProfile(req, res, next) {
   }
 }
 
-module.exports = { getUserProfile, updateUserProfile, deleteUserAvatar, deleteUserProfile };
+async function getUserStatus(req, res, next) {
+  try {
+    const user = await User.findById(req.userId);
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+        errors: "No user found with this ID"
+      });
+    }
+
+    res.json({ exists: true });
+  } catch (error) {
+    next(error);
+  }
+}
+
+module.exports = { getUserProfile, updateUserProfile, deleteUserAvatar, deleteUserProfile, getUserStatus };

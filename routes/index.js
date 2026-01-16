@@ -4,7 +4,7 @@ const equipmentRoutes = require("./equipment");
 const pagesRoutes = require("./pages");
 
 const { registerUser, verifyCode, resendVerificationCode, guestLogin } = require("./register");
-const { getUserProfile, updateUserProfile, deleteUserAvatar, deleteUserProfile } = require("./users");
+const { getUserProfile, updateUserProfile, deleteUserAvatar, deleteUserProfile, getUserStatus } = require("./users");
 const { verifyToken, checkEquipmentOwnership, checkUserOwnership, checkCommentOwnership } = require("../middleware/auth");
 const { authLimiter, magicLinkLimiter, testMagicLinkLimiter, testRefreshLimiter } = require("../middleware/rateLimiter");
 
@@ -33,6 +33,7 @@ router.get("/users/profile", getUserProfile);
 router.put("/users/updateProfile", verifyToken, checkUserOwnership, updateUserProfile);
 router.delete("/users/deleteAvatar", verifyToken, checkUserOwnership, deleteUserAvatar);
 router.delete("/users/deleteProfile", verifyToken, checkUserOwnership, deleteUserProfile);
+router.get("/users/status", verifyToken, getUserStatus);
 
 router.post("/test/magic-link", testMagicLinkLimiter, (req, res) => {
   res.json({ message: "Test magic link endpoint", timestamp: new Date().toISOString() });
