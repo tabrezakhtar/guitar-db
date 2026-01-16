@@ -25,8 +25,8 @@ const verifyTokenSafe = (token, secret) => {
 };
 
 const verifyToken = (req, res, next) => {
-  const accessToken = req.cookies.accessToken;
-  const refreshToken = req.cookies.refreshToken;
+  const accessToken = req.cookies?.accessToken;
+  const refreshToken = req.cookies?.refreshToken;
 
   if (!accessToken) {
     return res.status(401).json({

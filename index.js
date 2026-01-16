@@ -63,7 +63,8 @@ const apiRoutes = require("./routes");
 if (process.env.CORS_ORIGINS) {
   const corsOptions = {
     origin: process.env.CORS_ORIGINS.split(','),
-    optionsSuccessStatus: 200
+    optionsSuccessStatus: 200,
+    credentials: true
   };
 
   console.log("Cors options found. Adding CORS middleware.");
