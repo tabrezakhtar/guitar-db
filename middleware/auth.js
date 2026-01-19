@@ -100,7 +100,6 @@ const checkEquipmentOwnership = async (req, res, next) => {
       });
     }
 
-    
     if (equipment.user && equipment.user.toString() !== req.userId) {
       return res.status(403).json({
         message: "Not authorized",
