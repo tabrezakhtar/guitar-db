@@ -1,7 +1,9 @@
+
 require("dotenv").config();
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const { Resend } = require("resend");
+const { setAuthCookies } = require("../helpers/cookies");
 
 async function findUserByEmail(email) {
   try {
@@ -106,7 +108,7 @@ async function registerUser(req, res, next) {
       console.error("Failed to send verification code email:", emailError);
     }
 
-    return res.render("success", {
+    return res.render("verification", {
       title: "Registration Successful - rifftales",
       email: email.substring(0, 3) + "..." + email.substring(email.indexOf("@")),
       showVerificationForm: true,
@@ -168,6 +170,20 @@ function generateEmailTemplate(type, data) {
   }
 }
 
+function generateTokens(userId, jwtSecret) {
+  const accessToken = jwt.sign(
+    { id: userId },
+    jwtSecret,
+    { expiresIn: "15m" }
+  );
+  const refreshToken = jwt.sign(
+    { id: userId },
+    jwtSecret,
+    { expiresIn: "7d" }
+  );
+  return { accessToken, refreshToken };
+}
+
 async function verifyCode(req, res, next) {
   const { code, userId } = req.body;
   const jwtSecret = process.env.JWT_SECRET;
@@ -185,7 +201,7 @@ async function verifyCode(req, res, next) {
 
   if (missing.length > 0) {
     const emailDisplay = "***@***";
-    return res.render("success", {
+    return res.render("verification", {
       title: "Enter Verification Code - rifftales",
       email: emailDisplay,
       showVerificationForm: true,
@@ -200,7 +216,7 @@ async function verifyCode(req, res, next) {
     const user = await User.findById(userId);
 
     if (!user) {
-      return res.render("success", {
+      return res.render("verification", {
         title: "Verification Error - rifftales",
         email: "***@***",
         showVerificationForm: false,
@@ -210,7 +226,7 @@ async function verifyCode(req, res, next) {
 
     if (!user.verificationCodeExpires || new Date() > user.verificationCodeExpires) {
       const emailDisplay = user.email.substring(0, 3) + "..." + user.email.substring(user.email.indexOf("@"));
-      return res.render("success", {
+      return res.render("verification", {
         title: "Code Expired - rifftales",
         email: emailDisplay,
         showVerificationForm: false,
@@ -222,7 +238,7 @@ async function verifyCode(req, res, next) {
 
     if (user.verificationCodeAttempts >= 5) {
       const emailDisplay = user.email.substring(0, 3) + "..." + user.email.substring(user.email.indexOf("@"));
-      return res.render("success", {
+      return res.render("verification", {
         title: "Too Many Attempts - rifftales",
         email: emailDisplay,
         showVerificationForm: false,
@@ -240,7 +256,7 @@ async function verifyCode(req, res, next) {
       const emailDisplay = user.email.substring(0, 3) + "..." + user.email.substring(user.email.indexOf("@"));
 
       if (remainingAttempts > 0) {
-        return res.render("success", {
+        return res.render("verification", {
           title: "Invalid Code - rifftales",
           email: emailDisplay,
           showVerificationForm: true,
@@ -251,7 +267,7 @@ async function verifyCode(req, res, next) {
           titleColor: "white"
         });
       } else {
-        return res.render("success", {
+        return res.render("verification", {
           title: "Too Many Attempts - rifftales",
           email: emailDisplay,
           showVerificationForm: false,
@@ -268,11 +284,7 @@ async function verifyCode(req, res, next) {
     user.verified = true;
     await user.save();
 
-    const sessionToken = jwt.sign(
-      { id: user._id },
-      jwtSecret,
-      { expiresIn: "1h" }
-    );
+    const { accessToken, refreshToken } = generateTokens(user._id, jwtSecret);
 
     // Remove sensitive fields before sending to client
     const userForClient = user.toObject();
@@ -280,8 +292,11 @@ async function verifyCode(req, res, next) {
     delete userForClient.verificationCodeAttempts;
     delete userForClient.verificationCodeExpires;
 
-    return res.render("verify", {
-      token: sessionToken,
+    const isProd = process.env.NODE_ENV === "production";
+
+    setAuthCookies(res, accessToken, refreshToken, isProd);
+
+    return res.render("verification-redirect", {
       user: userForClient
     });
   } catch (error) {
@@ -356,7 +371,7 @@ async function resendVerificationCode(req, res, next) {
 
     const emailDisplay = existingUser.email.substring(0, 3) + "..." + existingUser.email.substring(existingUser.email.indexOf("@"));
 
-    return res.render("success", {
+    return res.render("verification", {
       title: "New Code Sent - rifftales",
       email: emailDisplay,
       showVerificationForm: true,
@@ -393,11 +408,7 @@ async function guestLogin(req, res, next) {
 
     await guestUser.save();
 
-    const sessionToken = jwt.sign(
-      { id: guestUser._id },
-      jwtSecret,
-      { expiresIn: "1h" }
-    );
+    const { accessToken, refreshToken } = generateTokens(guestUser._id, jwtSecret);
 
     // Remove sensitive fields before sending to client
     const guestUserForClient = guestUser.toObject();
@@ -405,8 +416,11 @@ async function guestLogin(req, res, next) {
     delete guestUserForClient.verificationCodeAttempts;
     delete guestUserForClient.verificationCodeExpires;
 
-    return res.render("verify", {
-      token: sessionToken,
+    const isProd = process.env.NODE_ENV === "production";
+
+    setAuthCookies(res, accessToken, refreshToken, isProd);
+
+    return res.render("verification-redirect", {
       user: guestUserForClient
     });
   } catch (error) {

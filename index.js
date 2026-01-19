@@ -7,9 +7,9 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const path = require("path");
 const session = require("express-session");
+const cookieParser = require("cookie-parser");
 const MongoStore = require("connect-mongo");
 const flash = require("connect-flash");
-const fs = require("fs");
 const Version = require("./models/version");
 const Log = require("./models/log");
 require('dotenv').config();
@@ -54,7 +54,9 @@ app.use(session({
   }),
   cookie: { secure: process.env.NODE_ENV === "production" }
 }));
+
 app.use(flash());
+app.use(cookieParser());
 
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
@@ -64,7 +66,8 @@ const apiRoutes = require("./routes");
 if (process.env.CORS_ORIGINS) {
   const corsOptions = {
     origin: process.env.CORS_ORIGINS.split(','),
-    optionsSuccessStatus: 200
+    optionsSuccessStatus: 200,
+    credentials: true
   };
 
   console.log("Cors options found. Adding CORS middleware.");
@@ -94,40 +97,6 @@ const renderWithFlash = (template, additionalFields = []) => {
 
 app.get("/login", renderWithFlash("login"));
 app.get("/register", renderWithFlash("register", ["bio", "location"]));
-
-app.get("/terms", async (req, res) => {
-  try {
-    const { marked } = await import("marked");
-    const termsPath = path.join(__dirname, "docs", "terms.md");
-    const termsContent = fs.readFileSync(termsPath, "utf8");
-    const htmlContent = marked(termsContent);
-
-    res.render("markdown", {
-      title: "Terms & Conditions",
-      content: htmlContent
-    });
-  } catch (error) {
-    console.error("Error reading terms file:", error);
-    res.status(404).send("Terms & Conditions not found");
-  }
-});
-
-app.get("/privacy", async (req, res) => {
-  try {
-    const { marked } = await import("marked");
-    const privacyPath = path.join(__dirname, "docs", "privacy.md");
-    const privacyContent = fs.readFileSync(privacyPath, "utf8");
-    const htmlContent = marked(privacyContent);
-
-    res.render("markdown", {
-      title: "Privacy Policy",
-      content: htmlContent
-    });
-  } catch (error) {
-    console.error("Error reading privacy file:", error);
-    res.status(404).send("Privacy Policy not found");
-  }
-});
 
 app.get("/ping", (req, res) => {
   const response = {

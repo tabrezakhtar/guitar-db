@@ -2,11 +2,11 @@ const express = require("express");
 const router = express.Router();
 const equipmentRoutes = require("./equipment");
 const pagesRoutes = require("./pages");
-const { createUserProfile, refreshToken } = require("./auth");
+
 const { registerUser, verifyCode, resendVerificationCode, guestLogin } = require("./register");
-const { getUserProfile, updateUserProfile, deleteUserAvatar, deleteUserProfile } = require("./users");
+const { getUserProfile, updateUserProfile, deleteUserAvatar, deleteUserProfile, getUserStatus, logout } = require("./users");
 const { verifyToken, checkEquipmentOwnership, checkUserOwnership, checkCommentOwnership } = require("../middleware/auth");
-const { authLimiter, magicLinkLimiter, refreshTokenLimiter, createProfileLimiter, testMagicLinkLimiter, testRefreshLimiter } = require("../middleware/rateLimiter");
+const { authLimiter, magicLinkLimiter, testMagicLinkLimiter, testRefreshLimiter } = require("../middleware/rateLimiter");
 
 router.get("/equipment/list/", equipmentRoutes.get);
 router.get("/equipment/byid/", equipmentRoutes.getById);
@@ -26,18 +26,15 @@ router.get("/equipment/searchByText", equipmentRoutes.searchByText);
 router.get("/pages/landing", pagesRoutes.landing);
 
 router.post("/auth/register", registerUser);
-router.post("/auth/createProfile", createProfileLimiter, createUserProfile);
 router.post("/auth/sendCode", magicLinkLimiter, resendVerificationCode);
-router.post("/auth/refreshToken", refreshTokenLimiter, refreshToken);
 router.post("/auth/verifyCode", authLimiter, verifyCode);
 router.post("/auth/guestLogin", guestLogin);
 router.get("/users/profile", getUserProfile);
 router.put("/users/updateProfile", verifyToken, checkUserOwnership, updateUserProfile);
 router.delete("/users/deleteAvatar", verifyToken, checkUserOwnership, deleteUserAvatar);
 router.delete("/users/deleteProfile", verifyToken, checkUserOwnership, deleteUserProfile);
-router.get("/test/success", (req, res) => {
-  res.render("success", { status: "success", message: "Template test successful" });
-});
+router.post("/users/logout", verifyToken, logout);
+router.get("/users/status", verifyToken, getUserStatus);
 
 router.post("/test/magic-link", testMagicLinkLimiter, (req, res) => {
   res.json({ message: "Test magic link endpoint", timestamp: new Date().toISOString() });

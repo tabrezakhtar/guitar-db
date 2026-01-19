@@ -1,35 +1,82 @@
 ﻿const jwt = require("jsonwebtoken");
 const { Equipment, Comments } = require("../models/equipment");
 
-const verifyToken = (req, res, next) => {
-  
-  const token = req.header("Authorization")?.replace("Bearer ", "") || req.header("x-auth-token");
+const generateTokens = (userId, jwtSecret) => {
+  const accessToken = jwt.sign(
+    { id: userId },
+    jwtSecret,
+    { expiresIn: "15m" }
+  );
+  const refreshToken = jwt.sign(
+    { id: userId },
+    jwtSecret,
+    { expiresIn: "7d" }
+  );
+  return { accessToken, refreshToken };
+};
 
-  
-  if (!token) {
+const verifyTokenSafe = (token, secret) => {
+  return jwt.verify(token, secret, (err, decoded) => {
+    if (err) {
+      return { valid: false, error: err.name, decoded: null };
+    }
+    return { valid: true, error: null, decoded };
+  });
+};
+
+const verifyToken = (req, res, next) => {
+  const accessToken = req.cookies?.accessToken;
+  const refreshToken = req.cookies?.refreshToken;
+
+  if (!refreshToken) {
     return res.status(401).json({
-      message: "No token, authorization denied",
+      message: "No refresh token, authorization denied",
       errors: "Authentication required"
     });
   }
 
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  const accessResult = verifyTokenSafe(accessToken, process.env.JWT_SECRET);
+
+  if (accessResult.valid) {
+    req.userId = accessResult.decoded.id;
+    return next();
+  }
+
+  if (accessResult.error === "TokenExpiredError" || accessResult.error === "JsonWebTokenError") {
+    const refreshResult = verifyTokenSafe(refreshToken, process.env.JWT_SECRET);
     
-    req.userId = decoded.id;
-    next();
-  } catch (err) {
-    if (err.name === "TokenExpiredError") {
-      return res.status(401).json({
-        message: "Token expired",
-        errors: "Your session has expired. Please log in again."
+    if (refreshResult.valid) {
+      const { accessToken: newAccessToken, refreshToken: newRefreshToken } = generateTokens(refreshResult.decoded.id, process.env.JWT_SECRET);
+      const isProd = process.env.NODE_ENV === "production";
+      res.cookie("accessToken", newAccessToken, {
+        httpOnly: true,
+        secure: isProd,
+        sameSite: isProd ? "strict" : "lax",
+        path: "/",
+        maxAge: 15 * 60 * 1000
       });
+
+      res.cookie("refreshToken", newRefreshToken, {
+        httpOnly: true,
+        secure: isProd,
+        sameSite: isProd ? "strict" : "lax",
+        path: "/",
+        maxAge: 7 * 24 * 60 * 60 * 1000
+      });
+      req.userId = refreshResult.decoded.id;
+      return next();
     }
+
     return res.status(401).json({
-      message: "Token is not valid",
-      errors: "Invalid authentication token"
+      message: "Refresh token expired or invalid",
+      errors: "Your session has expired. Please log in again."
     });
   }
+
+  return res.status(401).json({
+    message: "Token is not valid",
+    errors: "Invalid authentication token"
+  });
 };
 
 const checkEquipmentOwnership = async (req, res, next) => {
@@ -53,7 +100,6 @@ const checkEquipmentOwnership = async (req, res, next) => {
       });
     }
 
-    
     if (equipment.user && equipment.user.toString() !== req.userId) {
       return res.status(403).json({
         message: "Not authorized",

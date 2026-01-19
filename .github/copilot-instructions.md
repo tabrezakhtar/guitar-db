@@ -1,6 +1,6 @@
 ## JavaScript Requirements
 - prefer speech marks over single quotes for strings and imports. e.g. import { useEffect, useState } from "react";
-- indent code using 2 spaces
+- indent code using 2 spaces.  do not use tabs
 - prefer commonjs syntax as this is a node.js web app
 - don not comment the code
 - when requiring another file or module, put the require at the rtop of the page instead of inline
