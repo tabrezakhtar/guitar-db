@@ -112,3 +112,4 @@ database/data_backup/
 report.cmd
 backup.cmd
 clearGuests.cmd
+restore.cmd
