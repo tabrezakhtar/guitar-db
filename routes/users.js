@@ -2,6 +2,8 @@ require("dotenv").config();
 const User = require("../models/user");
 const { Comments, Equipment } = require("../models/equipment.js");
 const { deleteCloudinaryImages } = require("../helpers/cloudinary");
+const { clearAuthCookies } = require("../helpers/cookies");
+const cookie = require("cookie");
 
 async function getUserProfile(req, res, next) {
   try {
@@ -126,6 +128,7 @@ async function updateUserProfile(req, res, next) {
     next(error);
   }
 }
+
 async function deleteUserAvatar(req, res, next) {
   if (!req.body || !req.body.userId || !req.body.avatarUrl) {
     return res.status(400).json({
@@ -160,6 +163,7 @@ async function deleteUserAvatar(req, res, next) {
     next(error);
   }
 }
+
 async function deleteUserProfile(req, res, next) {
   if (!req.body || !req.body.userId) {
     return res.status(400).json({
@@ -212,6 +216,8 @@ async function deleteUserProfile(req, res, next) {
 
     await User.findByIdAndDelete(userId);
 
+    clearAuthCookies(res, process.env.NODE_ENV === "production");
+
     res.status(200).json({
       message: "User profile deleted successfully",
       deletedImages: imagesToDelete.length,
@@ -222,4 +228,31 @@ async function deleteUserProfile(req, res, next) {
   }
 }
 
-module.exports = { getUserProfile, updateUserProfile, deleteUserAvatar, deleteUserProfile };
+async function getUserStatus(req, res, next) {
+  try {
+    const user = await User.findById(req.userId);
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+        errors: "No user found with this ID"
+      });
+    }
+
+    res.json({ exists: true });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function logout(req, res, next) {
+  try {
+    clearAuthCookies(res, process.env.NODE_ENV === "production");
+    console.log("User logged out, cookies cleared");
+    res.status(200).json({ message: "Logout successful" });
+  } catch (error) {
+    next(error);
+  }
+}
+
+module.exports = { getUserProfile, updateUserProfile, deleteUserAvatar, deleteUserProfile, getUserStatus, logout };

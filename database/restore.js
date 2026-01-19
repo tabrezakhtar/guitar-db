@@ -1,3 +1,5 @@
+const MONGODB_URI = "mongodb://localhost:27017/guitar-db2";
+
 const { MongoClient, ObjectId } = require("mongodb");
 const dotenv = require("dotenv");
 const fs = require("fs");
@@ -78,8 +80,8 @@ async function restoreDatabase(backupFolderName = null) {
   let client = null;
   
   try {
-    const uri = process.env.DATABASE_URI || "mongodb://localhost:27017/guitar-db";
-    client = new MongoClient(uri);
+    console.log(`${colors.gray}Using database URI: ${MONGODB_URI}${colors.reset}\n`);
+    client = new MongoClient(MONGODB_URI);
     await client.connect();
     const db = client.db();
     

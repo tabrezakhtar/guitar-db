@@ -128,17 +128,15 @@
         </div>
         <% } %>
 
-        <input type="hidden" id="token" value="<%= token %>">
         <input type="hidden" id="user" value="<%= JSON.stringify(user) %>">
 
         <% if (typeof errors==='undefined' || errors.length===0) { %>
           <script>
               document.addEventListener("DOMContentLoaded", function () {
-              const token = document.getElementById("token").value;
               const user = document.getElementById("user").value;
 
               const frontendUrl = "<%- process.env.FRONTEND_URL ? process.env.FRONTEND_URL : 'http://localhost:5173' %>";
-              window.location.href = `${frontendUrl}/auth?token=${encodeURIComponent(token)}&user=${encodeURIComponent(user)}`;
+              window.location.href = `${frontendUrl}/auth?user=${encodeURIComponent(user)}`;
             });
           </script>
         <% } %>
