@@ -28,13 +28,6 @@ const verifyToken = (req, res, next) => {
   const accessToken = req.cookies?.accessToken;
   const refreshToken = req.cookies?.refreshToken;
 
-  // if (!accessToken) {
-  //   return res.status(401).json({
-  //     message: "No access token, authorization denied",
-  //     errors: "Authentication required"
-  //   });
-  // }
-
   if (!refreshToken) {
     return res.status(401).json({
       message: "No refresh token, authorization denied",
