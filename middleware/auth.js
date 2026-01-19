@@ -28,12 +28,12 @@ const verifyToken = (req, res, next) => {
   const accessToken = req.cookies?.accessToken;
   const refreshToken = req.cookies?.refreshToken;
 
-  if (!accessToken) {
-    return res.status(401).json({
-      message: "No access token, authorization denied",
-      errors: "Authentication required"
-    });
-  }
+  // if (!accessToken) {
+  //   return res.status(401).json({
+  //     message: "No access token, authorization denied",
+  //     errors: "Authentication required"
+  //   });
+  // }
 
   if (!refreshToken) {
     return res.status(401).json({
@@ -49,7 +49,7 @@ const verifyToken = (req, res, next) => {
     return next();
   }
 
-  if (accessResult.error === "TokenExpiredError") {
+  if (accessResult.error === "TokenExpiredError" || accessResult.error === "JsonWebTokenError") {
     const refreshResult = verifyTokenSafe(refreshToken, process.env.JWT_SECRET);
     
     if (refreshResult.valid) {
