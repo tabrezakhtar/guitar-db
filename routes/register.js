@@ -1,8 +1,9 @@
+
 require("dotenv").config();
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const { Resend } = require("resend");
-// ...existing code...
+const { setAuthCookies } = require("../helpers/cookies");
 
 async function findUserByEmail(email) {
   try {
@@ -293,21 +294,7 @@ async function verifyCode(req, res, next) {
 
     const isProd = process.env.NODE_ENV === "production";
 
-    res.cookie("accessToken", accessToken, {
-      httpOnly: true,
-      secure: isProd,
-      sameSite: isProd ? "strict" : "lax",
-      path: "/",
-      maxAge: 15 * 60 * 1000
-    });
-
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: isProd,
-      sameSite: isProd ? "strict" : "lax",
-      path: "/",
-      maxAge: 7 * 24 * 60 * 60 * 1000
-    });
+    setAuthCookies(res, accessToken, refreshToken, isProd);
 
     return res.render("verification-redirect", {
       user: userForClient
@@ -431,21 +418,7 @@ async function guestLogin(req, res, next) {
 
     const isProd = process.env.NODE_ENV === "production";
 
-    res.cookie("accessToken", accessToken, {
-      httpOnly: true,
-      secure: isProd,
-      sameSite: isProd ? "strict" : "lax",
-      path: "/",
-      maxAge: 15 * 60 * 1000
-    });
-
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: isProd,
-      sameSite: isProd ? "strict" : "lax",
-      path: "/",
-      maxAge: 7 * 24 * 60 * 60 * 1000
-    });
+    setAuthCookies(res, accessToken, refreshToken, isProd);
 
     return res.render("verification-redirect", {
       user: guestUserForClient

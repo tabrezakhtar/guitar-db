@@ -2,6 +2,7 @@ require("dotenv").config();
 const User = require("../models/user");
 const { Comments, Equipment } = require("../models/equipment.js");
 const { deleteCloudinaryImages } = require("../helpers/cloudinary");
+const { clearAuthCookies } = require("../helpers/cookies");
 const cookie = require("cookie");
 
 async function getUserProfile(req, res, next) {
@@ -215,23 +216,7 @@ async function deleteUserProfile(req, res, next) {
 
     await User.findByIdAndDelete(userId);
 
-    // http invalidate cookies
-    res.setHeader("Set-Cookie", [
-      cookie.serialize("accessToken", "", {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        maxAge: 0,
-        path: "/",
-        sameSite: "strict"
-      }),
-      cookie.serialize("refreshToken", "", {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        maxAge: 0,
-        path: "/",
-        sameSite: "strict"
-      })
-    ]);
+    clearAuthCookies(res, process.env.NODE_ENV === "production");
 
     res.status(200).json({
       message: "User profile deleted successfully",
@@ -260,4 +245,14 @@ async function getUserStatus(req, res, next) {
   }
 }
 
-module.exports = { getUserProfile, updateUserProfile, deleteUserAvatar, deleteUserProfile, getUserStatus };
+async function logout(req, res, next) {
+  try {
+    clearAuthCookies(res, process.env.NODE_ENV === "production");
+    console.log("User logged out, cookies cleared");
+    res.status(200).json({ message: "Logout successful" });
+  } catch (error) {
+    next(error);
+  }
+}
+
+module.exports = { getUserProfile, updateUserProfile, deleteUserAvatar, deleteUserProfile, getUserStatus, logout };
