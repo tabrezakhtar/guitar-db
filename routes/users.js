@@ -16,8 +16,8 @@ async function getUserProfile(req, res, next) {
     }
 
     const user = await User.findById(userId)
-      .select("username bio location website createdAt admin avatarUrl following")
-      .populate("following", "_id username");
+      .select("username bio location website createdAt admin avatarUrl followers")
+      .populate("followers", "_id username");
 
     if (!user) {
       return res.status(404).json({
@@ -26,7 +26,7 @@ async function getUserProfile(req, res, next) {
       });
     }
 
-    const followers = await User.find({ following: userId }).select("_id username");
+    const following = await User.find({ followers: userId }).select("_id username");
 
     const userResponse = {
       _id: user._id,
@@ -36,9 +36,11 @@ async function getUserProfile(req, res, next) {
       website: user.website,
       createdAt: user.createdAt,
       avatarUrl: user.avatarUrl,
-      followers: followers,
-      following: user.following
+      followers: user.followers,
+      following: following,
     };
+
+    console.log(userResponse);
 
     if (user.admin === true) {
       userResponse.admin = user.admin;

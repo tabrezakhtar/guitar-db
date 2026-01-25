@@ -69,7 +69,6 @@ const userSchema = new mongoose.Schema({
     default: false
   },
   followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
-  following: [{ type: Schema.Types.ObjectId, ref: "User" }],
 });
 
 const User = mongoose.model("User", userSchema);
