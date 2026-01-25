@@ -3,7 +3,6 @@ const User = require("../models/user");
 const { Comments, Equipment } = require("../models/equipment.js");
 const { deleteCloudinaryImages } = require("../helpers/cloudinary");
 const { clearAuthCookies } = require("../helpers/cookies");
-const cookie = require("cookie");
 
 async function getUserProfile(req, res, next) {
   try {
@@ -16,7 +15,9 @@ async function getUserProfile(req, res, next) {
       });
     }
 
-    const user = await User.findById(userId).select("username bio location website createdAt admin avatarUrl");
+    const user = await User.findById(userId)
+      .select("username bio location website createdAt admin avatarUrl following")
+      .populate("following", "_id username");
 
     if (!user) {
       return res.status(404).json({
@@ -25,7 +26,8 @@ async function getUserProfile(req, res, next) {
       });
     }
 
-    // Build user response object, only include admin if it's true
+    const followers = await User.find({ following: userId }).select("_id username");
+
     const userResponse = {
       _id: user._id,
       username: user.username,
@@ -33,7 +35,9 @@ async function getUserProfile(req, res, next) {
       location: user.location,
       website: user.website,
       createdAt: user.createdAt,
-      avatarUrl: user.avatarUrl
+      avatarUrl: user.avatarUrl,
+      followers: followers,
+      following: user.following
     };
 
     if (user.admin === true) {
@@ -255,4 +259,94 @@ async function logout(req, res, next) {
   }
 }
 
-module.exports = { getUserProfile, updateUserProfile, deleteUserAvatar, deleteUserProfile, getUserStatus, logout };
+async function followUser(req, res, next) {
+  try {
+    const { targetUserId } = req.body;
+    const currentUserId = req.userId;
+
+    if (!targetUserId) {
+      return res.status(400).json({
+        message: "Target user ID is required",
+        errors: "Target user ID is required"
+      });
+    }
+
+    if (targetUserId === currentUserId) {
+      return res.status(400).json({
+        message: "Cannot follow yourself",
+        errors: "You cannot follow yourself"
+      });
+    }
+
+    const targetUser = await User.findById(targetUserId);
+
+    if (!targetUser) {
+      return res.status(404).json({
+        message: "User not found",
+        errors: "Target user not found"
+      });
+    }
+
+    const currentUser = await User.findById(currentUserId);
+
+    if (currentUser.following.includes(targetUserId)) {
+      return res.status(400).json({
+        message: "Already following",
+        errors: "You are already following this user"
+      });
+    }
+
+    await User.findByIdAndUpdate(currentUserId, {
+      $addToSet: { following: targetUserId }
+    });
+
+    await User.findByIdAndUpdate(targetUserId, {
+      $addToSet: { followers: currentUserId }
+    });
+
+    res.status(200).json({
+      message: "Successfully followed user"
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function unfollowUser(req, res, next) {
+  try {
+    const { targetUserId } = req.body;
+    const currentUserId = req.userId;
+
+    if (!targetUserId) {
+      return res.status(400).json({
+        message: "Target user ID is required",
+        errors: "Target user ID is required"
+      });
+    }
+
+    const targetUser = await User.findById(targetUserId);
+
+    if (!targetUser) {
+      return res.status(404).json({
+        message: "User not found",
+        errors: "Target user not found"
+      });
+    }
+
+    await User.findByIdAndUpdate(currentUserId, {
+      $pull: { following: targetUserId }
+    });
+
+    await User.findByIdAndUpdate(targetUserId, {
+      $pull: { followers: currentUserId }
+    });
+
+    res.status(200).json({
+      message: "Successfully unfollowed user"
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+module.exports = { getUserProfile, updateUserProfile, deleteUserAvatar, deleteUserProfile, getUserStatus, logout, followUser, unfollowUser };
