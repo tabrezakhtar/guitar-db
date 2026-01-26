@@ -4,7 +4,8 @@ const equipmentRoutes = require("./equipment");
 const pagesRoutes = require("./pages");
 
 const { registerUser, verifyCode, resendVerificationCode, guestLogin } = require("./register");
-const { getUserProfile, updateUserProfile, deleteUserAvatar, deleteUserProfile, getUserStatus, logout, followUser, unfollowUser } = require("./users");
+const { getUserProfile, updateUserProfile, deleteUserAvatar, deleteUserProfile } = require("./profile");
+const { logout, getUserStatus, followUser, unfollowUser } = require("./users");
 const { verifyToken, checkEquipmentOwnership, checkUserOwnership, checkCommentOwnership } = require("../middleware/auth");
 const { authLimiter, magicLinkLimiter, testMagicLinkLimiter, testRefreshLimiter } = require("../middleware/rateLimiter");
 
@@ -29,14 +30,16 @@ router.post("/auth/register", registerUser);
 router.post("/auth/sendCode", magicLinkLimiter, resendVerificationCode);
 router.post("/auth/verifyCode", authLimiter, verifyCode);
 router.post("/auth/guestLogin", guestLogin);
-router.get("/users/profile", getUserProfile);
-router.put("/users/updateProfile", verifyToken, checkUserOwnership, updateUserProfile);
-router.delete("/users/deleteAvatar", verifyToken, checkUserOwnership, deleteUserAvatar);
-router.delete("/users/deleteProfile", verifyToken, checkUserOwnership, deleteUserProfile);
-router.post("/users/logout", verifyToken, logout);
-router.get("/users/status", verifyToken, getUserStatus);
+
+router.get("/profile/get", getUserProfile);
+router.put("/profile/update", verifyToken, checkUserOwnership, updateUserProfile);
+router.delete("/profile/deleteAvatar", verifyToken, checkUserOwnership, deleteUserAvatar);
+router.delete("/profile/delete", verifyToken, checkUserOwnership, deleteUserProfile);
+
 router.post("/users/follow", verifyToken, followUser);
 router.post("/users/unfollow", verifyToken, unfollowUser);
+router.post("/users/logout", verifyToken, logout);
+router.get("/users/status", verifyToken, getUserStatus);
 
 router.post("/test/magic-link", testMagicLinkLimiter, (req, res) => {
   res.json({ message: "Test magic link endpoint", timestamp: new Date().toISOString() });
