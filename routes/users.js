@@ -40,8 +40,6 @@ async function getUserProfile(req, res, next) {
       following: following,
     };
 
-    console.log(userResponse);
-
     if (user.admin === true) {
       userResponse.admin = user.admin;
     }
@@ -291,16 +289,12 @@ async function followUser(req, res, next) {
 
     const currentUser = await User.findById(currentUserId);
 
-    if (currentUser.following.includes(targetUserId)) {
+    if (currentUser.followers.includes(targetUserId)) {
       return res.status(400).json({
         message: "Already following",
         errors: "You are already following this user"
       });
     }
-
-    await User.findByIdAndUpdate(currentUserId, {
-      $addToSet: { following: targetUserId }
-    });
 
     await User.findByIdAndUpdate(targetUserId, {
       $addToSet: { followers: currentUserId }
@@ -334,10 +328,6 @@ async function unfollowUser(req, res, next) {
         errors: "Target user not found"
       });
     }
-
-    await User.findByIdAndUpdate(currentUserId, {
-      $pull: { following: targetUserId }
-    });
 
     await User.findByIdAndUpdate(targetUserId, {
       $pull: { followers: currentUserId }
