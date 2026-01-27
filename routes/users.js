@@ -1,5 +1,6 @@
 require("dotenv").config();
 const { clearAuthCookies } = require("../helpers/cookies");
+const User = require("../models/user");
 
 async function logout(req, res, next) {
   try {
@@ -13,7 +14,6 @@ async function logout(req, res, next) {
 
 async function getUserStatus(req, res, next) {
   try {
-    const User = require("../models/user");
     const user = await User.findById(req.userId);
 
     if (!user) {
@@ -31,7 +31,6 @@ async function getUserStatus(req, res, next) {
 
 async function followUser(req, res, next) {
   try {
-    const User = require("../models/user");
     const { targetUserId } = req.body;
     const currentUserId = req.userId;
 
@@ -81,7 +80,6 @@ async function followUser(req, res, next) {
 
 async function unfollowUser(req, res, next) {
   try {
-    const User = require("../models/user");
     const { targetUserId } = req.body;
     const currentUserId = req.userId;
 
