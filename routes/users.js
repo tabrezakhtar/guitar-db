@@ -12,6 +12,23 @@ async function logout(req, res, next) {
   }
 }
 
+async function me(req, res, next) {
+  try {
+    const user = await User.findById(req.userId);
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+        errors: "No user found with this ID"
+      });
+    }
+
+    res.json(user);
+  } catch (error) {
+    next(error);
+  }
+}
+
 async function getUserStatus(req, res, next) {
   try {
     const user = await User.findById(req.userId);
@@ -111,4 +128,4 @@ async function unfollowUser(req, res, next) {
   }
 }
 
-module.exports = { logout, getUserStatus, followUser, unfollowUser };
+module.exports = { logout, getUserStatus, followUser, unfollowUser, me };

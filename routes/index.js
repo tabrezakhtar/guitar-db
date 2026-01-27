@@ -5,7 +5,7 @@ const pagesRoutes = require("./pages");
 
 const { registerUser, verifyCode, resendVerificationCode, guestLogin } = require("./register");
 const { getUserProfile, updateUserProfile, deleteUserAvatar, deleteUserProfile } = require("./profile");
-const { logout, getUserStatus, followUser, unfollowUser } = require("./users");
+const { logout, getUserStatus, followUser, unfollowUser, me } = require("./users");
 const { verifyToken, checkEquipmentOwnership, checkUserOwnership, checkCommentOwnership } = require("../middleware/auth");
 const { authLimiter, magicLinkLimiter, testMagicLinkLimiter, testRefreshLimiter } = require("../middleware/rateLimiter");
 
@@ -40,7 +40,7 @@ router.post("/users/follow", verifyToken, followUser);
 router.post("/users/unfollow", verifyToken, unfollowUser);
 router.post("/users/logout", verifyToken, logout);
 router.get("/users/status", verifyToken, getUserStatus);
-
+router.get("/users/me", verifyToken, me);
 router.post("/test/magic-link", testMagicLinkLimiter, (req, res) => {
   res.json({ message: "Test magic link endpoint", timestamp: new Date().toISOString() });
 });
