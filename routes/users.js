@@ -14,7 +14,7 @@ async function logout(req, res, next) {
 
 async function me(req, res, next) {
   try {
-    const user = await User.findById(req.userId);
+    const user = await User.findById(req.userId).select("-verified -verificationCode -verificationCodeExpires -verificationCodeAttempts");
 
     if (!user) {
       return res.status(404).json({
