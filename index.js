@@ -129,8 +129,8 @@ app.get("/version", async (req, res) => {
   }
 });
 
-app.get('/ip', (request, response) => {
-	response.send(request.ip);
+app.get("/ip", (request, response) => {
+  response.json({ ip: request.ip });
 });
 
 app.use((err, req, res, next) => {
