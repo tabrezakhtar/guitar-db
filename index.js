@@ -129,10 +129,6 @@ app.get("/version", async (req, res) => {
   }
 });
 
-app.get("/ip", (request, response) => {
-  response.json({ ip: request.ip });
-});
-
 app.use((err, req, res, next) => {
   Log.logError(err, req.user?.id || null, req.route?.path || req.path).catch(console.error);
 

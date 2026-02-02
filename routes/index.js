@@ -49,4 +49,8 @@ router.post("/test/refresh", testRefreshLimiter, (req, res) => {
   res.json({ message: "Test refresh endpoint", timestamp: new Date().toISOString() });
 });
 
+router.get("/ip", (req, res) => {
+  res.json({ ip: req.ip });
+});
+
 module.exports = router;
