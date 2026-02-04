@@ -36,8 +36,8 @@ async function getUserProfile(req, res, next) {
       website: user.website,
       createdAt: user.createdAt,
       avatarUrl: user.avatarUrl,
-      followers: user.followers,
-      following: following,
+      followers: user.followers, //users who follow the current user
+      following: following, //users whom the current user follows
     };
 
     if (user.admin === true) {

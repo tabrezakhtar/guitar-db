@@ -128,4 +128,50 @@ async function unfollowUser(req, res, next) {
   }
 }
 
-module.exports = { logout, getUserStatus, followUser, unfollowUser, me };
+// Users who follow the current user
+async function getFollowers(req, res, next) {
+  try {
+    const userId = req.query.userId || req.userId;
+
+    const user = await User.findById(userId).populate("followers", "username avatarUrl _id");
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+        errors: "No user found with this ID"
+      });
+    }
+
+    const filteredFollowers = user.followers.filter(follower => follower._id.toString() !== userId);
+
+    res.json({
+      username: user.username,
+      followers: filteredFollowers
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+// Users that the current user follows
+async function getFollowing(req, res, next) {
+  try {
+    const userId = req.query.userId || req.userId;
+    const user = await User.findById(userId);
+    
+    const followingUsers = await User.find({
+      followers: userId
+    }).select("username avatarUrl _id");
+
+    const filteredFollowing = followingUsers.filter(user => user._id.toString() !== userId);
+
+    res.json({
+      username: user.username,
+      following: filteredFollowing
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+module.exports = { logout, getUserStatus, followUser, unfollowUser, me, getFollowers, getFollowing };
