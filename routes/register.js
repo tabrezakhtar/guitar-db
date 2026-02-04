@@ -49,8 +49,21 @@ async function registerUser(req, res, next) {
   }
 
   try {
+    let currentUser = null;
+    const accessToken = req.cookies?.accessToken;
+    
+    if (accessToken) {
+      try {
+        const decoded = jwt.verify(accessToken, process.env.JWT_SECRET);
+        currentUser = await User.findById(decoded.id);
+      } catch (err) {
+      }
+    }
+
+    const isUpgradingGuest = currentUser && currentUser.guest === true;
+
     const existingUser = await findUserByEmail(email);
-    if (existingUser) {
+    if (existingUser && (!isUpgradingGuest || existingUser._id.toString() !== currentUser._id.toString())) {
       req.flash("errors", ["This email is already registered"]);
       req.flash("username", username);
       req.flash("bio", bio);
@@ -58,24 +71,36 @@ async function registerUser(req, res, next) {
     }
 
     const existingUsername = await User.findOne({ username });
-    if (existingUsername) {
+    if (existingUsername && (!isUpgradingGuest || existingUsername._id.toString() !== currentUser._id.toString())) {
       req.flash("errors", ["This username is already taken"]);
       req.flash("email", email);
       req.flash("bio", bio);
       req.flash("location", location);
     }
 
-    if (existingUser || existingUsername) {
+    if ((existingUser && (!isUpgradingGuest || existingUser._id.toString() !== currentUser._id.toString())) || 
+        (existingUsername && (!isUpgradingGuest || existingUsername._id.toString() !== currentUser._id.toString()))) {
       return res.redirect("/register");
     }
 
-    const user = new User({
-      username,
-      bio,
-      location,
-      email: email,
-      verified: false,
-    });
+    let user;
+    if (isUpgradingGuest) {
+      currentUser.username = username;
+      currentUser.email = email;
+      currentUser.bio = bio || "";
+      currentUser.location = location || "";
+      currentUser.guest = false;
+      currentUser.verified = false;
+      user = currentUser;
+    } else {
+      user = new User({
+        username,
+        bio,
+        location,
+        email: email,
+        verified: false,
+      });
+    }
 
     await user.save();
 
@@ -211,8 +236,18 @@ async function verifyCode(req, res, next) {
       titleColor: "white"
     });
   }
-
   try {
+    let currentUser = null;
+    const currentAccessToken = req.cookies?.accessToken;
+    
+    if (currentAccessToken) {
+      try {
+        const decoded = jwt.verify(currentAccessToken, jwtSecret);
+        currentUser = await User.findById(decoded.id);
+      } catch (err) {
+      }
+    }
+
     const user = await User.findById(userId);
 
     if (!user) {
@@ -223,6 +258,8 @@ async function verifyCode(req, res, next) {
         errors: ["Invalid verification request. Please try logging in again."]
       });
     }
+
+    const isUpgradingGuest = currentUser && currentUser.guest === true && currentUser._id.toString() === user._id.toString();
 
     if (!user.verificationCodeExpires || new Date() > user.verificationCodeExpires) {
       const emailDisplay = user.email.substring(0, 3) + "..." + user.email.substring(user.email.indexOf("@"));
@@ -286,7 +323,6 @@ async function verifyCode(req, res, next) {
 
     const { accessToken, refreshToken } = generateTokens(user._id, jwtSecret);
 
-    // Remove sensitive fields before sending to client
     const userForClient = user.toObject();
     delete userForClient.verificationCode;
     delete userForClient.verificationCodeAttempts;
@@ -402,7 +438,7 @@ async function guestLogin(req, res, next) {
       email: `${guestUsername.toLowerCase()}@guest.local`,
       bio: "Temporary guest user",
       location: "",
-      verified: true,
+      verified: false,
       guest: true
     });
 
