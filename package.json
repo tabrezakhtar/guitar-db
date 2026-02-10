@@ -24,6 +24,7 @@
     "express": "~4.16.1",
     "express-rate-limit": "^7.5.1",
     "express-session": "^1.18.1",
+    "googleapis": "^171.4.0",
     "http-errors": "~1.6.3",
     "jsonwebtoken": "^9.0.2",
     "marked": "^16.2.1",
