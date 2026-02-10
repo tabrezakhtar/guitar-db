@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const equipmentRoutes = require("./equipment");
 const pagesRoutes = require("./pages");
+const { getYoutubeVideos } = require("./youtube");
 
 const { registerUser, verifyCode, resendVerificationCode, guestLogin } = require("./register");
 const { getUserProfile, updateUserProfile, deleteUserAvatar, deleteUserProfile } = require("./profile");
@@ -50,5 +51,7 @@ router.post("/test/magic-link", testMagicLinkLimiter, (req, res) => {
 router.post("/test/refresh", testRefreshLimiter, (req, res) => {
   res.json({ message: "Test refresh endpoint", timestamp: new Date().toISOString() });
 });
+
+router.post("/youtube/videos", verifyToken, getYoutubeVideos);
 
 module.exports = router;
