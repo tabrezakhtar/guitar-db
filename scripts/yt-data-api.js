@@ -5,16 +5,28 @@ if (!API_KEY) {
     process.exit(1);
 }
 
-const youtube = google.youtube({ version: 'v3', auth: API_KEY });
+const youtube = google.youtube({ version: "v3", auth: API_KEY });
 
-function extractChannelIdOrHandle(url) {
-  if (url.includes("/@")) {
-    const handle = url.split("/@")[1].split("/")[0].split("?")[0];
-    return { type: "handle", value: handle };
+function extractChannelIdOrHandle(input) {
+  if (!input) return null;
+  const value = String(input).trim();
+  if (value.includes("youtube.com") || value.includes("youtu.be")) {
+    if (value.includes("/@")) {
+      const handle = value.split("/@")[1].split("/")[0].split("?")[0];
+      return { type: "handle", value: handle.replace(/^@/, "") };
+    }
+    if (value.includes("/channel/")) {
+      const channelId = value.split("/channel/")[1].split("/")[0].split("?")[0];
+      return { type: "id", value: channelId };
+    }
+    return null;
   }
-  if (url.includes("/channel/")) {
-    const channelId = url.split("/channel/")[1].split("/")[0].split("?")[0];
-    return { type: "id", value: channelId };
+  const cleaned = value.replace(/^@/, "");
+  if (/^UC[A-Za-z0-9_-]{22}$/.test(cleaned)) {
+    return { type: "id", value: cleaned };
+  }
+  if (/^[A-Za-z0-9_.-]{2,}$/.test(cleaned)) {
+    return { type: "handle", value: cleaned };
   }
   return null;
 }
