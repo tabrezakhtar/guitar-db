@@ -4,7 +4,7 @@ const User = require("../models/user");
 const API_KEY = process.env.YOUTUBE_API_KEY;
 if (!API_KEY) {
     console.error("Missing YOUTUBE_API_KEY environment variable");
-    process.exit(1);
+    // process.exit(1);
 }
 
 const youtube = google.youtube({ version: "v3", auth: API_KEY });
