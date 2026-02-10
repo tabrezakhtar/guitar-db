@@ -69,6 +69,7 @@ const userSchema = new mongoose.Schema({
     default: false
   },
   followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
+  uploadsPlaylistId: { type: String, default: null }
 });
 
 const User = mongoose.model("User", userSchema);

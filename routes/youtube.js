@@ -1,4 +1,6 @@
-const { google } = require('googleapis');
+const { google } = require("googleapis");
+const User = require("../models/user");
+
 const API_KEY = process.env.YOUTUBE_API_KEY;
 if (!API_KEY) {
     console.error("Missing YOUTUBE_API_KEY environment variable");
@@ -101,12 +103,30 @@ async function getYoutubeVideos(req, res, next) {
       }
     }
 
-    const uploadsPlaylistId = await getUploadsPlaylistId(channelId);
+    let uploadsPlaylistId = null;
+
+    if (req.user && req.user._id) {
+      const user = await User.findById(req.user._id).select("uploadsPlaylistId youtubeChannelId");
+      if (user && user.youtubeChannelId === channelId && user.uploadsPlaylistId) {
+        uploadsPlaylistId = user.uploadsPlaylistId;
+      }
+    }
+
     if (!uploadsPlaylistId) {
-      return res.status(404).json({
-        message: "Channel not found",
-        errors: "No YouTube channel found with this ID"
-      });
+      uploadsPlaylistId = await getUploadsPlaylistId(channelId);
+      if (!uploadsPlaylistId) {
+        return res.status(404).json({
+          message: "Channel not found",
+          errors: "No YouTube channel found with this ID"
+        });
+      }
+
+      if (req.user && req.user._id) {
+        await User.findByIdAndUpdate(req.user._id, {
+          uploadsPlaylistId,
+          youtubeChannelId: channelId
+        });
+      }
     }
 
     const videos = await getLatestVideos(uploadsPlaylistId, maxResults);
