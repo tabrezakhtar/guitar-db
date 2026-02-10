@@ -55,6 +55,20 @@ async function getUploadsPlaylistId(id) {
   return res.data.items[0].contentDetails.relatedPlaylists.uploads;
 }
 
+async function getChannelDetails(id) {
+  const res = await youtube.channels.list({
+    part: ["snippet", "contentDetails"],
+    id: [id]
+  });
+
+  if (!res.data.items || res.data.items.length === 0) return null;
+  const item = res.data.items[0];
+  const uploads = item.contentDetails?.relatedPlaylists?.uploads || null;
+  const title = item.snippet?.title || "";
+  const avatar = item.snippet?.thumbnails?.high?.url || item.snippet?.thumbnails?.default?.url || "";
+  return { uploadsPlaylistId: uploads, title, avatar };
+}
+
 async function getLatestVideos(playlistId, maxResults = 5) {
   const res = await youtube.playlistItems.list({
     part: ["snippet"],
@@ -112,14 +126,21 @@ async function getYoutubeVideos(req, res, next) {
       }
     }
 
+    let channelTitle = "";
+    let channelAvatar = "";
+
     if (!uploadsPlaylistId) {
-      uploadsPlaylistId = await getUploadsPlaylistId(channelId);
-      if (!uploadsPlaylistId) {
+      const details = await getChannelDetails(channelId);
+      if (!details || !details.uploadsPlaylistId) {
         return res.status(404).json({
           message: "Channel not found",
           errors: "No YouTube channel found with this ID"
         });
       }
+
+      uploadsPlaylistId = details.uploadsPlaylistId;
+      channelTitle = details.title;
+      channelAvatar = details.avatar;
 
       if (req.user && req.user._id) {
         await User.findByIdAndUpdate(req.user._id, {
@@ -127,13 +148,19 @@ async function getYoutubeVideos(req, res, next) {
           youtubeChannelId: channelId
         });
       }
+    } else {
+      const details = await getChannelDetails(channelId);
+      if (details) {
+        channelTitle = details.title;
+        channelAvatar = details.avatar;
+      }
     }
 
     const videos = await getLatestVideos(uploadsPlaylistId, maxResults);
 
     res.status(200).json({
-      message: "Videos fetched successfully",
-      channelId,
+      title: channelTitle,
+      avatar: channelAvatar,
       videos
     });
   } catch (error) {
