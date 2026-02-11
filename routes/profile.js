@@ -16,7 +16,7 @@ async function getUserProfile(req, res, next) {
     }
 
     const user = await User.findById(userId)
-      .select("username bio location website createdAt admin avatarUrl followers")
+      .select("username bio location website createdAt admin avatarUrl followers youtubeChannelId youtubeChannelTitle youtubeChannelHandle youtubeChannelAvatar")
       .populate("followers", "_id username");
 
     if (!user) {
@@ -36,8 +36,12 @@ async function getUserProfile(req, res, next) {
       website: user.website,
       createdAt: user.createdAt,
       avatarUrl: user.avatarUrl,
-      followers: user.followers, //users who follow the current user
-      following: following, //users whom the current user follows
+      followers: user.followers,
+      following: following,
+      youtubeChannelId: user.youtubeChannelId || null,
+      youtubeChannelTitle: user.youtubeChannelTitle || "",
+      youtubeChannelHandle: user.youtubeChannelHandle || "",
+      youtubeChannelAvatar: user.youtubeChannelAvatar || ""
     };
 
     if (user.admin === true) {
@@ -125,7 +129,15 @@ async function updateUserProfile(req, res, next) {
         location: user.location,
         website: user.website,
         createdAt: user.createdAt,
-        avatarUrl: user.avatarUrl
+        avatarUrl: user.avatarUrl,
+        youtubeChannelId: user.youtubeChannelId || null,
+        youtubeChannelTitle: user.youtubeChannelTitle || "",
+        youtubeChannelHandle: user.youtubeChannelHandle || "",
+        youtubeChannelAvatar: user.youtubeChannelAvatar || "",
+        youtubeChannelId: user.youtubeChannelId || null,
+        youtubeChannelTitle: user.youtubeChannelTitle || "",
+        youtubeChannelHandle: user.youtubeChannelHandle || "",
+        youtubeChannelAvatar: user.youtubeChannelAvatar || ""
       }
     });
   } catch (error) {

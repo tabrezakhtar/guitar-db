@@ -10,7 +10,6 @@ const userSchema = new mongoose.Schema({
     maxlength: 25,
     validate: {
       validator: function(v) {
-        
         const emojiRegex = /[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/u;
         return !emojiRegex.test(v);
       },
@@ -69,9 +68,13 @@ const userSchema = new mongoose.Schema({
     default: false
   },
   followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
-  uploadsPlaylistId: { type: String, default: null }
+  uploadsPlaylistId: { type: String, default: null },
+  youtubeChannelId: { type: String, default: null },
+  youtubeChannelTitle: { type: String, default: "" },
+  youtubeChannelHandle: { type: String, default: "" },
+  youtubeChannelAvatar: { type: String, default: "" }
 });
 
 const User = mongoose.model("User", userSchema);
 
-module.exports = User;
+module.exports = User; 

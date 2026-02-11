@@ -85,7 +85,53 @@ async function getLatestVideos(playlistId, maxResults = 5) {
   }));
 }
 
-async function getYoutubeVideos(req, res, next) {
+async function getYoutubeVideosByUser(req, res, next) {
+  try {
+    const { userId, maxResults = 50 } = req.query;
+
+    if (!userId) {
+      return res.status(400).json({
+        message: "User ID is required",
+        errors: "Please provide a userId"
+      });
+    }
+
+    const user = await User.findById(userId).select("uploadsPlaylistId youtubeChannelId youtubeChannelHandle youtubeChannelTitle youtubeChannelAvatar");
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+        errors: "No user found with this ID"
+      });
+    }
+
+    if (!user.uploadsPlaylistId) {
+      return res.status(404).json({
+        message: "No YouTube channel linked",
+        errors: "This user has not linked a YouTube channel"
+      });
+    }
+
+    const videos = await getLatestVideos(user.uploadsPlaylistId, Number(maxResults) || 50);
+
+    res.status(200).json({
+      title: user.youtubeChannelTitle || "",
+      avatar: user.youtubeChannelAvatar || "",
+      handle: user.youtubeChannelHandle || "",
+      videos
+    });
+  } catch (error) {
+    if (error.response && error.response.data) {
+      return res.status(error.response.status || 500).json({
+        message: "YouTube API error",
+        errors: error.response.data.error?.message || error.message
+      });
+    }
+    next(error);
+  }
+}
+
+async function saveYoutubeChannel(req, res, next) {
   try {
     if (!req.body || !req.body.url) {
       return res.status(400).json({
@@ -94,7 +140,7 @@ async function getYoutubeVideos(req, res, next) {
       });
     }
 
-    const { url, maxResults = 50 } = req.body;
+    const { url } = req.body;
 
     const parsed = extractChannelIdOrHandle(url);
     if (!parsed) {
@@ -117,51 +163,30 @@ async function getYoutubeVideos(req, res, next) {
       }
     }
 
-    let uploadsPlaylistId = null;
-
-    if (req.user && req.user._id) {
-      const user = await User.findById(req.user._id).select("uploadsPlaylistId youtubeChannelId");
-      if (user && user.youtubeChannelId === channelId && user.uploadsPlaylistId) {
-        uploadsPlaylistId = user.uploadsPlaylistId;
-      }
+    const details = await getChannelDetails(channelId);
+    if (!details || !details.uploadsPlaylistId) {
+      return res.status(404).json({
+        message: "Channel not found",
+        errors: "No YouTube channel found with this ID"
+      });
     }
 
-    let channelTitle = "";
-    let channelAvatar = "";
-
-    if (!uploadsPlaylistId) {
-      const details = await getChannelDetails(channelId);
-      if (!details || !details.uploadsPlaylistId) {
-        return res.status(404).json({
-          message: "Channel not found",
-          errors: "No YouTube channel found with this ID"
-        });
-      }
-
-      uploadsPlaylistId = details.uploadsPlaylistId;
-      channelTitle = details.title;
-      channelAvatar = details.avatar;
-
-      if (req.user && req.user._id) {
-        await User.findByIdAndUpdate(req.user._id, {
-          uploadsPlaylistId,
-          youtubeChannelId: channelId
-        });
-      }
-    } else {
-      const details = await getChannelDetails(channelId);
-      if (details) {
-        channelTitle = details.title;
-        channelAvatar = details.avatar;
-      }
-    }
-
-    const videos = await getLatestVideos(uploadsPlaylistId, maxResults);
+    const handleToSave = (type === "handle") ? value : "";
+    await User.findByIdAndUpdate(req.userId, {
+      uploadsPlaylistId: details.uploadsPlaylistId,
+      youtubeChannelId: channelId,
+      youtubeChannelHandle: handleToSave,
+      youtubeChannelTitle: details.title,
+      youtubeChannelAvatar: details.avatar
+    });
 
     res.status(200).json({
-      title: channelTitle,
-      avatar: channelAvatar,
-      videos
+      message: "YouTube channel saved successfully",
+      title: details.title,
+      avatar: details.avatar,
+      handle: handleToSave,
+      youtubeChannelId: channelId,
+      uploadsPlaylistId: details.uploadsPlaylistId
     });
   } catch (error) {
     if (error.response && error.response.data) {
@@ -174,4 +199,4 @@ async function getYoutubeVideos(req, res, next) {
   }
 }
 
-module.exports = { getYoutubeVideos };
+module.exports = { getYoutubeVideosByUser, saveYoutubeChannel };

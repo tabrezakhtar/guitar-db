@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const equipmentRoutes = require("./equipment");
 const pagesRoutes = require("./pages");
-const { getYoutubeVideos } = require("./youtube");
+const { getYoutubeVideosByUser, saveYoutubeChannel } = require("./youtube");
 
 const { registerUser, verifyCode, resendVerificationCode, guestLogin } = require("./register");
 const { getUserProfile, updateUserProfile, deleteUserAvatar, deleteUserProfile } = require("./profile");
@@ -52,6 +52,7 @@ router.post("/test/refresh", testRefreshLimiter, (req, res) => {
   res.json({ message: "Test refresh endpoint", timestamp: new Date().toISOString() });
 });
 
-router.post("/youtube/videos", verifyToken, getYoutubeVideos);
+router.get("/youtube/videos", getYoutubeVideosByUser);
+router.post("/youtube/channel", verifyToken, saveYoutubeChannel);
 
 module.exports = router;
