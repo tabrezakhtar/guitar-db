@@ -203,4 +203,48 @@ async function saveYoutubeChannel(req, res, next) {
   }
 }
 
-module.exports = { getYoutubeVideosByUser, saveYoutubeChannel };
+async function proxyYoutubeImage(req, res, next) {
+  try {
+    const { url } = req.query;
+
+    if (!url) {
+      return res.status(400).json({
+        message: "URL is required",
+        errors: "Please provide a YouTube image URL"
+      });
+    }
+
+    if (!url.includes("yt3.ggpht.com") && !url.includes("ytimg.com")) {
+      return res.status(400).json({
+        message: "Invalid URL",
+        errors: "Only YouTube image URLs are allowed"
+      });
+    }
+
+    const https = require("https");
+    const http = require("http");
+    const protocol = url.startsWith("https") ? https : http;
+
+    protocol.get(url, (imageRes) => {
+      if (imageRes.statusCode !== 200) {
+        return res.status(imageRes.statusCode).json({
+          message: "Failed to fetch image",
+          errors: "Could not load the image from YouTube"
+        });
+      }
+
+      res.setHeader("Content-Type", imageRes.headers["content-type"] || "image/jpeg");
+      res.setHeader("Cache-Control", "public, max-age=86400");
+      imageRes.pipe(res);
+    }).on("error", (err) => {
+      res.status(500).json({
+        message: "Error fetching image",
+        errors: err.message
+      });
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+module.exports = { getYoutubeVideosByUser, saveYoutubeChannel, proxyYoutubeImage };
