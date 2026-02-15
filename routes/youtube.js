@@ -172,12 +172,15 @@ async function saveYoutubeChannel(req, res, next) {
     }
 
     const handleToSave = (type === "handle") ? value : "";
+    const youtubeUrl = handleToSave ? `https://www.youtube.com/@${handleToSave}` : `https://www.youtube.com/channel/${channelId}`;
+    
     await User.findByIdAndUpdate(req.userId, {
       uploadsPlaylistId: details.uploadsPlaylistId,
       youtubeChannelId: channelId,
       youtubeChannelHandle: handleToSave,
       youtubeChannelTitle: details.title,
-      youtubeChannelAvatar: details.avatar
+      youtubeChannelAvatar: details.avatar,
+      youtubeChannelUrl: youtubeUrl
     });
 
     res.status(200).json({
@@ -186,7 +189,8 @@ async function saveYoutubeChannel(req, res, next) {
       avatar: details.avatar,
       handle: handleToSave,
       youtubeChannelId: channelId,
-      uploadsPlaylistId: details.uploadsPlaylistId
+      uploadsPlaylistId: details.uploadsPlaylistId,
+      youtubeChannelUrl: youtubeUrl
     });
   } catch (error) {
     if (error.response && error.response.data) {

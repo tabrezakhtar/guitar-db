@@ -3,6 +3,7 @@ const User = require("../models/user");
 const { Comments, Equipment } = require("../models/equipment.js");
 const { deleteCloudinaryImages } = require("../helpers/cloudinary");
 const { clearAuthCookies } = require("../helpers/cookies");
+const { saveYoutubeChannel } = require("./youtube");
 
 async function getUserProfile(req, res, next) {
   try {
@@ -16,7 +17,7 @@ async function getUserProfile(req, res, next) {
     }
 
     const user = await User.findById(userId)
-      .select("username bio location website createdAt admin avatarUrl followers youtubeChannelId youtubeChannelTitle youtubeChannelHandle youtubeChannelAvatar")
+      .select("username bio location website createdAt admin avatarUrl followers youtubeChannelId youtubeChannelTitle youtubeChannelHandle youtubeChannelAvatar youtubeChannelUrl")
       .populate("followers", "_id username");
 
     if (!user) {
@@ -41,7 +42,8 @@ async function getUserProfile(req, res, next) {
       youtubeChannelId: user.youtubeChannelId || null,
       youtubeChannelTitle: user.youtubeChannelTitle || "",
       youtubeChannelHandle: user.youtubeChannelHandle || "",
-      youtubeChannelAvatar: user.youtubeChannelAvatar || ""
+      youtubeChannelAvatar: user.youtubeChannelAvatar || "",
+      youtubeChannelUrl: user.youtubeChannelUrl || ""
     };
 
     if (user.admin === true) {
@@ -78,7 +80,7 @@ async function updateUserProfile(req, res, next) {
     });
   }
 
-  const { _id, username, bio, location, website, avatarUrl } = req.body;
+  const { _id, username, bio, location, website, avatarUrl, youtubeChannelUrl } = req.body;
 
   if (!_id) {
     return res.status(400).json({
@@ -118,6 +120,44 @@ async function updateUserProfile(req, res, next) {
     user.website = website || user.website;
     user.avatarUrl = avatarUrl || user.avatarUrl;
 
+    if (youtubeChannelUrl !== undefined) {
+      if (youtubeChannelUrl === "") {
+        user.youtubeChannelUrl = "";
+        user.youtubeChannelId = null;
+        user.youtubeChannelHandle = "";
+        user.youtubeChannelTitle = "";
+        user.youtubeChannelAvatar = "";
+        user.uploadsPlaylistId = null;
+      } else {
+        const youtubeReq = {
+          body: { url: youtubeChannelUrl },
+          userId: _id
+        };
+        const youtubeRes = {
+          status: (code) => ({
+            json: (data) => {
+              if (code !== 200) {
+                throw new Error(data.errors || data.message || "YouTube channel save failed");
+              }
+              return data;
+            }
+          })
+        };
+        
+        try {
+          await saveYoutubeChannel(youtubeReq, youtubeRes, (err) => {
+            if (err) throw err;
+          });
+          user = await User.findById(_id);
+        } catch (youtubeError) {
+          return res.status(400).json({
+            message: "Failed to save YouTube channel",
+            errors: youtubeError.message || "Invalid YouTube URL or channel not found"
+          });
+        }
+      }
+    }
+
     await user.save();
 
     res.status(200).json({
@@ -134,10 +174,8 @@ async function updateUserProfile(req, res, next) {
         youtubeChannelTitle: user.youtubeChannelTitle || "",
         youtubeChannelHandle: user.youtubeChannelHandle || "",
         youtubeChannelAvatar: user.youtubeChannelAvatar || "",
-        youtubeChannelId: user.youtubeChannelId || null,
-        youtubeChannelTitle: user.youtubeChannelTitle || "",
-        youtubeChannelHandle: user.youtubeChannelHandle || "",
-        youtubeChannelAvatar: user.youtubeChannelAvatar || ""
+        youtubeChannelUrl: user.youtubeChannelUrl || "",
+        uploadsPlaylistId: user.uploadsPlaylistId || null
       }
     });
   } catch (error) {
