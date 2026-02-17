@@ -129,6 +129,8 @@ async function updateUserProfile(req, res, next) {
         user.youtubeChannelAvatar = "";
         user.uploadsPlaylistId = null;
       } else {
+        await user.save();
+        
         const youtubeReq = {
           body: { url: youtubeChannelUrl },
           userId: _id
