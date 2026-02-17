@@ -174,4 +174,24 @@ async function getFollowing(req, res, next) {
   }
 }
 
-module.exports = { logout, getUserStatus, followUser, unfollowUser, me, getFollowers, getFollowing };
+async function getRecentUsers(req, res, next) {
+  try {
+    const users = await User.find({})
+      .sort({ createdAt: -1 })
+      .limit(20)
+      .select("avatarUrl username bio _id");
+
+    const response = users.map(u => ({
+      id: u._id,
+      avatarUrl: u.avatarUrl || "",
+      username: u.username,
+      bio: u.bio || ""
+    }));
+
+    res.json({ users: response });
+  } catch (error) {
+    next(error);
+  }
+}
+
+module.exports = { logout, getUserStatus, followUser, unfollowUser, me, getFollowers, getFollowing, getRecentUsers };

@@ -6,7 +6,7 @@ const { getYoutubeVideosByUser, saveYoutubeChannel, proxyYoutubeImage } = requir
 
 const { registerUser, verifyCode, resendVerificationCode, guestLogin } = require("./register");
 const { getUserProfile, updateUserProfile, deleteUserAvatar, deleteUserProfile } = require("./profile");
-const { logout, getUserStatus, followUser, unfollowUser, me, getFollowers, getFollowing } = require("./users");
+const { logout, getUserStatus, followUser, unfollowUser, me, getFollowers, getFollowing, getRecentUsers } = require("./users");
 const { verifyToken, checkEquipmentOwnership, checkUserOwnership, checkCommentOwnership } = require("../middleware/auth");
 const { authLimiter, magicLinkLimiter, testMagicLinkLimiter, testRefreshLimiter } = require("../middleware/rateLimiter");
 
@@ -41,6 +41,7 @@ router.post("/users/follow", verifyToken, followUser);
 router.post("/users/unfollow", verifyToken, unfollowUser);
 router.get("/users/followers", getFollowers);
 router.get("/users/following", getFollowing);
+router.get("/users/recent", getRecentUsers);
 router.post("/users/logout", verifyToken, logout);
 router.get("/users/status", verifyToken, getUserStatus);
 router.get("/users/me", verifyToken, me);
