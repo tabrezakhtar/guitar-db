@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-const { deleteUserProfile } = require("../routes/users");
+const { deleteUserProfile } = require("../routes/profile");
 
 dotenv.config();
 
@@ -57,6 +57,11 @@ async function clearGuestUsers() {
         
         let deleteResult = null;
         const mockRes = {
+          cookies: {},
+          cookie: (name, value, opts) => {
+            mockRes.cookies[name] = { value, opts };
+            return mockRes;
+          },
           status: (code) => ({
             json: (data) => {
               deleteResult = data;
