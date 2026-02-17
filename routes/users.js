@@ -181,13 +181,14 @@ async function getRecentUsers(req, res, next) {
     })
       .sort({ createdAt: -1 })
       .limit(20)
-      .select("avatarUrl username bio _id");
+      .select("avatarUrl username bio createdAt _id");
 
     const response = users.map(u => ({
       id: u._id,
       avatarUrl: u.avatarUrl || "",
       username: u.username,
-      bio: u.bio || ""
+      bio: u.bio || "",
+      createdAt: u.createdAt
     }));
 
     res.json({ users: response });
