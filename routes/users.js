@@ -176,7 +176,9 @@ async function getFollowing(req, res, next) {
 
 async function getRecentUsers(req, res, next) {
   try {
-    const users = await User.find({})
+    const users = await User.find({
+      $or: [{ guest: false }, { guest: { $exists: false } }]
+    })
       .sort({ createdAt: -1 })
       .limit(20)
       .select("avatarUrl username bio _id");
