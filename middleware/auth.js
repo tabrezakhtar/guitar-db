@@ -173,8 +173,32 @@ const checkCommentOwnership = async (req, res, next) => {
   }
 };
 
+const verifyTokenOptional = (req, res, next) => {
+  const accessToken = req.cookies?.accessToken;
+  const refreshToken = req.cookies?.refreshToken;
+
+  if (!refreshToken) {
+    return next();
+  }
+
+  const accessResult = verifyTokenSafe(accessToken, process.env.JWT_SECRET);
+
+  if (accessResult.valid) {
+    req.userId = accessResult.decoded.id;
+    return next();
+  }
+
+  const refreshResult = verifyTokenSafe(refreshToken, process.env.JWT_SECRET);
+  if (refreshResult.valid) {
+    req.userId = refreshResult.decoded.id;
+  }
+
+  return next();
+};
+
 module.exports = {
   verifyToken,
+  verifyTokenOptional,
   checkEquipmentOwnership,
   checkUserOwnership,
   checkCommentOwnership

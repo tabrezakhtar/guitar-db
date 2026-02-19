@@ -163,6 +163,12 @@ async function get(req, res, next) {
   try {
     let query = {};
 
+    if (req.userId) {
+      query.$or = [{ visibility: { $ne: 1 } }, { user: req.userId }];
+    } else {
+      query.visibility = { $ne: 1 };
+    }
+
     if (req.query.tags) {
       try {
         const tags = JSON.parse(req.query.tags);
@@ -212,10 +218,15 @@ async function searchByText(req, res, next) {
 
   try {
     const regex = new RegExp(text, "i");
+
+    const visibilityQuery = req.userId
+      ? { $or: [{ visibility: { $ne: 1 } }, { user: req.userId }] }
+      : { visibility: { $ne: 1 } };
+
     const items = await Equipment.find({
-      $or: [
-        { name: { $regex: regex } },
-        { brand: { $regex: regex } }
+      $and: [
+        { $or: [{ name: { $regex: regex } }, { brand: { $regex: regex } }] },
+        visibilityQuery
       ]
     })
       .sort({ [sortBy]: sortOrder })
@@ -275,6 +286,13 @@ async function getById(req, res, next) {
       });
     }
 
+    if ((item.visibility ?? 0) === 1 && item.user._id.toString() !== req.userId) {
+      return res.status(403).json({
+        message: "Not authorized",
+        errors: "This item is private"
+      });
+    }
+
     const processedItem = processEquipmentItem(item, true);
     res.status(200).json({ item: processedItem, settings: {} });
   } catch (err) {
@@ -297,6 +315,10 @@ async function getByUser(req, res, next) {
     const sortOrder = req.query.sortOrder === "desc" ? -1 : 1;
 
     let query = { user: userId };
+
+    if (req.userId !== userId) {
+      query.visibility = { $ne: 1 };
+    }
 
     if (req.query.type) {
       const type = req.query.type.toLowerCase();
@@ -354,7 +376,11 @@ async function filter(req, res, next) {
   }
 
   try {
-    const items = await model.find(filter)
+    const visibilityQuery = req.userId
+      ? { $or: [{ visibility: { $ne: 1 } }, { user: req.userId }] }
+      : { visibility: { $ne: 1 } };
+
+    const items = await model.find({ $and: [filter, visibilityQuery] })
       .populate("tags")
       .populate({
         path: "user",

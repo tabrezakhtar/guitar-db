@@ -17,7 +17,7 @@ async function getUserProfile(req, res, next) {
     }
 
     const user = await User.findById(userId)
-      .select("username bio location website createdAt admin avatarUrl followers youtubeChannelId youtubeChannelTitle youtubeChannelHandle youtubeChannelAvatar youtubeChannelUrl")
+      .select("username bio location website createdAt admin avatarUrl followers youtubeChannelId youtubeChannelTitle youtubeChannelHandle youtubeChannelAvatar youtubeChannelUrl visibility")
       .populate("followers", "_id username");
 
     if (!user) {
@@ -43,7 +43,8 @@ async function getUserProfile(req, res, next) {
       youtubeChannelTitle: user.youtubeChannelTitle || "",
       youtubeChannelHandle: user.youtubeChannelHandle || "",
       youtubeChannelAvatar: user.youtubeChannelAvatar || "",
-      youtubeChannelUrl: user.youtubeChannelUrl || ""
+      youtubeChannelUrl: user.youtubeChannelUrl || "",
+      visibility: user.visibility ?? 0
     };
 
     if (user.admin === true) {
@@ -80,7 +81,7 @@ async function updateUserProfile(req, res, next) {
     });
   }
 
-  const { _id, username, bio, location, website, avatarUrl, youtubeChannelUrl } = req.body;
+  const { _id, username, bio, location, website, avatarUrl, youtubeChannelUrl, visibility } = req.body;
 
   if (!_id) {
     return res.status(400).json({
@@ -119,6 +120,7 @@ async function updateUserProfile(req, res, next) {
     user.location = location || user.location;
     user.website = website || user.website;
     user.avatarUrl = avatarUrl || user.avatarUrl;
+    if (visibility !== undefined) user.visibility = visibility;
 
     if (youtubeChannelUrl !== undefined) {
       if (youtubeChannelUrl === "") {
@@ -177,7 +179,8 @@ async function updateUserProfile(req, res, next) {
         youtubeChannelHandle: user.youtubeChannelHandle || "",
         youtubeChannelAvatar: user.youtubeChannelAvatar || "",
         youtubeChannelUrl: user.youtubeChannelUrl || "",
-        uploadsPlaylistId: user.uploadsPlaylistId || null
+        uploadsPlaylistId: user.uploadsPlaylistId || null,
+        visibility: user.visibility ?? 0
       }
     });
   } catch (error) {

@@ -7,12 +7,12 @@ const { getYoutubeVideosByUser, saveYoutubeChannel, proxyYoutubeImage } = requir
 const { registerUser, verifyCode, resendVerificationCode, guestLogin } = require("./register");
 const { getUserProfile, updateUserProfile, deleteUserAvatar, deleteUserProfile } = require("./profile");
 const { logout, getUserStatus, followUser, unfollowUser, me, getFollowers, getFollowing, getRecentUsers } = require("./users");
-const { verifyToken, checkEquipmentOwnership, checkUserOwnership, checkCommentOwnership } = require("../middleware/auth");
+const { verifyToken, verifyTokenOptional, checkEquipmentOwnership, checkUserOwnership, checkCommentOwnership } = require("../middleware/auth");
 const { authLimiter, magicLinkLimiter, testMagicLinkLimiter, testRefreshLimiter } = require("../middleware/rateLimiter");
 
-router.get("/equipment/list/", equipmentRoutes.get);
-router.get("/equipment/byid/", equipmentRoutes.getById);
-router.get("/equipment/filterBy", equipmentRoutes.filter);
+router.get("/equipment/list/", verifyTokenOptional, equipmentRoutes.get);
+router.get("/equipment/byid/", verifyTokenOptional, equipmentRoutes.getById);
+router.get("/equipment/filterBy", verifyTokenOptional, equipmentRoutes.filter);
 router.post("/equipment/add", verifyToken, equipmentRoutes.add);
 router.put("/equipment/update/:id", verifyToken, checkEquipmentOwnership, equipmentRoutes.update);
 router.delete("/equipment/remove/:id", verifyToken, checkEquipmentOwnership, equipmentRoutes.remove);
@@ -22,8 +22,8 @@ router.get("/equipment/settings", equipmentRoutes.settings);
 router.post("/equipment/addComment", verifyToken, equipmentRoutes.addComment);
 router.delete("/equipment/deleteComment/:id", verifyToken, checkCommentOwnership, equipmentRoutes.deleteComment);
 router.get("/equipment/tags", equipmentRoutes.getAllTags);
-router.get("/equipment/user/:userId", equipmentRoutes.getByUser);
-router.get("/equipment/searchByText", equipmentRoutes.searchByText);
+router.get("/equipment/user/:userId", verifyTokenOptional, equipmentRoutes.getByUser);
+router.get("/equipment/searchByText", verifyTokenOptional, equipmentRoutes.searchByText);
 
 router.get("/pages/landing", pagesRoutes.landing);
 
