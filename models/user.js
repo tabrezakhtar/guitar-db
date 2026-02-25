@@ -74,7 +74,6 @@ const userSchema = new mongoose.Schema({
   youtubeChannelHandle: { type: String, default: "" },
   youtubeChannelAvatar: { type: String, default: "" },
   youtubeChannelUrl: { type: String, default: "" },
-  visibility: { type: Number, default: 0 }
 });
 
 const User = mongoose.model("User", userSchema);

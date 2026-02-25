@@ -17,7 +17,7 @@ async function getUserProfile(req, res, next) {
     }
 
     const user = await User.findById(userId)
-      .select("username bio location website createdAt admin avatarUrl followers youtubeChannelId youtubeChannelTitle youtubeChannelHandle youtubeChannelAvatar youtubeChannelUrl visibility")
+      .select("username bio location website createdAt admin avatarUrl followers youtubeChannelId youtubeChannelTitle youtubeChannelHandle youtubeChannelAvatar youtubeChannelUrl roles")
       .populate("followers", "_id username");
 
     if (!user) {
@@ -44,7 +44,7 @@ async function getUserProfile(req, res, next) {
       youtubeChannelHandle: user.youtubeChannelHandle || "",
       youtubeChannelAvatar: user.youtubeChannelAvatar || "",
       youtubeChannelUrl: user.youtubeChannelUrl || "",
-      visibility: user.visibility ?? 0
+      roles: user.roles
     };
 
     if (user.admin === true) {
@@ -57,7 +57,7 @@ async function getUserProfile(req, res, next) {
       .select("_id text equipmentId date")
       .populate({
         path: "user",
-        select: "_id username avatarUrl"
+        select: "_id username avatarUrl roles"
       })
       .populate({
         path: "equipmentId",
