@@ -63,9 +63,9 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
-  admin: {
-    type: Boolean,
-    default: false
+  role: {
+    type: [String],
+    default: ["user"]
   },
   followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
   uploadsPlaylistId: { type: String, default: null },
