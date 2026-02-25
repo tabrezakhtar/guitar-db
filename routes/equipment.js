@@ -74,13 +74,9 @@ function processEquipmentItem(item, keepData = false) {
     const processedUser = {
       _id: itemObject.user._id,
       username: itemObject.user.username,
-      avatarUrl: itemObject.user.avatarUrl
+      avatarUrl: itemObject.user.avatarUrl,
+      roles: itemObject.user.roles
     };
-
-    // Only include admin if it's true
-    if (itemObject.user.admin === true) {
-      processedUser.admin = itemObject.user.admin;
-    }
 
     itemObject.user = processedUser;
   }
@@ -188,7 +184,7 @@ async function get(req, res, next) {
       .populate("tags")
       .populate({
         path: "user",
-        select: "username avatarUrl admin _id"
+        select: "username avatarUrl admin roles _id"
       });
 
     const processedItems = processEquipmentItems(items);
@@ -233,7 +229,7 @@ async function searchByText(req, res, next) {
       .populate("tags")
       .populate({
         path: "user",
-        select: "username avatarUrl admin _id"
+        select: "username avatarUrl admin roles _id"
       });
 
     const processedItems = processEquipmentItems(items);
@@ -270,13 +266,13 @@ async function getById(req, res, next) {
         options: { sort: { date: -1 } },
         populate: {
           path: "user",
-          select: "_id username avatarUrl admin"
+          select: "_id username avatarUrl roles admin"
         }
       })
       .populate("tags")
       .populate({
         path: "user",
-        select: "_id username avatarUrl admin"
+        select: "_id username avatarUrl roles admin"
       });
 
     if (!item) {
@@ -344,7 +340,7 @@ async function getByUser(req, res, next) {
       .populate("tags")
       .populate({
         path: "user",
-        select: "_id username avatarUrl admin"
+        select: "_id username avatarUrl roles admin"
       });
 
     const itemsWithCommentCount = processEquipmentItems(items);
@@ -384,7 +380,7 @@ async function filter(req, res, next) {
       .populate("tags")
       .populate({
         path: "user",
-        select: "_id username avatarUrl admin"
+        select: "_id username avatarUrl roles admin"
       });
 
     const processedItems = processEquipmentItems(items);
@@ -421,7 +417,7 @@ async function add(req, res, next) {
       .populate("tags")
       .populate({
         path: "user",
-        select: "_id username avatarUrl admin"
+        select: "_id username avatarUrl roles admin"
       });
 
     const processedItem = processEquipmentItem(populatedEquipment);
@@ -464,7 +460,7 @@ async function update(req, res, next) {
       .populate("comments")
       .populate({
         path: "user",
-        select: "_id username avatarUrl admin"
+        select: "_id username avatarUrl roles admin"
       });
 
     const itemObject = processEquipmentItem(updatedEquipment, true);
@@ -558,7 +554,7 @@ async function addComment(req, res, next) {
     const populatedComment = await Comments.findById(savedComment._id)
       .populate({
       path: "user",
-      select: "_id username avatarUrl admin"
+      select: "_id username avatarUrl roles admin"
       });
 
     res.status(201).json(populatedComment);
