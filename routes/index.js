@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const equipmentRoutes = require("./equipment");
 const pagesRoutes = require("./pages");
-const { getYoutubeVideosByUser, saveYoutubeChannel, proxyYoutubeImage } = require("./youtube");
+const { getYoutubeVideosByUser, getYoutubeLivestreamsByUser, saveYoutubeChannel, proxyYoutubeImage } = require("./youtube");
 
 const { registerUser, verifyCode, resendVerificationCode, guestLogin } = require("./register");
 const { getUserProfile, updateUserProfile, deleteUserAvatar, deleteUserProfile } = require("./profile");
@@ -54,6 +54,7 @@ router.post("/test/refresh", testRefreshLimiter, (req, res) => {
 });
 
 router.get("/youtube/videos", getYoutubeVideosByUser);
+router.get("/youtube/livestreams", getYoutubeLivestreamsByUser);
 router.post("/youtube/channel", verifyToken, saveYoutubeChannel);
 router.get("/youtube/image-proxy", proxyYoutubeImage);
 

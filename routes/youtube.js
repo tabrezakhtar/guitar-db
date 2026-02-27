@@ -1,5 +1,6 @@
 const { google } = require("googleapis");
 const User = require("../models/user");
+const Livestream = require("../models/livestream");
 
 const API_KEY = process.env.YOUTUBE_API_KEY;
 if (!API_KEY) {
@@ -131,6 +132,99 @@ async function getYoutubeVideosByUser(req, res, next) {
   }
 }
 
+async function getYoutubeLivestreamsByUser(req, res, next) {
+  try {
+    const { userId, maxResults = 50 } = req.query;
+
+    if (!userId) {
+      return res.status(400).json({
+        message: "User ID is required",
+        errors: "Please provide a userId"
+      });
+    }
+
+    const user = await User.findById(userId).select("youtubeChannelId youtubeChannelHandle youtubeChannelTitle youtubeChannelAvatar");
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+        errors: "No user found with this ID"
+      });
+    }
+
+    if (!user.youtubeChannelId) {
+      return res.status(404).json({
+        message: "No YouTube channel linked",
+        errors: "This user has not linked a YouTube channel"
+      });
+    }
+
+    const cached = await Livestream.findOne({ userId });
+    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+
+    if (cached && cached.cachedAt > oneHourAgo) {
+      return res.status(200).json({
+        title: user.youtubeChannelTitle || "",
+        avatar: user.youtubeChannelAvatar || "",
+        handle: user.youtubeChannelHandle || "",
+        streams: cached.streams
+      });
+    }
+
+    const ytRes = await youtube.search.list({
+      part: ["snippet"],
+      channelId: user.youtubeChannelId,
+      type: ["video"],
+      maxResults: Number(maxResults) || 50
+    });
+
+    const liveStreams = (ytRes.data.items || [])
+      .filter(item => item.snippet.liveBroadcastContent === "live")
+      .map(item => ({
+        title: item.snippet.title,
+        videoId: item.id.videoId,
+        publishedAt: item.snippet.publishedAt,
+        thumbnail: item.snippet.thumbnails?.high?.url || item.snippet.thumbnails?.default?.url,
+        url: `https://www.youtube.com/watch?v=${item.id.videoId}`,
+        status: "live"
+      }));
+
+    const upcomingStreams = (ytRes.data.items || [])
+      .filter(item => item.snippet.liveBroadcastContent === "upcoming")
+      .map(item => ({
+        title: item.snippet.title,
+        videoId: item.id.videoId,
+        publishedAt: item.snippet.publishedAt,
+        thumbnail: item.snippet.thumbnails?.high?.url || item.snippet.thumbnails?.default?.url,
+        url: `https://www.youtube.com/watch?v=${item.id.videoId}`,
+        status: "upcoming"
+      }));
+
+    const streams = [...liveStreams, ...upcomingStreams];
+
+    await Livestream.findOneAndUpdate(
+      { userId },
+      { streams, cachedAt: new Date() },
+      { upsert: true, new: true }
+    );
+
+    res.status(200).json({
+      title: user.youtubeChannelTitle || "",
+      avatar: user.youtubeChannelAvatar || "",
+      handle: user.youtubeChannelHandle || "",
+      streams
+    });
+  } catch (error) {
+    if (error.response && error.response.data) {
+      return res.status(error.response.status || 500).json({
+        message: "YouTube API error",
+        errors: error.response.data.error?.message || error.message
+      });
+    }
+    next(error);
+  }
+}
+
 async function saveYoutubeChannel(req, res, next) {
   try {
     if (!req.body || !req.body.url) {
@@ -247,4 +341,4 @@ async function proxyYoutubeImage(req, res, next) {
   }
 }
 
-module.exports = { getYoutubeVideosByUser, saveYoutubeChannel, proxyYoutubeImage };
+module.exports = { getYoutubeVideosByUser, getYoutubeLivestreamsByUser, saveYoutubeChannel, proxyYoutubeImage };
