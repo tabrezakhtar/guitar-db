@@ -143,7 +143,7 @@ async function getYoutubeLivestreamsByUser(req, res, next) {
       });
     }
 
-    const user = await User.findById(userId).select("youtubeChannelId youtubeChannelHandle youtubeChannelTitle youtubeChannelAvatar");
+    const user = await User.findById(userId).select("youtubeChannelId youtubeChannelHandle youtubeChannelTitle youtubeChannelAvatar uploadsPlaylistId");
 
     if (!user) {
       return res.status(404).json({
@@ -167,7 +167,8 @@ async function getYoutubeLivestreamsByUser(req, res, next) {
         title: user.youtubeChannelTitle || "",
         avatar: user.youtubeChannelAvatar || "",
         handle: user.youtubeChannelHandle || "",
-        streams: cached.streams
+        streams: cached.streams,
+        previousStreams: cached.previousStreams || []
       });
     }
 
@@ -175,7 +176,8 @@ async function getYoutubeLivestreamsByUser(req, res, next) {
       part: ["snippet"],
       channelId: user.youtubeChannelId,
       type: ["video"],
-      maxResults: Number(maxResults) || 50
+      maxResults: Number(maxResults) || 50,
+      order: "date"
     });
 
     const liveStreams = (ytRes.data.items || [])
@@ -202,9 +204,39 @@ async function getYoutubeLivestreamsByUser(req, res, next) {
 
     const streams = [...liveStreams, ...upcomingStreams];
 
+    let previousStreams = [];
+    if (user.uploadsPlaylistId) {
+      try {
+        const recentVideos = await getLatestVideos(user.uploadsPlaylistId, 20);
+        console.log(JSON.stringify(recentVideos, null, 2));
+        const videoIds = recentVideos.map(v => v.videoId).join(",");
+        
+        if (videoIds) {
+          const videosRes = await youtube.videos.list({
+            part: ["snippet", "liveStreamingDetails"],
+            id: videoIds
+          });
+
+          previousStreams = (videosRes.data.items || [])
+            .filter(item => item.liveStreamingDetails && item.liveStreamingDetails.actualEndTime)
+            .slice(0, 5)
+            .map(item => ({
+              title: item.snippet.title,
+              videoId: item.id,
+              publishedAt: item.snippet.publishedAt,
+              thumbnail: item.snippet.thumbnails?.high?.url || item.snippet.thumbnails?.default?.url,
+              url: `https://www.youtube.com/watch?v=${item.id}`,
+              status: "completed"
+            }));
+        }
+      } catch (error) {
+        console.error("Error fetching previous streams:", error);
+      }
+    }
+
     await Livestream.findOneAndUpdate(
       { userId },
-      { streams, cachedAt: new Date() },
+      { streams, previousStreams, cachedAt: new Date() },
       { upsert: true, new: true }
     );
 
@@ -212,7 +244,8 @@ async function getYoutubeLivestreamsByUser(req, res, next) {
       title: user.youtubeChannelTitle || "",
       avatar: user.youtubeChannelAvatar || "",
       handle: user.youtubeChannelHandle || "",
-      streams
+      streams,
+      previousStreams
     });
   } catch (error) {
     if (error.response && error.response.data) {

@@ -15,6 +15,14 @@ const livestreamSchema = new mongoose.Schema({
     url: String,
     status: String
   }],
+  previousStreams: [{
+    title: String,
+    videoId: String,
+    publishedAt: Date,
+    thumbnail: String,
+    url: String,
+    status: String
+  }],
   cachedAt: {
     type: Date,
     default: Date.now
