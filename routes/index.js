@@ -3,6 +3,7 @@ const router = express.Router();
 const equipmentRoutes = require("./equipment");
 const pagesRoutes = require("./pages");
 const { getYoutubeVideosByUser, getYoutubeLivestreamsByUser, saveYoutubeChannel, proxyYoutubeImage } = require("./youtube");
+const { getSchedule, updateSchedule, deleteSchedule } = require("./schedule");
 
 const { registerUser, verifyCode, resendVerificationCode, guestLogin } = require("./register");
 const { getUserProfile, updateUserProfile, deleteUserAvatar, deleteUserProfile } = require("./profile");
@@ -57,5 +58,9 @@ router.get("/youtube/videos", getYoutubeVideosByUser);
 router.get("/youtube/livestreams", getYoutubeLivestreamsByUser);
 router.post("/youtube/channel", verifyToken, saveYoutubeChannel);
 router.get("/youtube/image-proxy", proxyYoutubeImage);
+
+router.get("/schedule", getSchedule);
+router.put("/schedule", verifyToken, updateSchedule);
+router.delete("/schedule", verifyToken, deleteSchedule);
 
 module.exports = router;
