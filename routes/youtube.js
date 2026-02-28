@@ -260,14 +260,28 @@ async function getYoutubeLivestreamsByUser(req, res, next) {
 
 async function saveYoutubeChannel(req, res, next) {
   try {
-    if (!req.body || !req.body.url) {
-      return res.status(400).json({
-        message: "URL is required",
-        errors: "Please provide a YouTube URL, channel handle, or channel ID"
+    const { url } = req.body;
+
+    if (!url || url.trim() === "") {
+      await User.findByIdAndUpdate(req.userId, {
+        uploadsPlaylistId: "",
+        youtubeChannelId: "",
+        youtubeChannelHandle: "",
+        youtubeChannelTitle: "",
+        youtubeChannelAvatar: "",
+        youtubeChannelUrl: ""
+      });
+
+      return res.status(200).json({
+        message: "YouTube channel removed successfully",
+        title: "",
+        avatar: "",
+        handle: "",
+        youtubeChannelId: "",
+        uploadsPlaylistId: "",
+        youtubeChannelUrl: ""
       });
     }
-
-    const { url } = req.body;
 
     const parsed = extractChannelIdOrHandle(url);
     if (!parsed) {

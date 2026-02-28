@@ -1,4 +1,6 @@
 const Schedule = require("../models/schedule");
+const User = require("../models/user");
+const { DateTime } = require("luxon");
 
 const getSchedule = async (req, res) => {
   try {
@@ -24,7 +26,7 @@ const getSchedule = async (req, res) => {
 const updateSchedule = async (req, res) => {
   try {
     const { timezone, liveSchedules } = req.body;
-    const userId = req.user.id;
+    const userId = req.userId;
 
     const updateData = {};
     if (timezone !== undefined) {
@@ -49,7 +51,7 @@ const updateSchedule = async (req, res) => {
 
 const deleteSchedule = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.userId;
 
     const result = await Schedule.findOneAndDelete({ userId });
     
@@ -64,8 +66,75 @@ const deleteSchedule = async (req, res) => {
   }
 };
 
+const getLiveAndUpcoming = async (req, res) => {
+  try {
+    const schedules = await Schedule.find({}).populate("userId", "username");
+    
+    const liveNow = [];
+    const upcoming = [];
+
+    schedules.forEach(scheduleDoc => {
+      if (!scheduleDoc.userId || !scheduleDoc.liveSchedules || scheduleDoc.liveSchedules.length === 0) {
+        return;
+      }
+
+      const now = DateTime.now().setZone(scheduleDoc.timezone);
+      const todayEnglishDay = now.toFormat("cccc");
+
+      const matchingRule = scheduleDoc.liveSchedules.find(rule =>
+        rule.day === todayEnglishDay
+      );
+
+      if (matchingRule) {
+        const [hour, minute] = matchingRule.time.split(":").map(Number);
+        const liveStartToday = now.set({ hour, minute, second: 0, millisecond: 0 });
+        const liveEnd = liveStartToday.plus({ hours: 2 });
+
+        if (now >= liveStartToday && now < liveEnd) {
+          liveNow.push({
+            userId: scheduleDoc.userId._id,
+            username: scheduleDoc.userId.username,
+            timezone: scheduleDoc.timezone,
+            startTime: liveStartToday.toISO(),
+            endTime: liveEnd.toISO()
+          });
+          return;
+        }
+      }
+
+      let cursor = now.startOf("day");
+      for (let i = 0; i < 14; i++) {
+        const dayName = cursor.toFormat("cccc");
+        const rule = scheduleDoc.liveSchedules.find(r => r.day === dayName);
+        if (rule) {
+          const [h, m] = rule.time.split(":").map(Number);
+          const candidate = cursor.set({ hour: h, minute: m });
+          if (candidate > now && candidate.diff(now, "hours").hours <= 6) {
+            upcoming.push({
+              userId: scheduleDoc.userId._id,
+              username: scheduleDoc.userId.username,
+              timezone: scheduleDoc.timezone,
+              startTime: candidate.toISO(),
+              day: dayName,
+              time: rule.time
+            });
+            return;
+          }
+        }
+        cursor = cursor.plus({ days: 1 });
+      }
+    });
+
+    res.json({ liveNow, upcoming });
+  } catch (error) {
+    console.error("Error fetching live and upcoming:", error);
+    res.status(500).json({ error: "Failed to fetch live and upcoming schedules" });
+  }
+};
+
 module.exports = {
   getSchedule,
   updateSchedule,
-  deleteSchedule
+  deleteSchedule,
+  getLiveAndUpcoming
 };
