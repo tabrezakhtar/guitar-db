@@ -88,7 +88,7 @@ const getLiveAndUpcoming = async (req, res) => {
       if (matchingRule) {
         const [hour, minute] = matchingRule.time.split(":").map(Number);
         const liveStartToday = now.set({ hour, minute, second: 0, millisecond: 0 });
-        const liveEnd = liveStartToday.plus({ hours: 2 });
+        const liveEnd = liveStartToday.plus({ hours: 1 });
 
         if (now >= liveStartToday && now < liveEnd) {
           liveNow.push({
