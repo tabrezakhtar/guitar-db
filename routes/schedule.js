@@ -68,7 +68,7 @@ const deleteSchedule = async (req, res) => {
 
 const getLiveAndUpcoming = async (req, res) => {
   try {
-    const schedules = await Schedule.find({}).populate("userId", "username");
+    const schedules = await Schedule.find({}).populate("userId", "username youtubeChannelAvatar");
     
     const liveNow = [];
     const upcoming = [];
@@ -94,6 +94,7 @@ const getLiveAndUpcoming = async (req, res) => {
           liveNow.push({
             userId: scheduleDoc.userId._id,
             username: scheduleDoc.userId.username,
+            youtubeChannelAvatar: scheduleDoc.userId.youtubeChannelAvatar || "",
             timezone: scheduleDoc.timezone,
             startTime: liveStartToday.toISO(),
             endTime: liveEnd.toISO()
@@ -113,6 +114,7 @@ const getLiveAndUpcoming = async (req, res) => {
             upcoming.push({
               userId: scheduleDoc.userId._id,
               username: scheduleDoc.userId.username,
+              youtubeChannelAvatar: scheduleDoc.userId.youtubeChannelAvatar || "",
               timezone: scheduleDoc.timezone,
               startTime: candidate.toISO(),
               day: dayName,
