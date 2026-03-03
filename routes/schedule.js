@@ -68,7 +68,13 @@ const deleteSchedule = async (req, res) => {
 
 const getLiveAndUpcoming = async (req, res) => {
   try {
-    const schedules = await Schedule.find({}).populate("userId", "username youtubeChannelAvatar");
+    const { timezone } = req.query;
+    const query = {};
+    if (timezone) {
+      query.timezone = timezone;
+    }
+
+    const schedules = await Schedule.find(query).populate("userId", "username youtubeChannelAvatar");
     
     const liveNow = [];
     const upcoming = [];

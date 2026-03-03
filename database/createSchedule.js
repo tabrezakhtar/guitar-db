@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const User = require("../models/user");
 const Schedule = require("../models/schedule");
 
-const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 function getRandomTime() {
   const hour = Math.floor(Math.random() * 24).toString().padStart(2, "0");
