@@ -2,6 +2,7 @@ const Schedule = require("../models/schedule");
 const User = require("../models/user");
 const { DateTime } = require("luxon");
 
+// get individual users schedule
 const getSchedule = async (req, res) => {
   try {
     const { userId } = req.query;
@@ -66,6 +67,7 @@ const deleteSchedule = async (req, res) => {
   }
 };
 
+// for the landing page
 const getLiveAndUpcoming = async (req, res) => {
   try {
     const { timezone } = req.query;
@@ -140,9 +142,59 @@ const getLiveAndUpcoming = async (req, res) => {
   }
 };
 
+const getWeeklySchedule = async (req, res) => {
+  try {
+    const schedules = await Schedule.find({}).populate("userId", "username youtubeChannelAvatar");
+    
+    const weeklySchedules = [];
+
+    schedules.forEach(scheduleDoc => {
+      if (!scheduleDoc.userId || !scheduleDoc.liveSchedules || scheduleDoc.liveSchedules.length === 0) {
+        return;
+      }
+
+      const now = DateTime.now().setZone(scheduleDoc.timezone);
+      const startOfWeek = now.startOf("week");
+      const endOfWeek = startOfWeek.plus({ days: 7 });
+
+      scheduleDoc.liveSchedules.forEach(rule => {
+        let cursor = startOfWeek;
+        for (let i = 0; i < 7; i++) {
+          const dayName = cursor.toFormat("cccc");
+          if (rule.day === dayName) {
+            const [h, m] = rule.time.split(":").map(Number);
+            const scheduledTime = cursor.set({ hour: h, minute: m, second: 0, millisecond: 0 });
+            
+            weeklySchedules.push({
+              userId: scheduleDoc.userId._id,
+              username: scheduleDoc.userId.username,
+              youtubeChannelAvatar: scheduleDoc.userId.youtubeChannelAvatar || "",
+              timezone: scheduleDoc.timezone,
+              day: dayName,
+              time: rule.time,
+              scheduledTime: scheduledTime.toISO()
+            });
+          }
+          cursor = cursor.plus({ days: 1 });
+        }
+      });
+    });
+
+    weeklySchedules.sort((a, b) => 
+      new Date(a.scheduledTime) - new Date(b.scheduledTime)
+    );
+
+    res.json({ schedules: weeklySchedules });
+  } catch (error) {
+    console.error("Error fetching weekly schedule:", error);
+    res.status(500).json({ error: "Failed to fetch weekly schedule" });
+  }
+};
+
 module.exports = {
   getSchedule,
   updateSchedule,
   deleteSchedule,
-  getLiveAndUpcoming
+  getLiveAndUpcoming,
+  getWeeklySchedule
 };
