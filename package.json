@@ -37,6 +37,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
+    "@faker-js/faker": "^10.3.0",
     "cross-env": "^7.0.3",
     "eslint": "^9.22.0",
     "globals": "^16.0.0",

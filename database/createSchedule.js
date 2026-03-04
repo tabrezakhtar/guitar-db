@@ -1,18 +1,35 @@
 const mongoose = require("mongoose");
 const User = require("../models/user");
 const Schedule = require("../models/schedule");
+const { faker } = require("@faker-js/faker");
 
 const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 function getRandomTime() {
-  const hour = Math.floor(Math.random() * 24).toString().padStart(2, "0");
-  const minute = Math.floor(Math.random() * 60).toString().padStart(2, "0");
-  return `${hour}:${minute}`;
+  const hour = faker.number.int({ min: 0, max: 23 });
+  const minute = faker.number.int({ min: 0, max: 59 });
+  return `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
+}
+
+function calculateEndTime(startTime, hoursToAdd) {
+  const [hours, minutes] = startTime.split(":").map(Number);
+  const newHours = (hours + hoursToAdd) % 24;
+  return `${String(newHours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
 }
 
 function getRandomDays(count) {
   const shuffled = [...days].sort(() => Math.random() - 0.5);
   return shuffled.slice(0, count);
+}
+
+function generateTitle() {
+  const title = faker.lorem.sentence({ min: 3, max: 10 });
+  return title.length > 200 ? title.substring(0, 200) : title;
+}
+
+function generateDescription() {
+  const description = faker.lorem.paragraphs({ min: 1, max: 3 });
+  return description.length > 500 ? description.substring(0, 500) : description;
 }
 
 async function createSchedules() {
@@ -37,10 +54,19 @@ async function createSchedules() {
       const selectedDays = getRandomDays(numSchedules);
       const timezone = Math.random() < 0.5 ? "America/New_York" : "Europe/London";
 
-      const liveSchedules = selectedDays.map(day => ({
-        day,
-        time: getRandomTime()
-      }));
+      const liveSchedules = selectedDays.map(day => {
+        const startTime = getRandomTime();
+        const durationHours = faker.number.int({ min: 1, max: 2 });
+        const endTime = calculateEndTime(startTime, durationHours);
+        
+        return {
+          day,
+          time: startTime,
+          endTime,
+          title: generateTitle(),
+          description: generateDescription()
+        };
+      });
 
       const existing = await Schedule.findOne({ userId: user._id });
       
