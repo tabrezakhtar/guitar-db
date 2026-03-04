@@ -34,7 +34,11 @@ const updateSchedule = async (req, res) => {
       updateData.timezone = timezone;
     }
     if (liveSchedules !== undefined) {
-      updateData.liveSchedules = liveSchedules;
+      updateData.liveSchedules = liveSchedules.map(schedule => ({
+        ...schedule,
+        title: schedule.title ? schedule.title.slice(0, 200) : "",
+        description: schedule.description ? schedule.description.slice(0, 500) : ""
+      }));
     }
 
     const schedule = await Schedule.findOneAndUpdate(
@@ -64,6 +68,32 @@ const deleteSchedule = async (req, res) => {
   } catch (error) {
     console.error("Error deleting schedule:", error);
     res.status(500).json({ error: "Failed to delete schedule" });
+  }
+};
+
+const deleteScheduleItem = async (req, res) => {
+  try {
+    const { id } = req.body;
+    const userId = req.userId;
+
+    if (!id) {
+      return res.status(400).json({ error: "Schedule item id is required" });
+    }
+
+    const schedule = await Schedule.findOneAndUpdate(
+      { userId },
+      { $pull: { liveSchedules: { _id: id } } },
+      { new: true }
+    );
+
+    if (!schedule) {
+      return res.status(404).json({ error: "Schedule not found" });
+    }
+
+    res.json(schedule);
+  } catch (error) {
+    console.error("Error deleting schedule item:", error);
+    res.status(500).json({ error: "Failed to delete schedule item" });
   }
 };
 
@@ -105,7 +135,9 @@ const getLiveAndUpcoming = async (req, res) => {
             youtubeChannelAvatar: scheduleDoc.userId.youtubeChannelAvatar || "",
             timezone: scheduleDoc.timezone,
             startTime: liveStartToday.toISO(),
-            endTime: liveEnd.toISO()
+            endTime: liveEnd.toISO(),
+            title: matchingRule.title,
+            description: matchingRule.description || ""
           });
           return;
         }
@@ -126,7 +158,9 @@ const getLiveAndUpcoming = async (req, res) => {
               timezone: scheduleDoc.timezone,
               startTime: candidate.toISO(),
               day: dayName,
-              time: rule.time
+              time: rule.time,
+              title: rule.title,
+              description: rule.description || ""
             });
             return;
           }
@@ -172,7 +206,9 @@ const getWeeklySchedule = async (req, res) => {
               timezone: scheduleDoc.timezone,
               day: dayName,
               time: rule.time,
-              scheduledTime: scheduledTime.toISO()
+              scheduledTime: scheduledTime.toISO(),
+              title: rule.title,
+              description: rule.description || ""
             });
           }
           cursor = cursor.plus({ days: 1 });
@@ -195,6 +231,7 @@ module.exports = {
   getSchedule,
   updateSchedule,
   deleteSchedule,
+  deleteScheduleItem,
   getLiveAndUpcoming,
   getWeeklySchedule
 };
