@@ -58,7 +58,7 @@ async function getUploadsPlaylistId(id) {
 
 async function getChannelDetails(id) {
   const res = await youtube.channels.list({
-    part: ["snippet", "contentDetails"],
+    part: ["snippet", "contentDetails", "brandingSettings"],
     id: [id]
   });
 
@@ -67,7 +67,8 @@ async function getChannelDetails(id) {
   const uploads = item.contentDetails?.relatedPlaylists?.uploads || null;
   const title = item.snippet?.title || "";
   const avatar = item.snippet?.thumbnails?.high?.url || item.snippet?.thumbnails?.default?.url || "";
-  return { uploadsPlaylistId: uploads, title, avatar };
+  const banner = item.brandingSettings?.image?.bannerExternalUrl || "";
+  return { uploadsPlaylistId: uploads, title, avatar, banner };
 }
 
 async function getLatestVideos(playlistId, maxResults = 5) {
@@ -269,6 +270,7 @@ async function saveYoutubeChannel(req, res, next) {
         youtubeChannelHandle: "",
         youtubeChannelTitle: "",
         youtubeChannelAvatar: "",
+        youtubeChannelBanner: "",
         youtubeChannelUrl: ""
       });
 
@@ -276,6 +278,7 @@ async function saveYoutubeChannel(req, res, next) {
         message: "YouTube channel removed successfully",
         title: "",
         avatar: "",
+        banner: "",
         handle: "",
         youtubeChannelId: "",
         uploadsPlaylistId: "",
@@ -321,6 +324,7 @@ async function saveYoutubeChannel(req, res, next) {
       youtubeChannelHandle: handleToSave,
       youtubeChannelTitle: details.title,
       youtubeChannelAvatar: details.avatar,
+      youtubeChannelBanner: details.banner,
       youtubeChannelUrl: youtubeUrl
     });
 
@@ -328,6 +332,7 @@ async function saveYoutubeChannel(req, res, next) {
       message: "YouTube channel saved successfully",
       title: details.title,
       avatar: details.avatar,
+      banner: details.banner,
       handle: handleToSave,
       youtubeChannelId: channelId,
       uploadsPlaylistId: details.uploadsPlaylistId,
@@ -355,7 +360,7 @@ async function proxyYoutubeImage(req, res, next) {
       });
     }
 
-    if (!url.includes("yt3.ggpht.com") && !url.includes("ytimg.com")) {
+    if (!url.includes("yt3.ggpht.com") && !url.includes("ytimg.com") && !url.includes("yt3.googleusercontent.com")) {
       return res.status(400).json({
         message: "Invalid URL",
         errors: "Only YouTube image URLs are allowed"

@@ -73,6 +73,7 @@ const userSchema = new mongoose.Schema({
   youtubeChannelTitle: { type: String, default: "" },
   youtubeChannelHandle: { type: String, default: "" },
   youtubeChannelAvatar: { type: String, default: "" },
+  youtubeChannelBanner: { type: String, default: "" },
   youtubeChannelUrl: { type: String, default: "" },
 });
 
