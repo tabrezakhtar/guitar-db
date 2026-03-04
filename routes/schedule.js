@@ -181,7 +181,7 @@ const getLiveAndUpcoming = async (req, res) => {
 const getWeeklySchedule = async (req, res) => {
   try {
     const schedules = await Schedule.find({}).populate("userId", "username youtubeChannelAvatar youtubeChannelBanner youtubeChannelUrl");
-    
+
     const weeklySchedules = [];
 
     schedules.forEach(scheduleDoc => {
@@ -189,41 +189,22 @@ const getWeeklySchedule = async (req, res) => {
         return;
       }
 
-      const now = DateTime.now().setZone(scheduleDoc.timezone);
-      const startOfWeek = now.startOf("week");
-      const endOfWeek = startOfWeek.plus({ days: 7 });
-
       scheduleDoc.liveSchedules.forEach(rule => {
-        let cursor = startOfWeek;
-        for (let i = 0; i < 7; i++) {
-          const dayName = cursor.toFormat("cccc");
-          if (rule.day === dayName) {
-            const [h, m] = rule.time.split(":").map(Number);
-            const scheduledTime = cursor.set({ hour: h, minute: m, second: 0, millisecond: 0 });
-            
-            weeklySchedules.push({
-              userId: scheduleDoc.userId._id,
-              username: scheduleDoc.userId.username,
-              youtubeChannelAvatar: scheduleDoc.userId.youtubeChannelAvatar || "",
-              youtubeChannelBanner: scheduleDoc.userId.youtubeChannelBanner || "",
-              youtubeChannelUrl: scheduleDoc.userId.youtubeChannelUrl || "",
-              timezone: scheduleDoc.timezone,
-              day: dayName,
-              time: rule.time,
-              scheduledTime: scheduledTime.toISO(),
-              title: rule.title,
-              description: rule.description || "",
-              endTime: rule.endTime || null
-            });
-          }
-          cursor = cursor.plus({ days: 1 });
-        }
+        weeklySchedules.push({
+          userId: scheduleDoc.userId._id,
+          username: scheduleDoc.userId.username,
+          youtubeChannelAvatar: scheduleDoc.userId.youtubeChannelAvatar || "",
+          youtubeChannelBanner: scheduleDoc.userId.youtubeChannelBanner || "",
+          youtubeChannelUrl: scheduleDoc.userId.youtubeChannelUrl || "",
+          timezone: scheduleDoc.timezone,
+          day: rule.day,
+          time: rule.time,
+          title: rule.title,
+          description: rule.description || "",
+          endTime: rule.endTime || null
+        });
       });
     });
-
-    weeklySchedules.sort((a, b) => 
-      new Date(a.scheduledTime) - new Date(b.scheduledTime)
-    );
 
     res.json({ schedules: weeklySchedules });
   } catch (error) {
