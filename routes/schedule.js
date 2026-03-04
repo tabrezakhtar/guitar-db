@@ -180,7 +180,7 @@ const getLiveAndUpcoming = async (req, res) => {
 
 const getWeeklySchedule = async (req, res) => {
   try {
-    const schedules = await Schedule.find({}).populate("userId", "username youtubeChannelAvatar youtubeChannelBanner");
+    const schedules = await Schedule.find({}).populate("userId", "username youtubeChannelAvatar youtubeChannelBanner youtubeChannelUrl");
     
     const weeklySchedules = [];
 
@@ -206,6 +206,7 @@ const getWeeklySchedule = async (req, res) => {
               username: scheduleDoc.userId.username,
               youtubeChannelAvatar: scheduleDoc.userId.youtubeChannelAvatar || "",
               youtubeChannelBanner: scheduleDoc.userId.youtubeChannelBanner || "",
+              youtubeChannelUrl: scheduleDoc.userId.youtubeChannelUrl || "",
               timezone: scheduleDoc.timezone,
               day: dayName,
               time: rule.time,
