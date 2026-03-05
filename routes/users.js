@@ -197,4 +197,33 @@ async function getRecentUsers(req, res, next) {
   }
 }
 
-module.exports = { logout, getUserStatus, followUser, unfollowUser, me, getFollowers, getFollowing, getRecentUsers };
+async function updateFavUsers(req, res, next) {
+  try {
+    const { userIds } = req.body;
+    const currentUserId = req.userId;
+
+    if (!Array.isArray(userIds)) {
+      return res.status(400).json({
+        message: "userIds must be an array",
+        errors: "userIds must be an array"
+      });
+    }
+
+    const validUserIds = userIds.filter(id => id && id !== currentUserId);
+
+    await User.findByIdAndUpdate(currentUserId, {
+      $set: { favUsers: validUserIds }
+    });
+
+    const user = await User.findById(currentUserId).select("-verified -verificationCode -verificationCodeExpires -verificationCodeAttempts");
+
+    res.status(200).json({
+      message: "Favorite users updated successfully",
+      user
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+module.exports = { logout, getUserStatus, followUser, unfollowUser, me, getFollowers, getFollowing, getRecentUsers, updateFavUsers };

@@ -68,6 +68,7 @@ const userSchema = new mongoose.Schema({
     default: ["user"]
   },
   followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
+  favUsers: [{ type: Schema.Types.ObjectId, ref: "User" }],
   uploadsPlaylistId: { type: String, default: null },
   youtubeChannelId: { type: String, default: null },
   youtubeChannelTitle: { type: String, default: "" },

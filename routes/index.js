@@ -3,11 +3,11 @@ const router = express.Router();
 const equipmentRoutes = require("./equipment");
 const pagesRoutes = require("./pages");
 const { getYoutubeVideosByUser, getYoutubeLivestreamsByUser, saveYoutubeChannel, proxyYoutubeImage } = require("./youtube");
-const { getSchedule, updateSchedule, deleteSchedule, deleteScheduleItem, getLiveAndUpcoming, getWeeklySchedule } = require("./schedule");
+const { getSchedule, updateSchedule, deleteSchedule, deleteScheduleItem, getLiveAndUpcoming, getWeeklySchedule, getUsersWithSchedules } = require("./schedule");
 
 const { registerUser, verifyCode, resendVerificationCode, guestLogin } = require("./register");
 const { getUserProfile, updateUserProfile, deleteUserAvatar, deleteUserProfile } = require("./profile");
-const { logout, getUserStatus, followUser, unfollowUser, me, getFollowers, getFollowing, getRecentUsers } = require("./users");
+const { logout, getUserStatus, followUser, unfollowUser, me, getFollowers, getFollowing, getRecentUsers, updateFavUsers } = require("./users");
 const { verifyToken, verifyTokenOptional, checkEquipmentOwnership, checkUserOwnership, checkCommentOwnership } = require("../middleware/auth");
 const { authLimiter, magicLinkLimiter, testMagicLinkLimiter, testRefreshLimiter } = require("../middleware/rateLimiter");
 
@@ -40,6 +40,7 @@ router.delete("/profile/delete", verifyToken, checkUserOwnership, deleteUserProf
 
 router.post("/users/follow", verifyToken, followUser);
 router.post("/users/unfollow", verifyToken, unfollowUser);
+router.put("/users/favUsers", verifyToken, updateFavUsers);
 router.get("/users/followers", getFollowers);
 router.get("/users/following", getFollowing);
 router.get("/users/recent", getRecentUsers);
@@ -65,5 +66,6 @@ router.delete("/schedule", verifyToken, deleteSchedule);
 router.delete("/schedule/item", verifyToken, deleteScheduleItem);
 router.get("/schedule/live", getLiveAndUpcoming);
 router.get("/schedule/weekly", getWeeklySchedule);
+router.get("/schedule/users", verifyToken, getUsersWithSchedules);
 
 module.exports = router;

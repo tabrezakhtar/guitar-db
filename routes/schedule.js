@@ -213,11 +213,37 @@ const getWeeklySchedule = async (req, res) => {
   }
 };
 
+const getUsersWithSchedules = async (req, res) => {
+  try {
+    const currentUserId = req.userId;
+
+    const schedules = await Schedule.find({}).populate("userId", "_id username youtubeChannelAvatar");
+
+    const users = schedules
+      .filter(schedule => schedule.userId && schedule.userId._id.toString() !== currentUserId)
+      .map(schedule => ({
+        userId: schedule.userId._id,
+        username: schedule.userId.username,
+        youtubeChannelAvatar: schedule.userId.youtubeChannelAvatar || ""
+      }));
+
+    const uniqueUsers = Array.from(
+      new Map(users.map(user => [user.userId.toString(), user])).values()
+    );
+
+    res.json({ users: uniqueUsers });
+  } catch (error) {
+    console.error("Error fetching users with schedules:", error);
+    res.status(500).json({ error: "Failed to fetch users with schedules" });
+  }
+};
+
 module.exports = {
   getSchedule,
   updateSchedule,
   deleteSchedule,
   deleteScheduleItem,
   getLiveAndUpcoming,
-  getWeeklySchedule
+  getWeeklySchedule,
+  getUsersWithSchedules
 };

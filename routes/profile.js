@@ -17,7 +17,7 @@ async function getUserProfile(req, res, next) {
     }
 
     const user = await User.findById(userId)
-      .select("username bio location website createdAt admin avatarUrl followers youtubeChannelId youtubeChannelTitle youtubeChannelHandle youtubeChannelAvatar youtubeChannelUrl roles")
+      .select("username bio location website createdAt admin avatarUrl followers favUsers youtubeChannelId youtubeChannelTitle youtubeChannelHandle youtubeChannelAvatar youtubeChannelUrl roles")
       .populate("followers", "_id username");
 
     if (!user) {
@@ -39,6 +39,7 @@ async function getUserProfile(req, res, next) {
       avatarUrl: user.avatarUrl,
       followers: user.followers,
       following: following,
+      favUsers: user.favUsers || [],
       youtubeChannelId: user.youtubeChannelId || null,
       youtubeChannelTitle: user.youtubeChannelTitle || "",
       youtubeChannelHandle: user.youtubeChannelHandle || "",
