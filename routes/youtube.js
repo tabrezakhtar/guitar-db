@@ -360,10 +360,10 @@ async function proxyYoutubeImage(req, res, next) {
       });
     }
 
-    if (!url.includes("yt3.ggpht.com") && !url.includes("ytimg.com") && !url.includes("yt3.googleusercontent.com")) {
+    if (!url.includes("yt3.ggpht.com") && !url.includes("ytimg.com") && !url.includes("yt3.googleusercontent.com") && !url.includes("res.cloudinary.com/dx8d5hlk1")) {
       return res.status(400).json({
         message: "Invalid URL",
-        errors: "Only YouTube image URLs are allowed"
+        errors: "Only YouTube and Cloudinary image URLs are allowed"
       });
     }
 
