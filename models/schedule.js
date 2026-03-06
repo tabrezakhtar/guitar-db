@@ -24,10 +24,10 @@ const ScheduleSchema = new mongoose.Schema({
         required: true,
         match: /^([01]\d|2[0-3]):([0-5]\d)$/
       },
-      endTime: {
-        type: String,
+      duration: {
+        type: Number,
         required: false,
-        match: /^([01]\d|2[0-3]):([0-5]\d)$/
+        min: 1
       },
       title: {
         type: String,

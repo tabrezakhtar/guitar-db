@@ -38,7 +38,7 @@ const updateSchedule = async (req, res) => {
         ...schedule,
         title: schedule.title ? schedule.title.slice(0, 200) : "",
         description: schedule.description ? schedule.description.slice(0, 500) : "",
-        endTime: schedule.endTime ? schedule.endTime : undefined
+        duration: schedule.duration ? schedule.duration : undefined
       }));
     }
 
@@ -136,7 +136,7 @@ const getLiveAndUpcoming = async (req, res) => {
             youtubeChannelAvatar: scheduleDoc.userId.youtubeChannelAvatar || "",
             timezone: scheduleDoc.timezone,
             startTime: liveStartToday.toISO(),
-            endTime: matchingRule.endTime || null,
+            duration: matchingRule.duration || null,
             title: matchingRule.title,
             description: matchingRule.description || "",
           });
@@ -162,7 +162,7 @@ const getLiveAndUpcoming = async (req, res) => {
               time: rule.time,
               title: rule.title,
               description: rule.description || "",
-              endTime: rule.endTime || null
+              duration: rule.duration || null
             });
             return;
           }
@@ -201,7 +201,7 @@ const getWeeklySchedule = async (req, res) => {
           time: rule.time,
           title: rule.title,
           description: rule.description || "",
-          endTime: rule.endTime || null
+          duration: rule.duration || null
         });
       });
     });
