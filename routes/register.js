@@ -372,6 +372,12 @@ async function resendVerificationCode(req, res, next) {
       return res.redirect("/login");
     }
 
+    if (existingUser.isBanned()) {
+      req.flash("errors", [`Your account has been banned. Please contact support for more information.`]);
+      if (email) req.flash("email", email);
+      return res.redirect("/login");
+    }
+
     const verificationCode = generateVerificationCode();
     const codeExpires = new Date(Date.now() + 15 * 60 * 1000);
 

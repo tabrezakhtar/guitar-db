@@ -8,7 +8,7 @@ const { getSchedule, updateSchedule, deleteSchedule, deleteScheduleItem, getLive
 const { registerUser, verifyCode, resendVerificationCode, guestLogin } = require("./register");
 const { getUserProfile, updateUserProfile, deleteUserAvatar, deleteUserProfile } = require("./profile");
 const { logout, getUserStatus, followUser, unfollowUser, me, getFollowers, getFollowing, getRecentUsers, updateFavUsers } = require("./users");
-const { verifyToken, verifyTokenOptional, checkEquipmentOwnership, checkUserOwnership, checkCommentOwnership } = require("../middleware/auth");
+const { verifyToken, verifyTokenOptional, checkEquipmentOwnership, checkUserOwnership, checkCommentOwnership, checkBanned } = require("../middleware/auth");
 const { authLimiter, magicLinkLimiter, testMagicLinkLimiter, testRefreshLimiter } = require("../middleware/rateLimiter");
 
 router.get("/equipment/list/", verifyTokenOptional, equipmentRoutes.get);
@@ -46,7 +46,7 @@ router.get("/users/following", getFollowing);
 router.get("/users/recent", getRecentUsers);
 router.post("/users/logout", verifyToken, logout);
 router.get("/users/status", verifyToken, getUserStatus);
-router.get("/users/me", verifyToken, me);
+router.get("/users/me", verifyToken, checkBanned, me);
 router.post("/test/magic-link", testMagicLinkLimiter, (req, res) => {
   res.json({ message: "Test magic link endpoint", timestamp: new Date().toISOString() });
 });

@@ -67,6 +67,21 @@ const userSchema = new mongoose.Schema({
     type: [String],
     default: ["user"]
   },
+  banHistory: [{
+    date: {
+      type: Date,
+      required: true,
+      default: () => new Date(new Date().toISOString())
+    },
+    reason: {
+      type: String,
+      required: true
+    },
+    unbannedDate: {
+      type: Date,
+      default: null
+    }
+  }],
   followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
   favUsers: [{ type: Schema.Types.ObjectId, ref: "User" }],
   uploadsPlaylistId: { type: String, default: null },
@@ -77,6 +92,12 @@ const userSchema = new mongoose.Schema({
   youtubeChannelBanner: { type: String, default: "" },
   youtubeChannelUrl: { type: String, default: "" },
 });
+
+userSchema.methods.isBanned = function() {
+  if (!this.banHistory || this.banHistory.length === 0) return false;
+  const latestBan = this.banHistory[this.banHistory.length - 1];
+  return latestBan.unbannedDate === null;
+};
 
 const User = mongoose.model("User", userSchema);
 

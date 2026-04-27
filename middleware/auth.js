@@ -1,5 +1,6 @@
 ﻿const jwt = require("jsonwebtoken");
 const { Equipment, Comments } = require("../models/equipment");
+const User = require("../models/user");
 
 const generateTokens = (userId, jwtSecret) => {
   const accessToken = jwt.sign(
@@ -196,10 +197,36 @@ const verifyTokenOptional = (req, res, next) => {
   return next();
 };
 
+const checkBanned = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.userId);
+    
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+        errors: "User not found"
+      });
+    }
+
+    if (user.isBanned()) {
+      return res.status(403).json({
+        message: "Account banned",
+        errors: `Your account has been banned. Please contact support for more information.`,
+        banned: true
+      });
+    }
+
+    next();
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   verifyToken,
   verifyTokenOptional,
   checkEquipmentOwnership,
   checkUserOwnership,
-  checkCommentOwnership
+  checkCommentOwnership,
+  checkBanned
 };
