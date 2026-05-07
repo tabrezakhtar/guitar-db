@@ -91,6 +91,7 @@ const userSchema = new mongoose.Schema({
   youtubeChannelAvatar: { type: String, default: "" },
   youtubeChannelBanner: { type: String, default: "" },
   youtubeChannelUrl: { type: String, default: "" },
+  featured: { type: Boolean, default: false }
 });
 
 userSchema.methods.isBanned = function() {
