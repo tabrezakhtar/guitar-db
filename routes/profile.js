@@ -17,7 +17,7 @@ async function getUserProfile(req, res, next) {
     }
 
     const user = await User.findById(userId)
-      .select("username bio location website createdAt admin avatarUrl followers favUsers youtubeChannelId youtubeChannelTitle youtubeChannelHandle youtubeChannelAvatar youtubeChannelUrl roles")
+      .select("username bio location website createdAt admin avatarUrl followers favUsers youtubeChannelId youtubeChannelTitle youtubeChannelHandle youtubeChannelAvatar youtubeChannelUrl roles featured")
       .populate("followers", "_id username");
 
     if (!user) {
@@ -45,7 +45,8 @@ async function getUserProfile(req, res, next) {
       youtubeChannelHandle: user.youtubeChannelHandle || "",
       youtubeChannelAvatar: user.youtubeChannelAvatar || "",
       youtubeChannelUrl: user.youtubeChannelUrl || "",
-      roles: user.roles
+      roles: user.roles,
+      featured: user.featured || false
     };
 
     if (user.admin === true) {
@@ -82,7 +83,7 @@ async function updateUserProfile(req, res, next) {
     });
   }
 
-  const { _id, username, bio, location, website, avatarUrl, youtubeChannelUrl, visibility } = req.body;
+  const { _id, username, bio, location, website, avatarUrl, youtubeChannelUrl, visibility, featured } = req.body;
 
   if (!_id) {
     return res.status(400).json({
@@ -122,6 +123,7 @@ async function updateUserProfile(req, res, next) {
     user.website = website || user.website;
     user.avatarUrl = avatarUrl || user.avatarUrl;
     if (visibility !== undefined) user.visibility = visibility;
+    if (featured !== undefined) user.featured = featured;
 
     if (youtubeChannelUrl !== undefined) {
       if (youtubeChannelUrl === "") {
@@ -181,7 +183,8 @@ async function updateUserProfile(req, res, next) {
         youtubeChannelAvatar: user.youtubeChannelAvatar || "",
         youtubeChannelUrl: user.youtubeChannelUrl || "",
         uploadsPlaylistId: user.uploadsPlaylistId || null,
-        visibility: user.visibility ?? 0
+        visibility: user.visibility ?? 0,
+        featured: user.featured || false
       }
     });
   } catch (error) {
