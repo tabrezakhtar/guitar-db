@@ -11,6 +11,10 @@ const { logout, getUserStatus, followUser, unfollowUser, me, getFollowers, getFo
 const { verifyToken, verifyTokenOptional, checkEquipmentOwnership, checkUserOwnership, checkCommentOwnership, checkBanned } = require("../middleware/auth");
 const { authLimiter, magicLinkLimiter, testMagicLinkLimiter, testRefreshLimiter } = require("../middleware/rateLimiter");
 
+router.get("/health", (req, res) => {
+  res.json({ status: "ok" });
+});
+
 router.get("/equipment/list/", verifyTokenOptional, equipmentRoutes.get);
 router.get("/equipment/byid/", verifyTokenOptional, equipmentRoutes.getById);
 router.get("/equipment/filterBy", verifyTokenOptional, equipmentRoutes.filter);
