@@ -340,6 +340,41 @@ async function verifyCode(req, res, next) {
   }
 }
 
+async function sendEmailWithRetry(resendClient, emailOptions, maxRetries = 3) {
+  let lastError;
+  
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const result = await Promise.race([
+        resendClient.emails.send(emailOptions),
+        new Promise((_, reject) => 
+          setTimeout(() => reject(new Error("Email send timeout")), 15000)
+        )
+      ]);
+      
+      if (result.error) {
+        lastError = result.error;
+        console.error(`Email send attempt ${attempt} failed:`, result.error);
+        if (attempt < maxRetries) {
+          await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+          continue;
+        }
+      } else {
+        return { success: true, result };
+      }
+    } catch (error) {
+      lastError = error;
+      console.error(`Email send attempt ${attempt} error:`, error.message);
+      if (attempt < maxRetries) {
+        await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+        continue;
+      }
+    }
+  }
+  
+  return { success: false, error: lastError };
+}
+
 async function resendVerificationCode(req, res, next) {
   const { email, userId } = req.body;
   const errors = [];
@@ -367,13 +402,14 @@ async function resendVerificationCode(req, res, next) {
     }
 
     if (!existingUser) {
+      console.error("User not found:", { email: email ? "provided" : "none", userId: userId || "none" });
       req.flash("errors", ["No account found with this information"]);
       if (email) req.flash("email", email);
       return res.redirect("/login");
     }
 
     if (existingUser.isBanned()) {
-      req.flash("errors", [`Your account has been banned. Please contact support for more information.`]);
+      req.flash("errors", ["Your account has been banned. Please contact support for more information."]);
       if (email) req.flash("email", email);
       return res.redirect("/login");
     }
@@ -386,6 +422,12 @@ async function resendVerificationCode(req, res, next) {
     existingUser.verificationCodeAttempts = 0;
     await existingUser.save();
 
+    if (!process.env.EMAIL) {
+      console.error("EMAIL environment variable not set");
+      req.flash("errors", ["Email service configuration error. Please contact support."]);
+      return res.redirect("/login");
+    }
+
     try {
       const resend = new Resend(process.env.EMAIL);
       const emailHtml = generateEmailTemplate("login", {
@@ -393,20 +435,24 @@ async function resendVerificationCode(req, res, next) {
         verificationCode
       });
 
-      const { error } = await resend.emails.send({
+      const emailResult = await sendEmailWithRetry(resend, {
         from: "rifftales <noreply@rifftales.net>",
         to: [existingUser.email],
         subject: "rifftales - New Verification Code",
         html: emailHtml,
       });
 
-      if (error) {
-        console.error("Error sending email:", error);
+      if (!emailResult.success) {
+        console.error("All email send attempts failed:", emailResult.error);
         req.flash("errors", ["Failed to send verification code. Please try again."]);
         return res.redirect("/login");
       }
     } catch (emailError) {
-      console.error("Failed to send verification email:", emailError);
+      console.error("Email send exception:", {
+        message: emailError.message,
+        stack: emailError.stack,
+        name: emailError.name
+      });
       req.flash("errors", ["Failed to send verification code. Please try again."]);
       return res.redirect("/login");
     }
@@ -421,6 +467,11 @@ async function resendVerificationCode(req, res, next) {
       titleColor: "white"
     });
   } catch (error) {
+    console.error("resendVerificationCode error:", {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    });
     next(error);
   }
 }
