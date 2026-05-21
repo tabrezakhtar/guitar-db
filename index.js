@@ -63,6 +63,8 @@ app.set("view engine", "ejs");
 
 const apiRoutes = require("./routes");
 
+app.use(compression());
+
 if (process.env.CORS_ORIGINS) {
   const corsOptions = {
     origin: process.env.CORS_ORIGINS.split(','),
@@ -75,7 +77,6 @@ if (process.env.CORS_ORIGINS) {
 }
 
 app.use("/api/", apiRoutes);
-app.use(compression());
 
 const renderWithFlash = (template, additionalFields = []) => {
   return (req, res) => {
@@ -127,6 +128,10 @@ app.get("/version", async (req, res) => {
     console.error("Error fetching version:", error);
     res.status(500).json({ error: "Internal server error" });
   }
+});
+
+app.use((req, res) => {
+  res.status(404).json({ error: "Not found" });
 });
 
 app.use((err, req, res, next) => {
