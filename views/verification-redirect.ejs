@@ -52,39 +52,15 @@
       text-align: center;
     }
 
-    .verify-icon {
-      font-size: 4rem;
+    .verify-icon.error {
+      font-size: 3rem;
       margin-bottom: 1rem;
       display: block;
-      animation: pulse 2s ease-in-out infinite;
-    }
-
-    .verify-icon.success {
-      color: #10b981;
-    }
-
-    .verify-icon.error {
-      color: #dc2626;
-      animation: none;
-    }
-
-    @keyframes pulse {
-      0%, 100% {
-        opacity: 1;
-      }
-      50% {
-        opacity: 0.5;
-      }
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
+      color: #ef4444;
     }
 
     h1 {
-      color: #ffffff;
+      color: #f3f4f6;
       font-size: 1.75rem;
       font-weight: 600;
       margin: 0 0 1rem 0;
@@ -92,21 +68,10 @@
     }
 
     .verify-message {
-      color: #9ca3af;
-      font-size: 1rem;
+      color: #d1d5db;
+      font-size: 1.05rem;
       line-height: 1.6;
       margin-bottom: 1.5rem;
-    }
-
-    .spinner {
-      display: inline-block;
-      width: 40px;
-      height: 40px;
-      border: 4px solid rgba(255, 255, 255, 0.1);
-      border-top-color: #10b981;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 1rem auto;
     }
 
     .form-errors {
@@ -125,7 +90,7 @@
     }
 
     .form-errors li {
-      color: #fecaca;
+      color: #fca5a5;
       font-size: 0.95rem;
       line-height: 1.5;
       padding: 0.25rem 0;
@@ -137,7 +102,7 @@
 
     .verify-actions a {
       display: inline-block;
-      background: #2563eb;
+      background: #3b82f6;
       color: #ffffff;
       text-decoration: none;
       padding: 0.75rem 1.5rem;
@@ -178,10 +143,8 @@
         <input type="hidden" id="user" value="<%= JSON.stringify(user) %>">
 
         <% if (typeof errors==='undefined' || errors.length===0) { %>
-          <div class="verify-icon success">✓</div>
-          <h1>Account Verified Successfully</h1>
-          <p class="verify-message">Your account has been verified. You will be redirected to the app in a moment.</p>
-          <div class="spinner"></div>
+          <h1>Account Verified</h1>
+          <p class="verify-message">Your account has been verified. You will be redirected shortly.</p>
 
           <script>
               document.addEventListener("DOMContentLoaded", function () {
