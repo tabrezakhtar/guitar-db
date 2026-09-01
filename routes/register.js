@@ -39,13 +39,7 @@ async function registerUser(req, res, next) {
   }
 
   if (missing.length > 0) {
-    req.flash("errors", errors);
-    req.flash("missing", missing);
-    if (username) req.flash("username", username);
-    if (email) req.flash("email", email);
-    if (bio) req.flash("bio", bio);
-    if (location) req.flash("location", location);
-    return res.redirect("/register");
+    return res.status(400).json({ errors, missing });
   }
 
   try {
@@ -61,26 +55,20 @@ async function registerUser(req, res, next) {
     }
 
     const isUpgradingGuest = currentUser && currentUser.guest === true;
+    const registerErrors = [];
 
     const existingUser = await findUserByEmail(email);
     if (existingUser && (!isUpgradingGuest || existingUser._id.toString() !== currentUser._id.toString())) {
-      req.flash("errors", ["This email is already registered"]);
-      req.flash("username", username);
-      req.flash("bio", bio);
-      req.flash("location", location);
+      registerErrors.push("This email is already registered");
     }
 
     const existingUsername = await User.findOne({ username });
     if (existingUsername && (!isUpgradingGuest || existingUsername._id.toString() !== currentUser._id.toString())) {
-      req.flash("errors", ["This username is already taken"]);
-      req.flash("email", email);
-      req.flash("bio", bio);
-      req.flash("location", location);
+      registerErrors.push("This username is already taken");
     }
 
-    if ((existingUser && (!isUpgradingGuest || existingUser._id.toString() !== currentUser._id.toString())) || 
-        (existingUsername && (!isUpgradingGuest || existingUsername._id.toString() !== currentUser._id.toString()))) {
-      return res.redirect("/register");
+    if (registerErrors.length > 0) {
+      return res.status(400).json({ errors: registerErrors, missing: [] });
     }
 
     let user;
@@ -133,12 +121,10 @@ async function registerUser(req, res, next) {
       console.error("Failed to send verification code email:", emailError);
     }
 
-    return res.render("verification", {
-      title: "Registration Successful - rifftales",
+    return res.status(200).json({
       email: email.substring(0, 3) + "..." + email.substring(email.indexOf("@")),
       showVerificationForm: true,
-      userId: user._id.toString(),
-      titleColor: "white"
+      userId: user._id.toString()
     });
   } catch (error) {
     next(error);
@@ -225,15 +211,12 @@ async function verifyCode(req, res, next) {
   }
 
   if (missing.length > 0) {
-    const emailDisplay = "***@***";
-    return res.render("verification", {
-      title: "Enter Verification Code - rifftales",
-      email: emailDisplay,
+    return res.status(400).json({
+      email: "***@***",
       showVerificationForm: true,
       userId: userId || "",
-      errors: errors,
-      missing: missing,
-      titleColor: "white"
+      errors,
+      missing
     });
   }
   try {
@@ -251,8 +234,7 @@ async function verifyCode(req, res, next) {
     const user = await User.findById(userId);
 
     if (!user) {
-      return res.render("verification", {
-        title: "Verification Error - rifftales",
+      return res.status(400).json({
         email: "***@***",
         showVerificationForm: false,
         errors: ["Invalid verification request. Please try logging in again."]
@@ -263,8 +245,7 @@ async function verifyCode(req, res, next) {
 
     if (!user.verificationCodeExpires || new Date() > user.verificationCodeExpires) {
       const emailDisplay = user.email.substring(0, 3) + "..." + user.email.substring(user.email.indexOf("@"));
-      return res.render("verification", {
-        title: "Code Expired - rifftales",
+      return res.status(400).json({
         email: emailDisplay,
         showVerificationForm: false,
         errors: ["Verification code has expired. Please request a new one."],
@@ -275,8 +256,7 @@ async function verifyCode(req, res, next) {
 
     if (user.verificationCodeAttempts >= 5) {
       const emailDisplay = user.email.substring(0, 3) + "..." + user.email.substring(user.email.indexOf("@"));
-      return res.render("verification", {
-        title: "Too Many Attempts - rifftales",
+      return res.status(400).json({
         email: emailDisplay,
         showVerificationForm: false,
         errors: ["Too many failed attempts. Please request a new code."],
@@ -293,19 +273,16 @@ async function verifyCode(req, res, next) {
       const emailDisplay = user.email.substring(0, 3) + "..." + user.email.substring(user.email.indexOf("@"));
 
       if (remainingAttempts > 0) {
-        return res.render("verification", {
-          title: "Invalid Code - rifftales",
+        return res.status(400).json({
           email: emailDisplay,
           showVerificationForm: true,
           userId: user._id.toString(),
-          errors: [`Invalid code. ${remainingAttempts} attempts remaining.`],
+          errors: [],
           attemptCount: user.verificationCodeAttempts,
-          maxAttempts: 5,
-          titleColor: "white"
+          maxAttempts: 5
         });
       } else {
-        return res.render("verification", {
-          title: "Too Many Attempts - rifftales",
+        return res.status(400).json({
           email: emailDisplay,
           showVerificationForm: false,
           errors: ["Too many failed attempts. Please request a new code."],
@@ -332,9 +309,7 @@ async function verifyCode(req, res, next) {
 
     setAuthCookies(res, accessToken, refreshToken, isProd);
 
-    return res.render("verification-redirect", {
-      user: userForClient
-    });
+    return res.status(200).json({ user: userForClient });
   } catch (error) {
     next(error);
   }
@@ -386,10 +361,7 @@ async function resendVerificationCode(req, res, next) {
   }
 
   if (missing.length > 0) {
-    req.flash("errors", errors);
-    req.flash("missing", missing);
-    if (email) req.flash("email", email);
-    return res.redirect("/login");
+    return res.status(400).json({ errors, missing });
   }
 
   try {
@@ -403,15 +375,11 @@ async function resendVerificationCode(req, res, next) {
 
     if (!existingUser) {
       console.error("User not found:", { email: email ? "provided" : "none", userId: userId || "none" });
-      req.flash("errors", ["No account found with this information"]);
-      if (email) req.flash("email", email);
-      return res.redirect("/login");
+      return res.status(400).json({ errors: ["No account found with this information"] });
     }
 
     if (existingUser.isBanned()) {
-      req.flash("errors", ["Your account has been banned. Please contact support for more information."]);
-      if (email) req.flash("email", email);
-      return res.redirect("/login");
+      return res.status(403).json({ errors: ["Your account has been banned. Please contact support for more information."] });
     }
 
     const verificationCode = generateVerificationCode();
@@ -424,8 +392,7 @@ async function resendVerificationCode(req, res, next) {
 
     if (!process.env.EMAIL) {
       console.error("EMAIL environment variable not set");
-      req.flash("errors", ["Email service configuration error. Please contact support."]);
-      return res.redirect("/login");
+      return res.status(500).json({ errors: ["Email service configuration error. Please contact support."] });
     }
 
     try {
@@ -444,8 +411,7 @@ async function resendVerificationCode(req, res, next) {
 
       if (!emailResult.success) {
         console.error("All email send attempts failed:", emailResult.error);
-        req.flash("errors", ["Failed to send verification code. Please try again."]);
-        return res.redirect("/login");
+        return res.status(500).json({ errors: ["Failed to send verification code. Please try again."] });
       }
     } catch (emailError) {
       console.error("Email send exception:", {
@@ -453,18 +419,15 @@ async function resendVerificationCode(req, res, next) {
         stack: emailError.stack,
         name: emailError.name
       });
-      req.flash("errors", ["Failed to send verification code. Please try again."]);
-      return res.redirect("/login");
+      return res.status(500).json({ errors: ["Failed to send verification code. Please try again."] });
     }
 
     const emailDisplay = existingUser.email.substring(0, 3) + "..." + existingUser.email.substring(existingUser.email.indexOf("@"));
 
-    return res.render("verification", {
-      title: "New Code Sent - rifftales",
+    return res.status(200).json({
       email: emailDisplay,
       showVerificationForm: true,
-      userId: existingUser._id.toString(),
-      titleColor: "white"
+      userId: existingUser._id.toString()
     });
   } catch (error) {
     console.error("resendVerificationCode error:", {
@@ -513,9 +476,7 @@ async function guestLogin(req, res, next) {
 
     setAuthCookies(res, accessToken, refreshToken, isProd);
 
-    return res.render("verification-redirect", {
-      user: guestUserForClient
-    });
+    return res.status(200).json({ user: guestUserForClient });
   } catch (error) {
     next(error);
   }

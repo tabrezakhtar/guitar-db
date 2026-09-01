@@ -6,19 +6,12 @@ const port = process.env.PORT || 5000;
 const mongoose = require("mongoose");
 const cors = require("cors");
 const path = require("path");
-const session = require("express-session");
 const cookieParser = require("cookie-parser");
-const MongoStore = require("connect-mongo");
-const flash = require("connect-flash");
 const Version = require("./models/version");
 const Log = require("./models/log");
 require('dotenv').config();
 
 console.log("process.env.NODE_ENV", process.env.NODE_ENV);
-
-if (!process.env.SESSION_SECRET) {
-  throw new Error("SESSION_SECRET environment variable is not set");
-}
 
 const uri = process.env.DATABASE_URI;
 
@@ -45,17 +38,6 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: true,
-  store: MongoStore.create({
-    mongoUrl: uri
-  }),
-  cookie: { secure: process.env.NODE_ENV === "production" }
-}));
-
-app.use(flash());
 app.use(cookieParser());
 
 app.set("views", path.join(__dirname, "views"));
@@ -77,27 +59,6 @@ if (process.env.CORS_ORIGINS) {
 }
 
 app.use("/api/", apiRoutes);
-
-const renderWithFlash = (template, additionalFields = []) => {
-  return (req, res) => {
-    const data = {
-      title: template === "login" ? "Login - rifftales" : "Sign Up - rifftales",
-      errors: req.flash("errors") || [],
-      missing: req.flash("missing") || [],
-      username: req.flash("username")[0] || "",
-      email: req.flash("email")[0] || ""
-    };
-
-    additionalFields.forEach(field => {
-      data[field] = req.flash(field)[0] || "";
-    });
-
-    res.render(template, data);
-  };
-};
-
-app.get("/login", renderWithFlash("login"));
-app.get("/register", renderWithFlash("register", ["bio", "location"]));
 
 app.get("/ping", (req, res) => {
   const response = {

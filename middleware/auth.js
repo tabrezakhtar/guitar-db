@@ -52,7 +52,7 @@ const verifyToken = (req, res, next) => {
       res.cookie("accessToken", newAccessToken, {
         httpOnly: true,
         secure: isProd,
-        sameSite: isProd ? "strict" : "lax",
+        sameSite: isProd ? "none" : "lax",
         path: "/",
         maxAge: 15 * 60 * 1000
       });
@@ -60,7 +60,7 @@ const verifyToken = (req, res, next) => {
       res.cookie("refreshToken", newRefreshToken, {
         httpOnly: true,
         secure: isProd,
-        sameSite: isProd ? "strict" : "lax",
+        sameSite: isProd ? "none" : "lax",
         path: "/",
         maxAge: 7 * 24 * 60 * 60 * 1000
       });
