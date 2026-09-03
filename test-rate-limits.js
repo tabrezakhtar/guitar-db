@@ -13,9 +13,6 @@ const testData = {
   },
   magicLink: {
     email: "test@example.com"
-  },
-  refreshToken: {
-    token: "some token"
   }
 };
 
@@ -145,25 +142,23 @@ const runRateLimitTests = async () => {
     await testEndpoint(
       "Magic Link Requests",
       "POST", 
-      "/auth/sendMagicLink",
+      "/auth/sendCode",
       testData.magicLink,
-      6,
-      3
+      7,
+      5
     );
     
-    console.log(`\n🧪 Testing Token Refresh`);
+    console.log(`\n🧪 Testing Refresh Endpoint`);
     
     const testTokenRefresh = async () => {
-      console.log(`Expected limit: 20 requests`);
+      console.log(`Expected limit: 3 requests`);
       console.log("=" .repeat(50));
       
       let successCount = 0;
       let rateLimitedCount = 0;
       
-      for (let i = 1; i <= 25; i++) {
-        const result = await makeRequest("POST", "/auth/refreshToken", {}, {
-          "Authorization": `Bearer ${testData.refreshToken.token}`
-        });
+      for (let i = 1; i <= 5; i++) {
+        const result = await makeRequest("POST", "test/refresh", {});
         const rateLimitInfo = displayRateLimitInfo(result.headers);
         
         if (result.success) {
@@ -183,17 +178,17 @@ const runRateLimitTests = async () => {
           console.log(`❌ Request ${i}: ERROR (${result.status}) - ${result.data.message || result.data}`);
         }
         
-        if (i < 25) {
+        if (i < 5) {
           await new Promise(resolve => setTimeout(resolve, DELAY_BETWEEN_REQUESTS));
         }
       }
       
-      console.log(`\n📊 Summary for Token Refresh:`);
+      console.log(`\n📊 Summary for Refresh Endpoint:`);
       console.log(`   Successful requests: ${successCount}`);
       console.log(`   Rate limited requests: ${rateLimitedCount}`);
-      console.log(`   Expected to be rate limited after: 20 requests`);
+      console.log(`   Expected to be rate limited after: 3 requests`);
       
-      if (rateLimitedCount > 0 && successCount <= 20) {
+      if (rateLimitedCount > 0 && successCount <= 3) {
         console.log(`   ✅ Rate limiting is working correctly!`);
       } else if (rateLimitedCount === 0) {
         console.log(`   ⚠️  No rate limiting detected - check configuration`);
@@ -209,7 +204,7 @@ const runRateLimitTests = async () => {
     console.log(`   - Wait for the time windows to reset before running tests again`);
     console.log(`   - User Registration: 1 hour window`);
     console.log(`   - Magic Link: 5 minute window`);
-    console.log(`   - Token Refresh: 5 minute window`);
+    console.log(`   - Test Refresh: 1 minute window`);
     console.log(`   - Auth Verification: 15 minute window`);
     
   } catch (error) {
@@ -236,27 +231,25 @@ const testSingleEndpoint = async (endpointName) => {
       await testEndpoint(
         "Magic Link Requests",
         "POST",
-        "/auth/sendMagicLink", 
+        "/auth/sendCode", 
         testData.magicLink,
-        6,
-        3
+        7,
+        5
       );
       break;
       
     case "refresh":
     case "token": {
-      console.log(`\n🧪 Testing Token Refresh (single endpoint)`);
+      console.log(`\n🧪 Testing Refresh Endpoint (single endpoint)`);
       const testTokenRefresh = async () => {
-        console.log(`Expected limit: 20 requests`);
+        console.log(`Expected limit: 3 requests`);
         console.log("=" .repeat(50));
         
         let successCount = 0;
         let rateLimitedCount = 0;
         
-        for (let i = 1; i <= 25; i++) {
-          const result = await makeRequest("POST", "/auth/refreshToken", {}, {
-            "Authorization": `Bearer ${testData.refreshToken.token}`
-          });
+        for (let i = 1; i <= 5; i++) {
+          const result = await makeRequest("POST", "test/refresh", {});
           const rateLimitInfo = displayRateLimitInfo(result.headers);
           
           if (result.success) {
@@ -276,17 +269,17 @@ const testSingleEndpoint = async (endpointName) => {
             console.log(`❌ Request ${i}: ERROR (${result.status}) - ${result.data.message || result.data}`);
           }
           
-          if (i < 25) {
+          if (i < 5) {
             await new Promise(resolve => setTimeout(resolve, DELAY_BETWEEN_REQUESTS));
           }
         }
         
-        console.log(`\n📊 Summary for Token Refresh:`);
+        console.log(`\n📊 Summary for Refresh Endpoint:`);
         console.log(`   Successful requests: ${successCount}`);
         console.log(`   Rate limited requests: ${rateLimitedCount}`);
-        console.log(`   Expected to be rate limited after: 20 requests`);
+        console.log(`   Expected to be rate limited after: 3 requests`);
         
-        if (rateLimitedCount > 0 && successCount <= 20) {
+        if (rateLimitedCount > 0 && successCount <= 3) {
           console.log(`   ✅ Rate limiting is working correctly!`);
         } else if (rateLimitedCount === 0) {
           console.log(`   ⚠️  No rate limiting detected - check configuration`);
@@ -384,20 +377,20 @@ const testSingleEndpoint = async (endpointName) => {
       console.log(`This will test with a very low limit to verify rate limiting works`);
       
       const testDebug = async () => {
-        console.log(`Expected limit: 3 requests (Magic Link)`);
+        console.log(`Expected limit: 2 requests (Test Magic Link)`);
         console.log("=" .repeat(50));
         
         let successCount = 0;
         let rateLimitedCount = 0;
         
-        for (let i = 1; i <= 6; i++) {
-          const result = await makeRequest("POST", "auth/sendMagicLink", {
+        for (let i = 1; i <= 4; i++) {
+          const result = await makeRequest("POST", "test/magic-link", {
             email: `debug${i}@example.com`
           });
           const rateLimitInfo = displayRateLimitInfo(result.headers);
           
           console.log(`\n--- Request ${i} ---`);
-          console.log(`URL: ${BASE_URL}/api/auth/sendMagicLink`);
+          console.log(`URL: ${BASE_URL}/api/test/magic-link`);
           console.log(`Status: ${result.status}`);
           console.log(`Success: ${result.success}`);
           
@@ -419,7 +412,7 @@ const testSingleEndpoint = async (endpointName) => {
             console.log(`   Response:`, result.data);
           }
           
-          if (i < 6) {
+          if (i < 4) {
             await new Promise(resolve => setTimeout(resolve, 200));
           }
         }
@@ -427,7 +420,7 @@ const testSingleEndpoint = async (endpointName) => {
         console.log(`\n📊 Debug Test Summary:`);
         console.log(`   Successful requests: ${successCount}`);
         console.log(`   Rate limited requests: ${rateLimitedCount}`);
-        console.log(`   Expected to be rate limited after: 3 requests`);
+        console.log(`   Expected to be rate limited after: 2 requests`);
         
         if (rateLimitedCount > 0) {
           console.log(`   ✅ Rate limiting is working correctly!`);
@@ -462,7 +455,7 @@ Usage:
 Available endpoints:
   register    - Test user registration rate limit
   magiclink   - Test magic link request rate limit
-  refresh     - Test token refresh rate limit
+  refresh     - Test refresh endpoint rate limit
   debug       - Test with detailed debugging info
   testapi     - Test dedicated test endpoints (low limits)
 

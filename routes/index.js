@@ -9,7 +9,7 @@ const { registerUser, verifyCode, resendVerificationCode, guestLogin } = require
 const { getUserProfile, updateUserProfile, deleteUserAvatar, deleteUserProfile } = require("./profile");
 const { logout, getUserStatus, followUser, unfollowUser, me, getFollowers, getFollowing, getRecentUsers, updateFavUsers } = require("./users");
 const { verifyToken, verifyTokenOptional, checkEquipmentOwnership, checkUserOwnership, checkCommentOwnership, checkBanned } = require("../middleware/auth");
-const { authLimiter, magicLinkLimiter, testMagicLinkLimiter, testRefreshLimiter } = require("../middleware/rateLimiter");
+const { authLimiter, magicLinkLimiter, createProfileLimiter, testMagicLinkLimiter, testRefreshLimiter } = require("../middleware/rateLimiter");
 
 router.get("/health", (req, res) => {
   res.json({ status: "ok" });
@@ -32,7 +32,7 @@ router.get("/equipment/searchByText", verifyTokenOptional, equipmentRoutes.searc
 
 router.get("/pages/landing", pagesRoutes.landing);
 
-router.post("/auth/register", registerUser);
+router.post("/auth/register", createProfileLimiter, registerUser);
 router.post("/auth/sendCode", magicLinkLimiter, resendVerificationCode);
 router.post("/auth/verifyCode", authLimiter, verifyCode);
 router.post("/auth/guestLogin", guestLogin);

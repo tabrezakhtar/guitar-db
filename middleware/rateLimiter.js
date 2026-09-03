@@ -1,12 +1,20 @@
 ﻿const rateLimit = require("express-rate-limit");
+const MongoStore = require("rate-limit-mongo");
 
 const isRateLimitEnabled = process.env.RATE_LIMIT === "true";
 
 const noOpMiddleware = (req, res, next) => next();
 
+const createMongoStore = (collectionName, expireTimeMs) => new MongoStore({
+  uri: process.env.DATABASE_URI,
+  collectionName,
+  expireTimeMs
+});
+
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, 
   max: 10,
+  store: createMongoStore("authRateLimits", 15 * 60 * 1000),
   message: {
     message: "Too many authentication attempts",
     errors: "Too many authentication attempts from this IP, please try again after 15 minutes."
@@ -24,6 +32,7 @@ const authLimiter = rateLimit({
 const magicLinkLimiter = rateLimit({
   windowMs: 5 * 60 * 1000, 
   max: 5,
+  store: createMongoStore("magicLinkRateLimits", 5 * 60 * 1000),
   message: {
     message: "Too many magic link requests",
     errors: "Too many magic link requests from this IP, please try again after 5 minutes."
@@ -41,6 +50,7 @@ const magicLinkLimiter = rateLimit({
 const refreshTokenLimiter = rateLimit({
   windowMs: 5 * 60 * 1000, 
   max: 20,
+  store: createMongoStore("refreshTokenRateLimits", 5 * 60 * 1000),
   message: {
     message: "Too many token refresh requests",
     errors: "Too many token refresh requests from this IP, please try again after 5 minutes."
@@ -58,6 +68,7 @@ const refreshTokenLimiter = rateLimit({
 const createProfileLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, 
   max: 5,
+  store: createMongoStore("createProfileRateLimits", 60 * 60 * 1000),
   message: {
     message: "Too many profile creation attempts",
     errors: "Too many profile creation attempts from this IP, please try again after 1 hour."
@@ -75,6 +86,7 @@ const createProfileLimiter = rateLimit({
 const testMagicLinkLimiter = rateLimit({
   windowMs: 1 * 60 * 1000, 
   max: 2,
+  store: createMongoStore("testMagicLinkRateLimits", 1 * 60 * 1000),
   message: {
     message: "Too many magic link requests (TEST MODE)",
     errors: "Too many magic link requests from this IP, please try again after 1 minute."
@@ -92,6 +104,7 @@ const testMagicLinkLimiter = rateLimit({
 const testRefreshLimiter = rateLimit({
   windowMs: 1 * 60 * 1000, 
   max: 3,
+  store: createMongoStore("testRefreshRateLimits", 1 * 60 * 1000),
   message: {
     message: "Too many token refresh requests (TEST MODE)",
     errors: "Too many token refresh requests from this IP, please try again after 1 minute."
