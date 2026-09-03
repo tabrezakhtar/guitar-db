@@ -17,7 +17,7 @@ const authLimiter = rateLimit({
   store: createMongoStore("authRateLimits", 15 * 60 * 1000),
   message: {
     message: "Too many authentication attempts",
-    errors: "Too many authentication attempts from this IP, please try again after 15 minutes."
+    errors: "Too many authentication attempts, please try again after 15 minutes."
   },
   standardHeaders: true,
   legacyHeaders: false,
@@ -35,7 +35,7 @@ const magicLinkLimiter = rateLimit({
   store: createMongoStore("magicLinkRateLimits", 5 * 60 * 1000),
   message: {
     message: "Too many magic link requests",
-    errors: "Too many magic link requests from this IP, please try again after 5 minutes."
+    errors: "Too many magic link requests, please try again after 5 minutes."
   },
   standardHeaders: true,
   legacyHeaders: false,
@@ -53,7 +53,7 @@ const refreshTokenLimiter = rateLimit({
   store: createMongoStore("refreshTokenRateLimits", 5 * 60 * 1000),
   message: {
     message: "Too many token refresh requests",
-    errors: "Too many token refresh requests from this IP, please try again after 5 minutes."
+    errors: "Too many token refresh requests, please try again after 5 minutes."
   },
   standardHeaders: true,
   legacyHeaders: false,
@@ -71,7 +71,7 @@ const createProfileLimiter = rateLimit({
   store: createMongoStore("createProfileRateLimits", 60 * 60 * 1000),
   message: {
     message: "Too many profile creation attempts",
-    errors: "Too many profile creation attempts from this IP, please try again after 1 hour."
+    errors: "Too many profile creation attempts, please try again after 1 hour."
   },
   standardHeaders: true,
   legacyHeaders: false,
@@ -89,7 +89,7 @@ const testMagicLinkLimiter = rateLimit({
   store: createMongoStore("testMagicLinkRateLimits", 1 * 60 * 1000),
   message: {
     message: "Too many magic link requests (TEST MODE)",
-    errors: "Too many magic link requests from this IP, please try again after 1 minute."
+    errors: "Too many magic link requests, please try again after 1 minute."
   },
   standardHeaders: true,
   legacyHeaders: false,
@@ -107,7 +107,7 @@ const testRefreshLimiter = rateLimit({
   store: createMongoStore("testRefreshRateLimits", 1 * 60 * 1000),
   message: {
     message: "Too many token refresh requests (TEST MODE)",
-    errors: "Too many token refresh requests from this IP, please try again after 1 minute."
+    errors: "Too many token refresh requests, please try again after 1 minute."
   },
   standardHeaders: true,
   legacyHeaders: false,
