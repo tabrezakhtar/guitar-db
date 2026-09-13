@@ -9,7 +9,7 @@ const { registerUser, verifyCode, resendVerificationCode, guestLogin } = require
 const { getUserProfile, updateUserProfile, deleteUserAvatar, deleteUserProfile } = require("./profile");
 const { logout, getUserStatus, followUser, unfollowUser, me, getFollowers, getFollowing, getRecentUsers, updateFavUsers } = require("./users");
 const { verifyToken, verifyTokenOptional, checkEquipmentOwnership, checkUserOwnership, checkCommentOwnership, checkBanned } = require("../middleware/auth");
-const { authLimiter, magicLinkLimiter, createProfileLimiter, testMagicLinkLimiter, testRefreshLimiter } = require("../middleware/rateLimiter");
+const { authLimiter, magicLinkLimiter, createProfileLimiter, testMagicLinkLimiter, testRefreshLimiter, generateDescriptionLimiter } = require("../middleware/rateLimiter");
 
 router.get("/health", (req, res) => {
   res.json({ status: "ok" });
@@ -29,6 +29,7 @@ router.delete("/equipment/deleteComment/:id", verifyToken, checkCommentOwnership
 router.get("/equipment/tags", equipmentRoutes.getAllTags);
 router.get("/equipment/user/:userId", verifyTokenOptional, equipmentRoutes.getByUser);
 router.get("/equipment/searchByText", verifyTokenOptional, equipmentRoutes.searchByText);
+router.post("/equipment/generateDescription", verifyToken, generateDescriptionLimiter, equipmentRoutes.generateDescription);
 
 router.get("/pages/landing", pagesRoutes.landing);
 

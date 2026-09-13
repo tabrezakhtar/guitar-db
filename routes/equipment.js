@@ -1,6 +1,7 @@
 const { Guitar, Amp, Pedal, Bass, Acoustic, Accessory, Equipment, Comments } = require("../models/equipment.js");
 const { queryBuilder } = require("../query-builder.js");
 const { deleteCloudinaryImages } = require("../helpers/cloudinary");
+const { generateEquipmentDescription } = require("../helpers/openrouter");
 const Tag = require("../models/tag");
 
 async function manageTagCounts(newTags, oldTags = []) {
@@ -640,6 +641,15 @@ async function getAllTags(req, res, next) {
   }
 }
 
+async function generateDescription(req, res, next) {
+  try {
+    const description = await generateEquipmentDescription(req.body);
+    res.status(200).json({ description });
+  } catch (err) {
+    next(err);
+  }
+}
+
 module.exports = {
   get,
   getById,
@@ -654,5 +664,6 @@ module.exports = {
   deleteComment,
   getAllTags,
   toggleLike,
-  searchByText
+  searchByText,
+  generateDescription
 };

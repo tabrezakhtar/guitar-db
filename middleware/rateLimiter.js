@@ -119,12 +119,32 @@ const testRefreshLimiter = rateLimit({
   }
 });
 
+const generateDescriptionLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, 
+  max: 2,
+  store: createMongoStore("generateDescriptionRateLimits", 1 * 60 * 1000),
+  message: {
+    message: "Too many description generation requests",
+    errors: "Too many description generation requests, please try again after 1 minute."
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skipSuccessfulRequests: false,
+  skipFailedRequests: false,
+  keyGenerator: (req) => req.userId || req.ip,
+  skip: (req) => {
+    console.log(`GENERATE DESCRIPTION LIMITER: Checking user ${req.userId} for ${req.method} ${req.path}`);
+    return false;
+  }
+});
+
 module.exports = {
   authLimiter: isRateLimitEnabled ? authLimiter : noOpMiddleware,
   magicLinkLimiter: isRateLimitEnabled ? magicLinkLimiter : noOpMiddleware,
   refreshTokenLimiter: isRateLimitEnabled ? refreshTokenLimiter : noOpMiddleware,
   createProfileLimiter: isRateLimitEnabled ? createProfileLimiter : noOpMiddleware,
   testMagicLinkLimiter: isRateLimitEnabled ? testMagicLinkLimiter : noOpMiddleware,
-  testRefreshLimiter: isRateLimitEnabled ? testRefreshLimiter : noOpMiddleware
+  testRefreshLimiter: isRateLimitEnabled ? testRefreshLimiter : noOpMiddleware,
+  generateDescriptionLimiter: isRateLimitEnabled ? generateDescriptionLimiter : noOpMiddleware
 };
 
