@@ -23,7 +23,7 @@ function buildEquipmentPrompt(equipment) {
     description && `Existing notes: ${description}`
   ].filter(Boolean).join("\n");
 
-  return `Write a short, engaging description (2-4 sentences) for the following piece of music gear, to be shown on a gear collector's profile. Write in a natural, human tone. Only return the description text, no headings or extra commentary.\n\n${details}`;
+  return `Write a short, engaging description (2-4 sentences) for the following piece of music gear, to be shown on a gear collector's profile. Write in a natural, human tone. Only return the description text, no headings or extra commentary.  Make sure to format it nicely with line breaks.\n\n${details}`;
 }
 
 async function generateEquipmentDescription(equipment) {
