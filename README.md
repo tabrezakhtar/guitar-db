@@ -1,6 +1,6 @@
-# Guitar DB API
+# Rifftales API
 
-Guitar DB is a Node.js 22 and Express API for browsing and managing musical equipment, user profiles, authentication, YouTube channels, and livestream schedules. Data is stored in MongoDB. The frontend is maintained separately from this API repository.
+Rifftales is a Node.js 22 and Express API for browsing and managing musical equipment, user profiles, authentication, YouTube channels, and livestream schedules. Data is stored in MongoDB. The frontend is maintained separately from this API repository.
 
 ## Requirements
 
