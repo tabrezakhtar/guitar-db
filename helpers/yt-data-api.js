@@ -1,11 +1,6 @@
 const { google } = require('googleapis');
 const API_KEY = process.env.YOUTUBE_API_KEY;
-if (!API_KEY) {
-    console.error("Missing YOUTUBE_API_KEY environment variable");
-    process.exit(1);
-}
-
-const youtube = google.youtube({ version: "v3", auth: API_KEY });
+const youtube = API_KEY ? google.youtube({ version: "v3", auth: API_KEY }) : null;
 
 function extractChannelIdOrHandle(input) {
   if (!input) return null;
@@ -64,6 +59,12 @@ async function getLatestVideos(playlistId, maxResults = 5) {
 }
 
 async function main() {
+  if (!API_KEY) {
+    console.error("Missing YOUTUBE_API_KEY environment variable");
+    process.exit(1);
+    return;
+  }
+
   const url = process.argv[2];
   if (!url) {
     console.error("Usage: node yt-data-api.js <youtube_url>");
@@ -84,7 +85,17 @@ async function main() {
   console.log(JSON.stringify(videos, null, 2));
 }
 
-main().catch(err => {
-  console.error(err.message);
-  process.exit(1);
-});
+if (require.main === module) {
+  main().catch(err => {
+    console.error(err.message);
+    process.exit(1);
+  });
+}
+
+module.exports = {
+  extractChannelIdOrHandle,
+  getChannelId,
+  getUploadsPlaylistId,
+  getLatestVideos,
+  main
+};
